@@ -1,6 +1,6 @@
-package com.codegym.aurora.backOffice.service.impl;
+package com.codegym.aurora.back_office.service.impl;
 
-import com.codegym.aurora.backOffice.entity.User;
+import com.codegym.aurora.back_office.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,12 +9,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 public class UserDetailService implements UserDetails {
-    private UUID id;
+    private long id;
     private String username;
     @JsonIgnore
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
-    public UserDetailService(UUID id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+
+    public UserDetailService(long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -32,7 +33,8 @@ public class UserDetailService implements UserDetails {
                 authorities
         );
     }
-    public UUID getId() {
+
+    public long getId() {
         return id;
     }
 

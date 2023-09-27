@@ -1,4 +1,4 @@
-package com.codegym.aurora.backOffice.service;
+package com.codegym.aurora.back_office.service;
 
 public interface SecurityService {
 

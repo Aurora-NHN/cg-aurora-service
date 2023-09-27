@@ -1,23 +1,27 @@
-create database aurora_shop;
-use aurora_shop;
+CREATE
+DATABASE AURORA_SHOP;
+USE
+AURORA_SHOP;
 
-create table user(
-    id bigint primary key auto_increment,
-    username varchar(50) unique,
-    `password` varchar(50),
-    roles varchar(50),
-    is_vip bit default 0,
-    is_delete bit default 1,
-    is_activated bit default 1
+CREATE TABLE USER
+(
+    ID           BIGINT PRIMARY KEY AUTO_INCREMENT,
+    USERNAME     VARCHAR(50) UNIQUE,
+    `PASSWORD`   VARCHAR(50),
+    ROLES        VARCHAR(50),
+    IS_VIP       BIT DEFAULT 0,
+    IS_DELETE    BIT DEFAULT 1,
+    IS_ACTIVATED BIT DEFAULT 1
 );
 
-create table user_detail(
-    id bigint primary key auto_increment,
-    full_name nvarchar(255),
-    gender nvarchar(10),
-    phone_number varchar(20),
-    email varchar(255),
-    image_url text,
-    user_id bigint,
-    FOREIGN KEY(user_id) REFERENCES user(id)
+CREATE TABLE USER_DETAIL
+(
+    ID           BIGINT PRIMARY KEY AUTO_INCREMENT,
+    FULL_NAME    NVARCHAR(255),
+    GENDER       NVARCHAR(10),
+    PHONE_NUMBER VARCHAR(20),
+    EMAIL        VARCHAR(255),
+    IMAGE_URL    TEXT,
+    USER_ID      BIGINT,
+    FOREIGN KEY (USER_ID) REFERENCES USER (ID)
 );
