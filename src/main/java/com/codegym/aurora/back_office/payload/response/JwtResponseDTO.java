@@ -1,4 +1,4 @@
-package com.codegym.aurora.backOffice.payload.response;
+package com.codegym.aurora.back_office.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

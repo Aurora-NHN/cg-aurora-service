@@ -1,7 +1,7 @@
-package com.codegym.aurora.backOffice.service.impl;
+package com.codegym.aurora.back_office.service.impl;
 
 import com.codegym.aurora.security.JwtTokenProvider;
-import com.codegym.aurora.backOffice.service.SecurityService;
+import com.codegym.aurora.back_office.service.SecurityService;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

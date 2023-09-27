@@ -1,11 +1,8 @@
-package com.codegym.aurora.backOffice.entity;
+package com.codegym.aurora.back_office.entity;
 
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 @Table(name = "USER_DETAIL")
@@ -17,10 +14,9 @@ import java.util.UUID;
 public class UserDetail {
 
     @Id
-    @Type(type="uuid-char")
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private long id;
 
     @Column(name = "FULL_NAME")
     private String fullName;

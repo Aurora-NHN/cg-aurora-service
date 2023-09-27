@@ -1,7 +1,7 @@
 package com.codegym.aurora.configuration;
 
 
-import com.codegym.aurora.backOffice.repository.UserRepository;
+import com.codegym.aurora.back_office.repository.UserRepository;
 import com.codegym.aurora.security.JwtAuthEntryPoint;
 import com.codegym.aurora.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
