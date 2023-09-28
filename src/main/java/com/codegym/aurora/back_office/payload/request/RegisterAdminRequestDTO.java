@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoRequestDTO {
+public class RegisterAdminRequestDTO {
 
     private String username;
+
+    private String password;
 
     private String fullName;
 
@@ -18,6 +20,4 @@ public class UserInfoRequestDTO {
     private String phoneNumber;
 
     private String email;
-
-    private String imageUrl;
 }

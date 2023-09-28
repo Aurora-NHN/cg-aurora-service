@@ -8,25 +8,25 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
-public class UserDetailService implements UserDetails {
+public class UserPrincipal implements UserDetails {
     private long id;
     private String username;
     @JsonIgnore
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailService(long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
     }
 
-    public static UserDetailService create(User user) {
+    public static UserPrincipal create(User user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole()));
 
-        return new UserDetailService(
+        return new UserPrincipal(
                 user.getId(),
                 user.getUsername(),
                 user.getPassword(),
@@ -77,7 +77,7 @@ public class UserDetailService implements UserDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserDetailService that = (UserDetailService) o;
+        UserPrincipal that = (UserPrincipal) o;
         return Objects.equals(id, that.id);
     }
 

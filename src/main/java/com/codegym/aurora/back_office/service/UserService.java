@@ -1,26 +1,31 @@
 package com.codegym.aurora.back_office.service;
 
 import com.codegym.aurora.back_office.entity.User;
-import com.codegym.aurora.back_office.payload.request.LoginRequestDTO;
-import com.codegym.aurora.back_office.payload.request.RegisterRequestDTO;
-import com.codegym.aurora.back_office.payload.request.UserInfoRequestDTO;
+import com.codegym.aurora.back_office.payload.request.*;
+import com.codegym.aurora.back_office.payload.response.MessageResponseDTO;
+import com.codegym.aurora.back_office.payload.response.UserResponseDTO;
 
 import java.util.List;
 
 public interface UserService {
-    String login(LoginRequestDTO authenticationRequest);
+    String login(LoginRequestDTO loginRequest);
 
-    User register(RegisterRequestDTO registerRequest);
+    MessageResponseDTO register(RegisterRequestDTO registerRequest);
 
-    User getUserByUsername(String username);
+    MessageResponseDTO registerAccountAdmin(RegisterAdminRequestDTO registerAdminRequestDTO);
 
-    User getUserById(long id);
+    UserResponseDTO getUserByUsername(String username);
 
-    List<User> getAllUser();
+    UserResponseDTO getUserById(long id);
 
-    List<User> getAll();
+    List<UserResponseDTO> getAllUser();
 
-    void edit(UserInfoRequestDTO user);
+    List<UserResponseDTO> getAll();
 
-    void delete(String username);
+    MessageResponseDTO setVip(BuyVipRequestDTO buyVipRequestDTO);
+
+    MessageResponseDTO edit(UserInfoRequestDTO user, long id);
+
+    MessageResponseDTO delete(String username);
+
 }

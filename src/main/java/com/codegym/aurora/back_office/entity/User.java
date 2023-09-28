@@ -27,6 +27,9 @@ public class User {
     @Column(name = "ROLES")
     private String role;
 
+    @Column(name = "COUNT")
+    private int count;
+
     @Column(name = "IS_VIP")
     private boolean isVip;
 

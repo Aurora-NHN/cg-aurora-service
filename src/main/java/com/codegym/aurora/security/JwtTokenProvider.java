@@ -1,5 +1,6 @@
 package com.codegym.aurora.security;
 
+import com.codegym.aurora.back_office.entity.User;
 import com.codegym.aurora.configuration.EnvVariable;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -19,12 +20,12 @@ public class JwtTokenProvider {
     private static final long jwtExpirationInMs = EnvVariable.JWT_EXPIRATION_IN_MS;
 
 
-    public String generateToken(Authentication authentication) {
+    public String generateToken(User authentication) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(authentication.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
