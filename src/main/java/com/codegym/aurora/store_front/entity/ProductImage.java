@@ -28,7 +28,7 @@ public class ProductImage {
     private boolean isActivated;
 
     @ManyToOne
-    @JoinColumn(name = "PRODUCT_ID")
+    @JoinColumn(name = "PRODUCT_ID",referencedColumnName = "ID")
     private Product product;
 
 }

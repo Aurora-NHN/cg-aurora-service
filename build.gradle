@@ -38,20 +38,13 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	//OAuth2
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
 
 	//send mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	//jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-
-	//swagger: Swagger tools starts with the OpenAPI Specification — the industry standard for RESTful API design
-	implementation 'io.springfox:springfox-swagger-ui'
-	implementation 'io.springfox:springfox-swagger2'
 
 	//flyway
 	implementation 'org.flywaydb:flyway-core'

@@ -20,7 +20,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "CATEGORY_NAME", nullable = false)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
     @Column(name = "IS_DELETE", nullable = false)
@@ -29,7 +29,7 @@ public class Category {
     @Column(name = "IS_ACTIVATED", nullable = false)
     private boolean isActivated;
 
-    @OneToMany(mappedBy = "SUB_CATEGORY", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<SubCategory> subCategoryList = new ArrayList<>();
 
 }

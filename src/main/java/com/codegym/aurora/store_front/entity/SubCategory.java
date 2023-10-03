@@ -19,6 +19,9 @@ public class SubCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "NAME", nullable = false)
+    private String name;
+
     @Column(name = "IS_DELETE", nullable = false)
     private boolean isDelete;
 
@@ -26,7 +29,7 @@ public class SubCategory {
     private boolean isActivated;
 
     @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID")
+    @JoinColumn(name = "CATEGORY_ID",referencedColumnName = "ID")
     private Category category;
 
 }

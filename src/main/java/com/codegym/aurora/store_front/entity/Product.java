@@ -48,11 +48,11 @@ public class Product {
     @Column(name = "IS_ACTIVATED", nullable = false)
     private boolean isActivated;
 
-    @OneToMany(mappedBy = "PRODUCT_IMAGE", cascade = CascadeType.ALL)
-    private List<ProductImage> productImageList = new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductImage> productImageUrlList = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID")
+    @JoinColumn(name = "SUB_CATEGORY_ID",referencedColumnName = "ID")
     private SubCategory subCategory;
 
 }
