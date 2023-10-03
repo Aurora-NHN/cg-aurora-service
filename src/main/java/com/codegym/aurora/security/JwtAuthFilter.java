@@ -1,6 +1,6 @@
 package com.codegym.aurora.security;
 
-import com.codegym.aurora.back_office.service.impl.JwtUserDetailsService;
+import com.codegym.aurora.service.impl.JwtUserDetailsService;
 import com.codegym.aurora.cache.TokenCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +29,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUserDetailsService userDetailsService;
-
-    private TokenCache tokenCache = TokenCache.getInstance();
+    @Autowired
+    private TokenCache tokenCache;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -49,9 +49,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else if (tokenProvider.validateToken(jwt)) {
-                    // If the token is valid but not present in cache, add it to cache
-                    tokenCache.addToken(username, jwt);
                 }
             }
         } catch (Exception ex) {

@@ -1,11 +1,10 @@
 package com.codegym.aurora.security;
 
-import com.codegym.aurora.back_office.entity.User;
+import com.codegym.aurora.entity.User;
 import com.codegym.aurora.configuration.EnvVariable;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -15,27 +14,27 @@ public class JwtTokenProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    private static final String jwtSecret = EnvVariable.JWT_SECRET;
+    private static final String JWT_KEY = EnvVariable.JWT_SECRET;
 
-    private static final long jwtExpirationInMs = EnvVariable.JWT_EXPIRATION_IN_MS;
+    private static final long JWT_EXPIRATION = EnvVariable.JWT_EXPIRATION_IN_MS;
 
 
     public String generateToken(User authentication) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
 
         return Jwts.builder()
                 .setSubject(authentication.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(SignatureAlgorithm.HS512, JWT_KEY)
                 .compact();
     }
 
 
     public String getUsernameFromJWT(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+                .setSigningKey(JWT_KEY)
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -45,7 +44,7 @@ public class JwtTokenProvider {
 
     public String getJwtFromBearerToken(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+                .setSigningKey(JWT_KEY)
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -55,7 +54,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(JWT_KEY).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
             logger.error("Invalid JWT signature");
