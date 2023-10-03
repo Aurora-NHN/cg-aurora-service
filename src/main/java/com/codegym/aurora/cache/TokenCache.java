@@ -1,21 +1,18 @@
 package com.codegym.aurora.cache;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 
+@Component
 public final class TokenCache {
-    private static TokenCache instance;
-    private HashMap<String,String> tokenMap;
+
+    private final HashMap<String,String> tokenMap;
 
     private TokenCache(){
         tokenMap = new HashMap<>();
     }
 
-    public static synchronized TokenCache getInstance() {
-        if(instance == null){
-            instance = new TokenCache();
-        }
-        return instance;
-    }
 
     public void addToken(String username,String token) {
         tokenMap.put(username, token);
