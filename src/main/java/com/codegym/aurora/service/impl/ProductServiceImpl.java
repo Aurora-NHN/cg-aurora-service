@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDetailResponseDTO getProductDetail(long id) {
-        Product product = productRepository.findProductById(id);
+        Product product = productRepository.findById(id).orElseThrow();
         ProductDetailResponseDTO productDetailResponseDTO = productConverter.convertEntityToProductDetailDTO(product);
         return productDetailResponseDTO;
     }

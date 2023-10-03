@@ -12,11 +12,11 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api")
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @GetMapping("/category")
+    @GetMapping("/categories")
     public List<CategoryResponseDTO> getCategoryDTO(){
         return categoryService.findListCategoryResponseDTO();
     }

@@ -4,7 +4,13 @@ public class Constant {
 
     public static final String LOGIN_FAIL = "Login failure!";
 
+    public static final String WRONG_PASSWORD = "Wrong password!";
+
+    public static final String USER_IS_NOT_EXIST = "User is not exist!";
+
     public static final String REGISTER_SUCCESS = "Register successfully!!!";
+
+    public static final String USERNAME_IS_PRESENT = "Username is present !";
 
     public static final String REGISTER_FAIL = "Register failure!";
 

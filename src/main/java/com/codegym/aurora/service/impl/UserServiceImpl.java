@@ -18,8 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     public String login(LoginRequestDTO loginRequest) {
         User user = userRepository.findByUsername(loginRequest.getUsername());
         String token = jwtTokenProvider.generateToken(user);
-        tokenCache.addToken(loginRequest.getUsername(),token);
+        tokenCache.addToken(loginRequest.getUsername(), token);
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new AuthenticationServiceException("Wrong password");
         }
@@ -63,20 +63,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public MessageResponseDTO register(RegisterRequestDTO registerRequest) {
         try {
-            String password = registerRequest.getPassword();
-            String cypherText = passwordEncoder.encode(password);
-            User user = new User();
-            user.setUsername(registerRequest.getUsername());
-            user.setPassword(cypherText);
-            user.setRole("ROLE_".concat(ERole.USER.toString()));
-            UserDetail userDetail = new UserDetail();
-            userDetail.setUser(user);
-            userDetail.setPhoneNumber(registerRequest.getPhoneNumber());
-            userDetail.setFullName(registerRequest.getFullName());
-            userDetail.setGender(registerRequest.getGender());
-            userDetail.setEmail(registerRequest.getEmail());
-            userRepository.save(user);
-            userDetailRepository.save(userDetail);
+            User userCheck = userRepository.findByUsername(registerRequest.getUsername());
+            if (userCheck != null) {
+                return new MessageResponseDTO(Constant.USERNAME_IS_PRESENT);
+            } else {
+                String password = registerRequest.getPassword();
+                String cypherText = passwordEncoder.encode(password);
+                User user = new User();
+                user.setUsername(registerRequest.getUsername());
+                user.setPassword(cypherText);
+                user.setRole("ROLE_".concat(ERole.USER.toString()));
+                UserDetail userDetail = new UserDetail();
+                userDetail.setUser(user);
+                userDetail.setPhoneNumber(registerRequest.getPhoneNumber());
+                userDetail.setFullName(registerRequest.getFullName());
+                userDetail.setGender(registerRequest.getGender());
+                userDetail.setEmail(registerRequest.getEmail());
+                userRepository.save(user);
+                userDetailRepository.save(userDetail);
+            }
         } catch (Exception e) {
             return new MessageResponseDTO(Constant.REGISTER_FAIL);
         }
@@ -114,7 +119,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO getUserById(long id) {
-        User user = userRepository.findUserById(id);
+        User user = userRepository.findById(id).orElseThrow();
         return userConverter.converterEntityUserToUserInfoResponseDTO(user);
     }
 
@@ -122,8 +127,8 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDTO> getAllUser() {
         List<User> userList = userRepository.findAll();
         List<UserResponseDTO> userResponseDTOList = new ArrayList<>();
-        for (User user: userList){
-            if(user.getRole().equals("ROLE_USER")) {
+        for (User user : userList) {
+            if (user.getRole().equals("ROLE_USER")) {
                 UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user);
                 userResponseDTOList.add(userResponseDTO);
             }
@@ -135,7 +140,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDTO> getAll() {
         List<User> userList = userRepository.findAll();
         List<UserResponseDTO> userResponseDTOList = new ArrayList<>();
-        for (User user: userList){
+        for (User user : userList) {
             UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user);
             userResponseDTOList.add(userResponseDTO);
         }
@@ -150,7 +155,7 @@ public class UserServiceImpl implements UserService {
             user.setVip(true);
             user.setCount(buyVipRequestDTO.getCount());
             userRepository.save(user);
-        } catch (Exception e){
+        } catch (Exception e) {
             return new MessageResponseDTO(Constant.BUY_VIP_FAIL);
         }
         return new MessageResponseDTO(Constant.BUY_VIP_SUCCESS);
@@ -158,8 +163,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MessageResponseDTO edit(UserInfoRequestDTO userInfoRequestDTO, long id) {
-        try{
-            User user = userRepository.findUserById(id);
+        try {
+            User user = userRepository.findById(id).orElseThrow();
             user.setUsername(userInfoRequestDTO.getUsername());
             UserDetail userDetail = user.getUserDetail();
             userDetail.setEmail(userInfoRequestDTO.getEmail());
@@ -169,7 +174,7 @@ public class UserServiceImpl implements UserService {
             userDetail.setFullName(userInfoRequestDTO.getFullName());
             userRepository.save(user);
             userDetailRepository.save(userDetail);
-        } catch (Exception e){
+        } catch (Exception e) {
             return new MessageResponseDTO(Constant.EDIT_FAIL);
         }
         return new MessageResponseDTO(Constant.EDIT_SUCCESS);
@@ -190,7 +195,7 @@ public class UserServiceImpl implements UserService {
             User user = userRepository.findByUsername(username);
             user.setActivated(false);
             userRepository.save(user);
-        } catch (Exception e){
+        } catch (Exception e) {
             return new MessageResponseDTO(Constant.DELETE_FAIL);
         }
         return new MessageResponseDTO(Constant.DELETE_SUCCESS);

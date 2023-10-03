@@ -30,7 +30,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("product/{productId}")
+    @GetMapping("products/{productId}/product-detail")
     public ResponseEntity<ProductDetailResponseDTO> getProductDetail(
             @PathVariable Long productId) {
         ProductDetailResponseDTO productDetailResponseDTO = productService.getProductDetail(productId);
@@ -42,7 +42,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/search")
+    @GetMapping("/products/search")
     public ResponseEntity<Page<PageProductResponseDTO>> getPageSearchProducts(
             @RequestParam(name = "keyword") String keyword,
             @RequestParam(defaultValue = "0") int page,
