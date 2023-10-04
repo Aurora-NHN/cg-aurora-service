@@ -2,7 +2,17 @@ package com.codegym.aurora.util;
 
 public class Constant {
 
-    public static final String LOGIN_FAIL = "Login failure!";
+    public static final String LOGIN_SUCCESS = "Login successfully!";
+
+    public static final String LOGOUT_SUCCESS = "Logout successfully!";
+
+    public static final String LOGOUT_FAIL = "Logout failure!";
+
+    public static final String WRONG_PASSWORD = "Wrong password!";
+
+    public static final String USER_IS_NOT_EXISTS = "User is not exists!";
+
+    public static final String USERNAME_EXISTS = "Username exists, please enter another username!";
 
     public static final String REGISTER_SUCCESS = "Register successfully!!!";
 
