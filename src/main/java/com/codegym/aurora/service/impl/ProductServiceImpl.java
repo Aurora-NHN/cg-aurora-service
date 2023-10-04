@@ -25,8 +25,7 @@ public class ProductServiceImpl implements ProductService {
     private  final ProductConverter productConverter;
 
     @Override
-    public Page<HomeProductResponseDTO> getProductsPage(int page, int size) {
-        Pageable pageable = PageRequest.of(page,size);
+    public Page<HomeProductResponseDTO> getProductsPage(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
         Page<HomeProductResponseDTO> productsDTOPage = productConverter.convertPageEntityToPageDTO(productPage);
         return productsDTOPage;

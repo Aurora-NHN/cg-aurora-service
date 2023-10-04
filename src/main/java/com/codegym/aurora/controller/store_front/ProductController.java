@@ -7,6 +7,8 @@ import com.codegym.aurora.payload.response.ProductDetailResponseDTO;
 import com.codegym.aurora.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,8 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/products")
-    public ResponseEntity<Page<HomeProductResponseDTO>> getPageProductHome(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Page<HomeProductResponseDTO> homeProductResponseDTOS = productService.getProductsPage(page, size);
+    public ResponseEntity<Page<HomeProductResponseDTO>> getPageProductHome(@PageableDefault Pageable pageable) {
+        Page<HomeProductResponseDTO> homeProductResponseDTOS = productService.getProductsPage(pageable);
         if (homeProductResponseDTOS.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {

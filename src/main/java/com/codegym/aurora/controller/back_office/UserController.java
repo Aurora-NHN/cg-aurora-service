@@ -1,4 +1,4 @@
-package com.codegym.aurora.controller.back_office.authenticated;
+package com.codegym.aurora.controller.back_office;
 
 import org.springframework.web.bind.annotation.RestController;
 

@@ -10,9 +10,13 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ProductConverter {
-   HomeProductResponseDTO convertEntityToProductHomeDTO(Product product);
-   ProductDetailResponseDTO convertEntityToProductDetailDTO(Product product);
-   Page<HomeProductResponseDTO> convertPageEntityToPageDTO(Page<Product> products);
-   Page<PageProductResponseDTO> convertPageEntityToDtoPage(Page<Product> products);
-   PageProductResponseDTO convertProductEntityToDTO(Product product);
+    HomeProductResponseDTO convertEntityToProductHomeDTO(Product product);
+
+    ProductDetailResponseDTO convertEntityToProductDetailDTO(Product product);
+
+    Page<HomeProductResponseDTO> convertPageEntityToPageDTO(Page<Product> products);
+
+    Page<PageProductResponseDTO> convertPageEntityToDtoPage(Page<Product> products);
+
+    PageProductResponseDTO convertProductEntityToDTO(Product product);
 }

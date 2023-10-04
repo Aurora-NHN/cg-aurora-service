@@ -1,34 +1,30 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.cache.TokenCache;
 import com.codegym.aurora.converter.UserConverter;
 import com.codegym.aurora.entity.User;
 import com.codegym.aurora.entity.UserDetail;
-import com.codegym.aurora.payload.request.*;
-import com.codegym.aurora.payload.response.MessageResponseDTO;
-import com.codegym.aurora.payload.response.UserResponseDTO;
+import com.codegym.aurora.payload.request.LoginRequestDTO;
+import com.codegym.aurora.payload.request.RegisterRequestDTO;
+import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.repository.UserDetailRepository;
 import com.codegym.aurora.repository.UserRepository;
-import com.codegym.aurora.service.UserService;
-import com.codegym.aurora.cache.TokenCache;
-import com.codegym.aurora.security.JwtAuthFilter;
 import com.codegym.aurora.security.JwtTokenProvider;
+import com.codegym.aurora.service.UserService;
 import com.codegym.aurora.util.Constant;
 import com.codegym.aurora.util.ERole;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.transaction.Transactional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
-    private final JwtAuthFilter jwtAuthFilter;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -39,166 +35,86 @@ public class UserServiceImpl implements UserService {
     private final UserDetailRepository userDetailRepository;
 
     private final TokenCache tokenCache;
-
     private UserConverter userConverter;
 
-//    @Override
-//    public User getUserFromToken() {
-//        String token =
-//        String username = jwtTokenProvider.getUsernameFromJWT(token);
-//        return userRepository.findByUsername(username);
-//    }
-
     @Override
-    public String login(LoginRequestDTO loginRequest) {
-        User user = userRepository.findByUsername(loginRequest.getUsername());
-        String token = jwtTokenProvider.generateToken(user);
-        tokenCache.addToken(loginRequest.getUsername(), token);
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new AuthenticationServiceException("Wrong password");
+    public ResponseDTO login(LoginRequestDTO loginRequestDTO) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        User userCheck = userRepository.findByUsername(loginRequestDTO.getUsername());
+        if (userCheck == null) {
+            responseDTO.setMessage(Constant.USER_IS_NOT_EXISTS);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
+            return responseDTO;
+        } else if (!passwordEncoder.matches(loginRequestDTO.getPassword(), userCheck.getPassword())) {
+            responseDTO.setMessage(Constant.WRONG_PASSWORD);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
+            return responseDTO;
         }
-        return token;
+        String token = jwtTokenProvider.generateToken(userCheck);
+        tokenCache.addToken(loginRequestDTO.getUsername(), token);
+        responseDTO.setMessage(Constant.LOGIN_SUCCESS);
+        responseDTO.setStatus(HttpStatus.OK);
+        responseDTO.setData(token);
+        return responseDTO;
     }
 
     @Override
-    public MessageResponseDTO register(RegisterRequestDTO registerRequest) {
+    public ResponseDTO logout() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        ResponseDTO responseDTO = new ResponseDTO();
+        if (tokenCache.getToken(username) == null) {
+            responseDTO.setStatus(HttpStatus.NOT_ACCEPTABLE);
+            responseDTO.setMessage(Constant.LOGOUT_FAIL);
+        } else {
+            tokenCache.removeToken(username);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setMessage(Constant.LOGOUT_SUCCESS);
+        }
+        return responseDTO;
+    }
+
+    @Override
+    public ResponseDTO registerUser(RegisterRequestDTO registerRequest) {
+        String role = "ROLE_".concat(ERole.USER.toString());
+        return register(registerRequest, role);
+    }
+
+    @Override
+    public ResponseDTO registerAdmin(RegisterRequestDTO registerRequest) {
+        String role = "ROLE_".concat(ERole.ADMIN.toString());
+        return register(registerRequest, role);
+    }
+    @Override
+    public ResponseDTO register(RegisterRequestDTO registerRequest, String role) {
+        ResponseDTO responseDTO = new ResponseDTO();
         try {
             User userCheck = userRepository.findByUsername(registerRequest.getUsername());
             if (userCheck != null) {
-                return new MessageResponseDTO(Constant.USERNAME_IS_PRESENT);
-            } else {
-                String password = registerRequest.getPassword();
-                String cypherText = passwordEncoder.encode(password);
-                User user = new User();
-                user.setUsername(registerRequest.getUsername());
-                user.setPassword(cypherText);
-                user.setRole("ROLE_".concat(ERole.USER.toString()));
-                UserDetail userDetail = new UserDetail();
-                userDetail.setUser(user);
-                userDetail.setPhoneNumber(registerRequest.getPhoneNumber());
-                userDetail.setFullName(registerRequest.getFullName());
-                userDetail.setGender(registerRequest.getGender());
-                userDetail.setEmail(registerRequest.getEmail());
-                userRepository.save(user);
-                userDetailRepository.save(userDetail);
+                responseDTO.setMessage(Constant.USERNAME_EXISTS);
+                responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+                return responseDTO;
             }
-        } catch (Exception e) {
-            return new MessageResponseDTO(Constant.REGISTER_FAIL);
-        }
-        return new MessageResponseDTO(Constant.REGISTER_SUCCESS);
-    }
-
-    @Override
-    public MessageResponseDTO registerAccountAdmin(RegisterAdminRequestDTO registerAdminRequestDTO) {
-        try {
-            String password = registerAdminRequestDTO.getPassword();
+            String password = registerRequest.getPassword();
             String cypherText = passwordEncoder.encode(password);
             User user = new User();
-            user.setUsername(registerAdminRequestDTO.getUsername());
+            user.setUsername(registerRequest.getUsername());
             user.setPassword(cypherText);
-            user.setRole("ROLE_".concat(ERole.ADMIN.toString()));
+            user.setRole(role);
             UserDetail userDetail = new UserDetail();
             userDetail.setUser(user);
-            userDetail.setPhoneNumber(registerAdminRequestDTO.getPhoneNumber());
-            userDetail.setFullName(registerAdminRequestDTO.getFullName());
-            userDetail.setGender(registerAdminRequestDTO.getGender());
-            userDetail.setEmail(registerAdminRequestDTO.getEmail());
+            userDetail.setPhoneNumber(registerRequest.getPhoneNumber());
+            userDetail.setFullName(registerRequest.getFullName());
+            userDetail.setGender(registerRequest.getGender());
+            userDetail.setEmail(registerRequest.getEmail());
             userRepository.save(user);
             userDetailRepository.save(userDetail);
         } catch (Exception e) {
-            return new MessageResponseDTO(Constant.REGISTER_FAIL);
+            responseDTO.setMessage(Constant.REGISTER_FAIL);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            return responseDTO;
         }
-        return new MessageResponseDTO(Constant.REGISTER_SUCCESS);
+        responseDTO.setMessage(Constant.REGISTER_SUCCESS);
+        responseDTO.setStatus(HttpStatus.CREATED);
+        return responseDTO;
     }
-
-    @Override
-    public UserResponseDTO getUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        return userConverter.converterEntityUserToUserInfoResponseDTO(user);
-    }
-
-    @Override
-    public UserResponseDTO getUserById(long id) {
-        User user = userRepository.findById(id).orElseThrow();
-        return userConverter.converterEntityUserToUserInfoResponseDTO(user);
-    }
-
-    @Override
-    public List<UserResponseDTO> getAllUser() {
-        List<User> userList = userRepository.findAll();
-        List<UserResponseDTO> userResponseDTOList = new ArrayList<>();
-        for (User user : userList) {
-            if (user.getRole().equals("ROLE_USER")) {
-                UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user);
-                userResponseDTOList.add(userResponseDTO);
-            }
-        }
-        return userResponseDTOList;
-    }
-
-    @Override
-    public List<UserResponseDTO> getAll() {
-        List<User> userList = userRepository.findAll();
-        List<UserResponseDTO> userResponseDTOList = new ArrayList<>();
-        for (User user : userList) {
-            UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user);
-            userResponseDTOList.add(userResponseDTO);
-        }
-        return userResponseDTOList;
-    }
-
-    @Override
-    public MessageResponseDTO setVip(BuyVipRequestDTO buyVipRequestDTO) {
-        try {
-            String username = jwtTokenProvider.getUsernameFromJWT(buyVipRequestDTO.getToken());
-            User user = userRepository.findByUsername(username);
-            user.setVip(true);
-            user.setCount(buyVipRequestDTO.getCount());
-            userRepository.save(user);
-        } catch (Exception e) {
-            return new MessageResponseDTO(Constant.BUY_VIP_FAIL);
-        }
-        return new MessageResponseDTO(Constant.BUY_VIP_SUCCESS);
-    }
-
-    @Override
-    public MessageResponseDTO edit(UserInfoRequestDTO userInfoRequestDTO, long id) {
-        try {
-            User user = userRepository.findById(id).orElseThrow();
-            user.setUsername(userInfoRequestDTO.getUsername());
-            UserDetail userDetail = user.getUserDetail();
-            userDetail.setEmail(userInfoRequestDTO.getEmail());
-            userDetail.setPhoneNumber(userInfoRequestDTO.getPhoneNumber());
-            userDetail.setGender(userInfoRequestDTO.getGender());
-            userDetail.setImageUrl(userInfoRequestDTO.getImageUrl());
-            userDetail.setFullName(userInfoRequestDTO.getFullName());
-            userRepository.save(user);
-            userDetailRepository.save(userDetail);
-        } catch (Exception e) {
-            return new MessageResponseDTO(Constant.EDIT_FAIL);
-        }
-        return new MessageResponseDTO(Constant.EDIT_SUCCESS);
-    }
-
-//    @Override
-//    public MessageResponseDTO changePassword(PasswordRequestDTO passwordRequestDTO) {
-//        try {
-//            User user = getUserFromToken()
-//        }
-//        return null;
-//    }
-
-
-    @Override
-    public MessageResponseDTO delete(String username) {
-        try {
-            User user = userRepository.findByUsername(username);
-            user.setActivated(false);
-            userRepository.save(user);
-        } catch (Exception e) {
-            return new MessageResponseDTO(Constant.DELETE_FAIL);
-        }
-        return new MessageResponseDTO(Constant.DELETE_SUCCESS);
-    }
-
 }
