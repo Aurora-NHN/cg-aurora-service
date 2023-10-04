@@ -10,6 +10,4 @@ public class PasswordRequestDTO {
     private String newPassword;
 
     private String oldPassword;
-
-    private String token;
 }

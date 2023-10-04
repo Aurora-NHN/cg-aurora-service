@@ -1,35 +1,20 @@
 package com.codegym.aurora.service;
 
-import com.codegym.aurora.payload.request.*;
-import com.codegym.aurora.payload.response.MessageResponseDTO;
-import com.codegym.aurora.payload.response.UserResponseDTO;
-
-import java.util.List;
+import com.codegym.aurora.payload.request.LoginRequestDTO;
+import com.codegym.aurora.payload.request.RegisterRequestDTO;
+import com.codegym.aurora.payload.response.ResponseDTO;
 
 public interface UserService {
 
-//    User getUserFromToken();
+    ResponseDTO login (LoginRequestDTO loginRequestDTO);
 
-    String login(LoginRequestDTO loginRequest);
+    ResponseDTO logout();
 
-    MessageResponseDTO register(RegisterRequestDTO registerRequest);
+    ResponseDTO registerUser(RegisterRequestDTO registerRequest);
 
-    MessageResponseDTO registerAccountAdmin(RegisterAdminRequestDTO registerAdminRequestDTO);
+    ResponseDTO registerAdmin(RegisterRequestDTO registerRequest);
 
-    UserResponseDTO getUserByUsername(String username);
+    ResponseDTO register(RegisterRequestDTO registerRequest, String role);
 
-    UserResponseDTO getUserById(long id);
-
-    List<UserResponseDTO> getAllUser();
-
-    List<UserResponseDTO> getAll();
-
-    MessageResponseDTO setVip(BuyVipRequestDTO buyVipRequestDTO);
-
-    MessageResponseDTO edit(UserInfoRequestDTO user, long id);
-
-//    MessageResponseDTO changePassword(PasswordRequestDTO passwordRequestDTO);
-
-    MessageResponseDTO delete(String username);
-
+    void updateUserPassword(String email, String tempPassword);
 }
