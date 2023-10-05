@@ -5,6 +5,7 @@ import com.codegym.aurora.converter.UserConverter;
 import com.codegym.aurora.entity.User;
 import com.codegym.aurora.entity.UserDetail;
 import com.codegym.aurora.payload.request.LoginRequestDTO;
+import com.codegym.aurora.payload.request.PasswordRequestDTO;
 import com.codegym.aurora.payload.request.RegisterRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.repository.UserDetailRepository;
@@ -132,6 +133,32 @@ public class UserServiceImpl implements UserService {
     public boolean checkValidEmail(String email) {
         UserDetail userDetail = userDetailRepository.findByEmail(email);
         return userDetail != null;
+    }
+
+    @Override
+    public boolean checkOldPassword(String password) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username);
+        String cypherPass = passwordEncoder.encode(password);
+        return passwordEncoder.matches(cypherPass, user.getPassword());
+    }
+
+    @Override
+    public ResponseDTO changePassword(PasswordRequestDTO passwordRequestDTO) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        if(checkOldPassword(passwordRequestDTO.getOldPassword())){
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userRepository.findByUsername(username);
+            String cypherPass = passwordEncoder.encode(passwordRequestDTO.getNewPassword());
+            user.setPassword(cypherPass);
+            userRepository.save(user);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setMessage(Constant.CHANGE_PASSWORD_SUCCESS);
+        } else {
+            responseDTO.setMessage(Constant.WRONG_OLD_PASSWORD);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
+        }
+        return responseDTO;
     }
 
 
