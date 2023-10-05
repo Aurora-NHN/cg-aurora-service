@@ -4,9 +4,7 @@ package com.codegym.aurora.converter.impl;
 import com.codegym.aurora.converter.ProductConverter;
 import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.ProductImage;
-import com.codegym.aurora.payload.response.HomeProductResponseDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
-import com.codegym.aurora.payload.response.ProductDetailResponseDTO;
 import com.codegym.aurora.payload.response.ProductImageResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -21,46 +19,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductConverterImpl implements ProductConverter {
 
-    @Override
-    public HomeProductResponseDTO convertEntityToProductHomeDTO(Product product) {
-        HomeProductResponseDTO homeProductResponseDTO = new HomeProductResponseDTO();
-        BeanUtils.copyProperties(product, homeProductResponseDTO);
-        return homeProductResponseDTO;
-    }
 
-    @Override
-    public ProductDetailResponseDTO convertEntityToProductDetailDTO(Product product) {
-        ProductDetailResponseDTO productDetailResponseDTO = new ProductDetailResponseDTO();
-        List<ProductImageResponseDTO> productImageResponseDTOList= new ArrayList<>();
-        if(product.getProductImageUrlList() == null){
-            BeanUtils.copyProperties(product, productDetailResponseDTO);
-        }else {
-            BeanUtils.copyProperties(product, productDetailResponseDTO);
-            productImageResponseDTOList = convertProductImageEntityToDTO(product.getProductImageUrlList());
-            productDetailResponseDTO.setProductImageUrlList(productImageResponseDTOList);
-        }
-        return productDetailResponseDTO;
-    }
 
-    @Override
-    public Page<HomeProductResponseDTO> convertPageEntityToPageDTO(Page<Product> products) {
-        List<HomeProductResponseDTO> productDtoList = new ArrayList<>();
-
-        for (Product product : products.getContent()) {
-            HomeProductResponseDTO productDto = convertEntityToProductHomeDTO(product);
-            productDtoList.add(productDto);
-        }
-
-        return new PageImpl<>(productDtoList, products.getPageable(), products.getTotalElements());
-    }
 
     @Override
     public Page<PageProductResponseDTO> convertPageEntityToDtoPage(Page<Product> products) {
         List<PageProductResponseDTO> productDtoList = new ArrayList<>();
-
+        List<ProductImageResponseDTO> productImageResponseDTOList = new ArrayList<>();
         for (Product product : products.getContent()) {
-            PageProductResponseDTO productDto = convertProductEntityToDTO(product);
-            productDtoList.add(productDto);
+            if (product.getProductImageUrlList() == null) {
+                PageProductResponseDTO productDto = convertProductEntityToDTO(product);
+                productDtoList.add(productDto);
+            } else {
+                PageProductResponseDTO productDto = convertProductEntityToDTO(product);
+                productImageResponseDTOList = convertProductImageEntityToDTO(product.getProductImageUrlList());
+                productDto.setProductImageUrlList(productImageResponseDTOList);
+                productDtoList.add(productDto);
+
+            }
+
         }
 
         return new PageImpl<>(productDtoList, products.getPageable(), products.getTotalElements());
@@ -73,15 +50,14 @@ public class ProductConverterImpl implements ProductConverter {
         return homeProductResponseDTO;
     }
 
-    public List<ProductImageResponseDTO> convertProductImageEntityToDTO(List<ProductImage> productImageList){
+    public List<ProductImageResponseDTO> convertProductImageEntityToDTO(List<ProductImage> productImageList) {
         List<ProductImageResponseDTO> productImageResponseDTOList = new ArrayList<>();
-        for(ProductImage productImage:productImageList) {
+        for (ProductImage productImage : productImageList) {
             ProductImageResponseDTO productImageResponseDTO = new ProductImageResponseDTO();
             BeanUtils.copyProperties(productImage, productImageResponseDTO);
             productImageResponseDTOList.add(productImageResponseDTO);
         }
         return productImageResponseDTOList;
     }
-
 
 }
