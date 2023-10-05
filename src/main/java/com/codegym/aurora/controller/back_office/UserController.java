@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +40,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/edit-info")
+    @PutMapping
     public ResponseEntity<ResponseDTO> editInfo(@RequestBody UserInfoRequestDTO userInfoRequestDTO) {
         ResponseDTO responseDTO = userService.editInfo(userInfoRequestDTO);
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
