@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,11 +15,17 @@ public class PageProductResponseDTO {
 
     private String name;
 
-    private String imageUrl;
-
     private long price;
+
+    private int weighT;
 
     private int quantity;
 
+    private String description;
+
     private int quantitySold;
+
+    private String imageUrl;
+
+    private List<ProductImageResponseDTO> productImageUrlList = new ArrayList<>();
 }
