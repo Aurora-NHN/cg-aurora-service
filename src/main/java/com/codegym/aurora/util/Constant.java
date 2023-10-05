@@ -10,6 +10,8 @@ public class Constant {
 
     public static final String WRONG_PASSWORD = "Wrong password!";
 
+    public static final String WRONG_OLD_PASSWORD = "Wrong old password!";
+
     public static final String USER_IS_NOT_EXISTS = "User is not exists!";
 
     public static final String USERNAME_EXISTS = "Username exists, please enter another username!";
@@ -17,6 +19,8 @@ public class Constant {
     public static final String REGISTER_SUCCESS = "Register successfully!!!";
 
     public static final String REGISTER_FAIL = "Register failure!";
+
+    public static final String EMAIL_DOES_NOT_EXIT = "Email does not exist!";
 
     public static final String EDIT_SUCCESS = "Edit successfully!!!";
 

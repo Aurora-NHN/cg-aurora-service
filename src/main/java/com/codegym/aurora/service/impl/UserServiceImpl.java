@@ -121,7 +121,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserPassword(String email, String tempPassword) {
-        User user = userRepository.findUserByEmail(email);
+        UserDetail  userDetail = userDetailRepository.findByEmail(email);
+        User user = userDetail.getUser();
         String hashedPassword = passwordEncoder.encode(tempPassword);
         user.setPassword(hashedPassword);
         userRepository.save(user);
