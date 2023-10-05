@@ -22,7 +22,7 @@ public class Constant {
 
     public static final String REGISTER_FAIL = "Register failure!";
 
-    public static final String EMAIL_DOES_NOT_EXIT = "Email does not exist!";
+    public static final String EMAIL_DOES_NOT_EXIST = "Email does not exist!";
 
     public static final String EDIT_INFO_SUCCESS = "Edit info successfully!!!";
 

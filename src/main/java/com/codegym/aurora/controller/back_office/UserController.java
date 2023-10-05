@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +24,8 @@ public class UserController {
 
     private final UserService userService;
 
-    @PutMapping("/change-password")
-    public ResponseEntity<ResponseDTO> changePassword(@RequestBody PasswordRequestDTO passwordRequestDTO){
+    @PostMapping("/change-password")
+    public ResponseEntity<ResponseDTO> changePassword(@RequestBody PasswordRequestDTO passwordRequestDTO) {
         ResponseDTO responseDTO = userService.changePassword(passwordRequestDTO);
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
@@ -36,12 +35,12 @@ public class UserController {
         if (userService.checkValidEmail(sdi.getEmail())) {
             return ResponseEntity.ok(clientService.create(sdi));
         } else {
-            return new ResponseEntity<>(Constant.EMAIL_DOES_NOT_EXIT, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Constant.EMAIL_DOES_NOT_EXIST, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("edit-info")
-    public ResponseEntity<ResponseDTO> editInfo(@RequestBody UserInfoRequestDTO userInfoRequestDTO){
+    @PostMapping("/edit-info")
+    public ResponseEntity<ResponseDTO> editInfo(@RequestBody UserInfoRequestDTO userInfoRequestDTO) {
         ResponseDTO responseDTO = userService.editInfo(userInfoRequestDTO);
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
