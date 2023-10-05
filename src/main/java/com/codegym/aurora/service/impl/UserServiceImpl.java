@@ -128,5 +128,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public boolean checkValidEmail(String email) {
+        UserDetail userDetail = userDetailRepository.findByEmail(email);
+        return userDetail != null;
+    }
+
 
 }

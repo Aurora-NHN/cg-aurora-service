@@ -17,4 +17,6 @@ public interface UserService {
     ResponseDTO register(RegisterRequestDTO registerRequest, String role);
 
     void updateUserPassword(String email, String tempPassword);
+
+    boolean checkValidEmail(String email);
 }
