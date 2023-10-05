@@ -16,19 +16,19 @@ public class Constant {
 
     public static final String USERNAME_EXISTS = "Username exists, please enter another username!";
 
+    public static final String EMAIL_EXISTS = "Email exists, please enter another email!";
+
     public static final String REGISTER_SUCCESS = "Register successfully!!!";
 
     public static final String REGISTER_FAIL = "Register failure!";
 
     public static final String EMAIL_DOES_NOT_EXIT = "Email does not exist!";
 
-    public static final String EDIT_SUCCESS = "Edit successfully!!!";
+    public static final String EDIT_INFO_SUCCESS = "Edit info successfully!!!";
 
-    public static final String EDIT_FAIL = "Edit failure!";
+    public static final String EDIT_INFO_FAIL = "Edit info failure!";
 
     public static final String CHANGE_PASSWORD_SUCCESS = "Change password successfully!!!";
-
-    public static final String CHANGE_PASSWORD_FAIL = "Change password failure!";
 
     public static final String DELETE_SUCCESS = "Delete successfully!!!";
 

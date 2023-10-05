@@ -3,13 +3,12 @@ package com.codegym.aurora.payload.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInfoRequestDTO {
-
-    private String token;
 
     private String username;
 
@@ -21,5 +20,5 @@ public class UserInfoRequestDTO {
 
     private String email;
 
-    private String imageUrl;
+    private MultipartFile imageUrl;
 }

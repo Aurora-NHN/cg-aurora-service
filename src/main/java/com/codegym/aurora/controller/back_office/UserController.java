@@ -1,6 +1,7 @@
 package com.codegym.aurora.controller.back_office;
 
 import com.codegym.aurora.payload.request.PasswordRequestDTO;
+import com.codegym.aurora.payload.request.UserInfoRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.payload.sdi.ClientSdi;
 import com.codegym.aurora.service.ClientService;
@@ -31,11 +32,17 @@ public class UserController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<Object> create(@RequestBody ClientSdi sdi) {
+    public ResponseEntity<Object> forgotPassword(@RequestBody ClientSdi sdi) {
         if (userService.checkValidEmail(sdi.getEmail())) {
             return ResponseEntity.ok(clientService.create(sdi));
         } else {
             return new ResponseEntity<>(Constant.EMAIL_DOES_NOT_EXIT, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PutMapping("edit-info")
+    public ResponseEntity<ResponseDTO> editInfo(@RequestBody UserInfoRequestDTO userInfoRequestDTO){
+        ResponseDTO responseDTO = userService.editInfo(userInfoRequestDTO);
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
 }
