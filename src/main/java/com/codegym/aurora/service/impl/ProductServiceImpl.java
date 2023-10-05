@@ -3,9 +3,7 @@ package com.codegym.aurora.service.impl;
 
 import com.codegym.aurora.converter.ProductConverter;
 import com.codegym.aurora.entity.Product;
-import com.codegym.aurora.payload.response.HomeProductResponseDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
-import com.codegym.aurora.payload.response.ProductDetailResponseDTO;
 import com.codegym.aurora.repository.ProductRepository;
 import com.codegym.aurora.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -25,17 +23,10 @@ public class ProductServiceImpl implements ProductService {
     private  final ProductConverter productConverter;
 
     @Override
-    public Page<HomeProductResponseDTO> getProductsPage(Pageable pageable) {
+    public Page<PageProductResponseDTO> getProductsPage(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
-        Page<HomeProductResponseDTO> productsDTOPage = productConverter.convertPageEntityToPageDTO(productPage);
+        Page<PageProductResponseDTO> productsDTOPage = productConverter.convertPageEntityToDtoPage(productPage);
         return productsDTOPage;
-    }
-
-    @Override
-    public ProductDetailResponseDTO getProductDetail(long id) {
-        Product product = productRepository.findById(id).orElseThrow();
-        ProductDetailResponseDTO productDetailResponseDTO = productConverter.convertEntityToProductDetailDTO(product);
-        return productDetailResponseDTO;
     }
 
     @Override
@@ -45,7 +36,6 @@ public class ProductServiceImpl implements ProductService {
         Page<PageProductResponseDTO> pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
         return pageSearchProductResponseDTOS;
     }
-
 
     @Override
     public Page<PageProductResponseDTO> findProductsBySubCategoryId(long productId, int page, int size) {
