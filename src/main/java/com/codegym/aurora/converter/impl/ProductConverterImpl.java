@@ -6,6 +6,7 @@ import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.ProductImage;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
 import com.codegym.aurora.payload.response.ProductImageResponseDTO;
+import com.codegym.aurora.payload.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -18,9 +19,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ProductConverterImpl implements ProductConverter {
-
-
-
 
     @Override
     public Page<PageProductResponseDTO> convertPageEntityToDtoPage(Page<Product> products) {
@@ -35,11 +33,8 @@ public class ProductConverterImpl implements ProductConverter {
                 productImageResponseDTOList = convertProductImageEntityToDTO(product.getProductImageUrlList());
                 productDto.setProductImageUrlList(productImageResponseDTOList);
                 productDtoList.add(productDto);
-
             }
-
         }
-
         return new PageImpl<>(productDtoList, products.getPageable(), products.getTotalElements());
     }
 
