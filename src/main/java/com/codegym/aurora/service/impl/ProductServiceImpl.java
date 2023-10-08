@@ -16,6 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -23,27 +27,58 @@ import javax.transaction.Transactional;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
-    private  final ProductConverter productConverter;
+    private final ProductConverter productConverter;
 
+    private List<Integer> generateRandomPages(long totalItems, int pageSize) {
+        List<Integer> allPageNumbers = new ArrayList<>();
+        for (int i = 0; i < Math.ceil((double) totalItems / pageSize); i++) {
+            allPageNumbers.add(i);
+        }
+        Collections.shuffle(allPageNumbers);
+        return allPageNumbers;
+    }
 
-    @Override
-    public Page<PageProductResponseDTO> getProductsPage(Pageable pageable) {
-        Page<Product> productPage = productRepository.findAll(pageable);
-        Page<PageProductResponseDTO> productsDTOPage = productConverter.convertPageEntityToDtoPage(productPage);
-        return productsDTOPage;
+    private int getRandomPageNumber(List<Integer> pageNumbers) {
+        Random random = new Random();
+        return pageNumbers.get(random.nextInt(pageNumbers.size()));
     }
 
     @Override
-    public Page<PageProductResponseDTO> searchProductsByName(String keyWord, int page, int size) {
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord,pageable);
-        Page<PageProductResponseDTO> pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
+    public Page<PageProductResponseDTO> getProductsPage(Pageable pageable) {
+        long totalProducts = productRepository.count();
+        List<Integer> randomPages = generateRandomPages(totalProducts, pageable.getPageSize());
+        int randomPageNumber = getRandomPageNumber(randomPages);
+        PageRequest randomPageRequest = PageRequest.of(randomPageNumber, pageable.getPageSize());
+        Page<Product> randomProductPage = productRepository.findAll(randomPageRequest);
+        Page<PageProductResponseDTO> randomProductPageDTO = productConverter.convertPageEntityToDtoPage(randomProductPage);
+
+        return randomProductPageDTO;
+    }
+
+    @Override
+    public Page<PageProductResponseDTO> searchProductsByName(String keyWord, Pageable pageable, String sortOrder) {
+        Page<PageProductResponseDTO> pageSearchProductResponseDTOS = null;
+        if (sortOrder != null) {
+            if (sortOrder.equalsIgnoreCase("asc")) {
+                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").ascending());
+                Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord, pageable);
+                pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
+            } else if (sortOrder.equalsIgnoreCase("desc")) {
+                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").descending());
+                Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord, pageable);
+                pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
+            }
+        } else {
+            Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord, pageable);
+            pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
+        }
         return pageSearchProductResponseDTOS;
+
     }
 
     @Override
     public Page<PageProductResponseDTO> findProductsBySubCategoryId(long subCategoryId, Pageable pageable) {
-        Page<Product> productPage = productRepository.findProductsBySubCategoryId(subCategoryId,pageable);
+        Page<Product> productPage = productRepository.findProductsBySubCategoryId(subCategoryId, pageable);
         Page<PageProductResponseDTO> pageProductBySubcategoryResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
         return pageProductBySubcategoryResponseDTOS;
     }

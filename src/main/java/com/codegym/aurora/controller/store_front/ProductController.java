@@ -28,19 +28,21 @@ public class ProductController {
     @GetMapping("/search")
     public ResponseEntity<Page<PageProductResponseDTO>> getPageSearchProducts(
             @RequestParam(name = "keyword") String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Page<PageProductResponseDTO> searchPageResponseDTOS = productService.searchProductsByName(keyword, page, size);
+            @PageableDefault Pageable pageable,
+            @RequestParam(name = "sortOrder",required = false) String sortOrder) {
+        Page<PageProductResponseDTO> searchPageResponseDTOS = productService.searchProductsByName(keyword, pageable,sortOrder);
         return new ResponseEntity<>(searchPageResponseDTOS, HttpStatus.OK);
 
     }
 
     @GetMapping("/sort/ascending")
-    public ResponseEntity<Page<PageProductResponseDTO>> getProductsSortedAscending(@PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<PageProductResponseDTO>> getProductsSortedAscending(
+            @PageableDefault Pageable pageable) {
         Page<PageProductResponseDTO> sortPageResponseDTOS = productService.getProductsDTOSortedAscending(pageable);
         return new ResponseEntity<>(sortPageResponseDTOS, HttpStatus.OK);
 
     }
+
     @GetMapping("/sort/descending")
     public ResponseEntity<Page<PageProductResponseDTO>> getProductsSortedDescending(@PageableDefault Pageable pageable) {
         Page<PageProductResponseDTO> sortPageResponseDTOS = productService.getProductsDTOSortedDescending(pageable);
@@ -48,11 +50,11 @@ public class ProductController {
 
     }
 
-    @GetMapping("/subCategory")
+    @GetMapping("/sub-category")
     public ResponseEntity<Page<PageProductResponseDTO>> getPageProductsBySubCategory(
             @RequestParam(name = "id") long subCategoryId,
             @PageableDefault Pageable pageable) {
-        Page<PageProductResponseDTO> pageProductsResponseDTOS = productService.findProductsBySubCategoryId(subCategoryId,pageable);
+        Page<PageProductResponseDTO> pageProductsResponseDTOS = productService.findProductsBySubCategoryId(subCategoryId, pageable);
         return new ResponseEntity<>(pageProductsResponseDTOS, HttpStatus.OK);
 
     }
