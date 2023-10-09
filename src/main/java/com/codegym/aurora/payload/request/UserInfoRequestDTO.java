@@ -3,7 +3,6 @@ package com.codegym.aurora.payload.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -32,5 +31,4 @@ public class UserInfoRequestDTO {
     @Email(message = "Invalid email address")
     private String email;
 
-    private MultipartFile imageUrl;
 }

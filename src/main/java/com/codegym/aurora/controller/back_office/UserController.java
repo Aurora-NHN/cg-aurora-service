@@ -10,6 +10,7 @@ import com.codegym.aurora.util.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,12 @@ public class UserController {
     private final ClientService clientService;
 
     private final UserService userService;
+
+    @GetMapping
+    public ResponseEntity<ResponseDTO> getUserInfo() {
+        ResponseDTO responseDTO = userService.getUserInfo();
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
+    }
 
     @PostMapping("/change-password")
     public ResponseEntity<ResponseDTO> changePassword(@RequestBody PasswordRequestDTO passwordRequestDTO) {

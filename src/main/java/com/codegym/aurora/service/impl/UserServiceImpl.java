@@ -9,6 +9,7 @@ import com.codegym.aurora.payload.request.PasswordRequestDTO;
 import com.codegym.aurora.payload.request.RegisterRequestDTO;
 import com.codegym.aurora.payload.request.UserInfoRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
+import com.codegym.aurora.payload.response.UserResponseDTO;
 import com.codegym.aurora.repository.UserDetailRepository;
 import com.codegym.aurora.repository.UserRepository;
 import com.codegym.aurora.security.JwtTokenProvider;
@@ -17,6 +18,7 @@ import com.codegym.aurora.service.UserService;
 import com.codegym.aurora.util.Constant;
 import com.codegym.aurora.util.ERole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,10 +39,9 @@ public class UserServiceImpl implements UserService {
 
     private final UserDetailRepository userDetailRepository;
 
-    private final ImageService imageService;
-
     private final TokenCache tokenCache;
-    private UserConverter userConverter;
+
+    private final UserConverter userConverter;
 
     @Override
     public ResponseDTO login(LoginRequestDTO loginRequestDTO) {
@@ -74,6 +75,23 @@ public class UserServiceImpl implements UserService {
             tokenCache.removeToken(username);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setMessage(Constant.LOGOUT_SUCCESS);
+        }
+        return responseDTO;
+    }
+
+    @Override
+    public ResponseDTO getUserInfo() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            String username = getCurrentUsername();
+            User user = userRepository.findByUsername(username);
+            UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user,user.getUserDetail());
+            responseDTO.setMessage(Constant.GET_USER_INFO_SUCCESS);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setData(userResponseDTO);
+        } catch (Exception e){
+            responseDTO.setMessage(Constant.GET_USER_INFO_FAIL);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
         }
         return responseDTO;
     }
@@ -149,6 +167,9 @@ public class UserServiceImpl implements UserService {
     public boolean checkOldPassword(String password) {
         String username = getCurrentUsername();
         User user = userRepository.findByUsername(username);
+        if(user == null){
+            return false;
+        }
         return passwordEncoder.matches(password, user.getPassword());
     }
 
@@ -178,13 +199,11 @@ public class UserServiceImpl implements UserService {
             UserDetail userDetail = user.getUserDetail();
             String email = userInfoRequestDTO.getEmail();
             if (!userDetail.getEmail().equals(email) && !user.getUsername().equals(userInfoRequestDTO.getUsername())) {
-                String imgUrl = imageService.save(userInfoRequestDTO.getImageUrl());
                 user.setUsername(userInfoRequestDTO.getUsername());
                 userDetail.setEmail(email);
                 userDetail.setGender(userInfoRequestDTO.getGender());
                 userDetail.setPhoneNumber(userInfoRequestDTO.getPhoneNumber());
                 userDetail.setFullName(userInfoRequestDTO.getFullName());
-                userDetail.setImageUrl(imgUrl);
                 userRepository.save(user);
                 userDetailRepository.save(userDetail);
                 responseDTO.setStatus(HttpStatus.OK);
