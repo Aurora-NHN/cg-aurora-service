@@ -22,22 +22,24 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "CATEGORY", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
-public class Category {
+@Table(name = "MISSION_NUMBER", uniqueConstraints = @UniqueConstraint(columnNames = "INDICATORS"))
+
+public class MissionNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "ID")
+    private Integer id;
 
-    @Column(name = "NAME", nullable = false)
-    private String name;
+    @Column(name = "INDICATORS")
+    private int indicators;
+    @Column(name = "DESCRIPTION")
+    private String description;
+    @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
+    private boolean isDeleted;
 
-    @Column(name = "IS_DELETE")
-    private boolean isDelete;
-
-    @Column(name = "IS_ACTIVATED")
+    @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
     private boolean isActivated;
 
-    @OneToMany(mappedBy = "category", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private List<SubCategory> subCategoryList = new ArrayList<>();
-
+    @OneToMany(mappedBy = "missionNumber", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<NumeroloryReport> numeroloryReportList = new ArrayList<>();
 }

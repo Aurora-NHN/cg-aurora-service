@@ -10,32 +10,30 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PRODUCT_IMAGE")
-public class ProductImage {
+@Table(name = "MEAN_OF_INDICATORS", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+public class MeanOfIndicators {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Column(name = "ID")
+    private Integer id;
 
-    @Column(name = "IMAGE_URL", nullable = false)
-    private String imageUrl;
+    @Column(name = "NAME")
+    private String name;
 
-    @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
-    private boolean isDelete;
+    @Column(name = "MEAN")
+    private String mean;
+
+    @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
+    private boolean isDeleted;
 
     @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
     private boolean isActivated;
-
-    @ManyToOne
-    @JoinColumn(name = "PRODUCT_ID",referencedColumnName = "ID")
-    private Product product;
-
 }

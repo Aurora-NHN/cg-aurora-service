@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryResponseDTO {
 
-    private long id;
+    private Long id;
 
     private String name;
 

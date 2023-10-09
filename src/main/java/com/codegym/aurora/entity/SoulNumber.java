@@ -8,15 +8,13 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,26 +22,24 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SUB_CATEGORY", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
-public class SubCategory {
+@Table(name = "SOUL_NUMBER", uniqueConstraints = @UniqueConstraint(columnNames = "INDICATORS"))
 
+public class SoulNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "NAME", nullable = false)
-    private String name;
-
-    @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
-    private boolean isDelete;
+    @Column(name = "INDICATORS")
+    private int indicators;
+    @Column(name = "DESCRIPTION")
+    private String description;
+    @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
+    private boolean isDeleted;
 
     @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
     private boolean isActivated;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "CATEGORY_ID",referencedColumnName = "ID")
-    private Category category;
-
-    @OneToMany(mappedBy = "subCategory",  cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private List<Product> products;
+    @OneToMany(mappedBy = "soulNumber", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<NumeroloryReport> numeroloryReportList = new ArrayList<>();
 }

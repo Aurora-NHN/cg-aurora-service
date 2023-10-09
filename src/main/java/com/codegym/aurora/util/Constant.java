@@ -37,4 +37,12 @@ public class Constant {
     public static final String BUY_VIP_SUCCESS = "Buy Vip successfully!!!";
 
     public static final String BUY_VIP_FAIL = "Buy Vip Failure!";
+    public static final String CREATE_SUCCESS = "Create successfully!!!";
+    public static final String GET_CATEGORIES_ACTIVE_SUCCESS = "Get categories active successfully!!!";
+    public static final String UPDATE_SUCCESS = "Update successfully!!!";
+    public static final String GET_CATEGORIE_BY_ID_SUCCESS = "Get category by id successfully!!!";
+    public static final String ACTIVE_SUCCESS = "Active successfully!!!";
+    public static final String UNACTIVE_SUCCESS = "Unactive successfully!!!";
+    public static final String GET_SUB_CATEGORIE_BY_ID_SUCCESS = "Get sub category by id successfully!!!";
+
 }
