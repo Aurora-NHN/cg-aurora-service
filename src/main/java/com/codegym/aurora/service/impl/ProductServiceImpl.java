@@ -46,9 +46,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<PageProductResponseDTO> getProductsPage(Pageable pageable) {
         long totalProducts = productRepository.count();
-        List<Integer> randomPages = generateRandomPages(totalProducts, 12);
+        List<Integer> randomPages = generateRandomPages(totalProducts, pageable.getPageSize());
         int randomPageNumber = getRandomPageNumber(randomPages);
-        PageRequest randomPageRequest = PageRequest.of(randomPageNumber, 12);
+        PageRequest randomPageRequest = PageRequest.of(randomPageNumber, pageable.getPageSize());
         Page<Product> randomProductPage = productRepository.findAll(randomPageRequest);
         Page<PageProductResponseDTO> randomProductPageDTO = productConverter.convertPageEntityToDtoPage(randomProductPage);
 
