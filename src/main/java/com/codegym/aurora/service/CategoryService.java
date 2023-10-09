@@ -4,9 +4,6 @@ package com.codegym.aurora.service;
 import com.codegym.aurora.payload.request.CategoryRequestDTO;
 import com.codegym.aurora.payload.response.CategoryResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 public interface CategoryService {
