@@ -53,8 +53,9 @@ public class ProductController {
     @GetMapping("/sub-category")
     public ResponseEntity<Page<PageProductResponseDTO>> getPageProductsBySubCategory(
             @RequestParam(name = "id") long subCategoryId,
-            @PageableDefault Pageable pageable) {
-        Page<PageProductResponseDTO> pageProductsResponseDTOS = productService.findProductsBySubCategoryId(subCategoryId, pageable);
+            @PageableDefault Pageable pageable,
+            @RequestParam(name = "sortOrder",required = false) String sortOrder) {
+        Page<PageProductResponseDTO> pageProductsResponseDTOS = productService.findProductsBySubCategoryId(subCategoryId, pageable,sortOrder);
         return new ResponseEntity<>(pageProductsResponseDTOS, HttpStatus.OK);
 
     }
