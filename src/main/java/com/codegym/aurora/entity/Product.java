@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,7 +37,7 @@ public class Product {
     @Column(name = "PRICE", nullable = false)
     private long price;
 
-    @Column(name = "WEIGHT", nullable = false)
+    @Column(name = "WEIGHT")
     private int weight;
 
     @Column(name = "QUANTITY", nullable = false)
@@ -45,22 +46,22 @@ public class Product {
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
-    @Column(name = "QUANTITY_SOLD", nullable = false)
+    @Column(name = "QUANTITY_SOLD")
     private int quantitySold;
 
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
 
-    @Column(name = "IS_DELETE", nullable = false)
+    @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
     private boolean isDelete;
 
-    @Column(name = "IS_ACTIVATED", nullable = false)
+    @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
     private boolean isActivated;
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<ProductImage> productImageUrlList = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "SUB_CATEGORY_ID",referencedColumnName = "ID")
     private SubCategory subCategory;
 

@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,19 +22,19 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "CATEGORY")
+@Table(name = "CATEGORY", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(name = "IS_DELETE", nullable = false)
-    private boolean idDelete;
+    @Column(name = "IS_DELETE")
+    private boolean isDelete;
 
-    @Column(name = "IS_ACTIVATED", nullable = false)
+    @Column(name = "IS_ACTIVATED")
     private boolean isActivated;
 
     @OneToMany(mappedBy = "category", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
