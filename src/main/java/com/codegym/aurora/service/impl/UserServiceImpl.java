@@ -194,33 +194,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseDTO editInfo(UserInfoRequestDTO userInfoRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            User user = userRepository.findByUsername(getCurrentUsername());
-            UserDetail userDetail = user.getUserDetail();
-            String email = userInfoRequestDTO.getEmail();
-            if (!userDetail.getEmail().equals(email) && !user.getUsername().equals(userInfoRequestDTO.getUsername())) {
-                user.setUsername(userInfoRequestDTO.getUsername());
-                userDetail.setEmail(email);
-                userDetail.setGender(userInfoRequestDTO.getGender());
-                userDetail.setPhoneNumber(userInfoRequestDTO.getPhoneNumber());
-                userDetail.setFullName(userInfoRequestDTO.getFullName());
-                userRepository.save(user);
-                userDetailRepository.save(userDetail);
-                responseDTO.setStatus(HttpStatus.OK);
-                responseDTO.setMessage(Constant.EDIT_INFO_SUCCESS);
-            } else if (checkValidEmail(email)) {
-                responseDTO.setStatus(HttpStatus.BAD_REQUEST);
-                responseDTO.setMessage(Constant.EMAIL_EXISTS);
-                return responseDTO;
-            } else if (checkUsernameExist(userInfoRequestDTO.getUsername())) {
-                responseDTO.setStatus(HttpStatus.BAD_REQUEST);
-                responseDTO.setMessage(Constant.USERNAME_EXISTS);
-                return responseDTO;
-            }
-        } catch (Exception e) {
+        User user = userRepository.findByUsername(getCurrentUsername());
+        UserDetail userDetail = user.getUserDetail();
+        String email = userInfoRequestDTO.getEmail();
+        if(!userDetail.getEmail().equals(email) && !checkValidEmail(email)){
+            userDetail.setEmail(email);
+        } else if (checkValidEmail(email)){
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
-            responseDTO.setMessage(Constant.EDIT_INFO_FAIL);
+            responseDTO.setMessage(Constant.EMAIL_EXISTS);
+            return responseDTO;
         }
+        userDetail.setGender(userInfoRequestDTO.getGender());
+        userDetail.setPhoneNumber(userInfoRequestDTO.getPhoneNumber());
+        userDetail.setFullName(userInfoRequestDTO.getFullName());
+        userRepository.save(user);
+        userDetailRepository.save(userDetail);
+        responseDTO.setStatus(HttpStatus.OK);
+        responseDTO.setMessage(Constant.EDIT_INFO_SUCCESS);
         return responseDTO;
     }
 
@@ -228,8 +218,4 @@ public class UserServiceImpl implements UserService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    public boolean checkUsernameExist(String username) {
-        User user = userRepository.findByUsername(username);
-        return user != null;
-    }
 }
