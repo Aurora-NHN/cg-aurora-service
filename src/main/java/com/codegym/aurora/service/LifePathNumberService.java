@@ -1,9 +1,9 @@
 package com.codegym.aurora.service;
 
-import com.codegym.aurora.payload.response.LifePathResponeDTO;
+import com.codegym.aurora.payload.response.LifePathResponseDTO;
 
 public interface LifePathNumberService {
-    LifePathResponeDTO calculateLifePathNumber(int day, int month, int year);
 
-
+    LifePathResponseDTO getLifePathNumber(int number);
+    int calculateLifePathNumber(int day, int month, int year);
 }
