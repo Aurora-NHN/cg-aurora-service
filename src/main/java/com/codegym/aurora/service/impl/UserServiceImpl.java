@@ -199,19 +199,29 @@ public class UserServiceImpl implements UserService {
         String email = userInfoRequestDTO.getEmail();
         if(!userDetail.getEmail().equals(email) && !checkValidEmail(email)){
             userDetail.setEmail(email);
-        } else if (checkValidEmail(email)){
-            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
-            responseDTO.setMessage(Constant.EMAIL_EXISTS);
+            setUserInfo(userInfoRequestDTO);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setMessage(Constant.EDIT_INFO_SUCCESS);
+            return responseDTO;
+        } else if (userDetail.getEmail().equals(email)) {
+            setUserInfo(userInfoRequestDTO);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setMessage(Constant.EDIT_INFO_SUCCESS);
             return responseDTO;
         }
+        responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+        responseDTO.setMessage(Constant.EMAIL_EXISTS);
+        return responseDTO;
+    }
+
+    private void setUserInfo(UserInfoRequestDTO userInfoRequestDTO) {
+        User user = userRepository.findByUsername(getCurrentUsername());
+        UserDetail userDetail = user.getUserDetail();
         userDetail.setGender(userInfoRequestDTO.getGender());
         userDetail.setPhoneNumber(userInfoRequestDTO.getPhoneNumber());
         userDetail.setFullName(userInfoRequestDTO.getFullName());
         userRepository.save(user);
         userDetailRepository.save(userDetail);
-        responseDTO.setStatus(HttpStatus.OK);
-        responseDTO.setMessage(Constant.EDIT_INFO_SUCCESS);
-        return responseDTO;
     }
 
     public String getCurrentUsername() {
