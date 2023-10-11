@@ -17,7 +17,7 @@ public class PageProductResponseDTO {
 
     private long price;
 
-    private int weighT;
+    private int weight;
 
     private int quantity;
 
