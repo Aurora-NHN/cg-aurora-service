@@ -4,6 +4,7 @@ package com.codegym.aurora.converter.impl;
 import com.codegym.aurora.converter.ProductConverter;
 import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.ProductImage;
+import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
 import com.codegym.aurora.payload.response.ProductImageResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
@@ -43,6 +44,17 @@ public class ProductConverterImpl implements ProductConverter {
         PageProductResponseDTO homeProductResponseDTO = new PageProductResponseDTO();
         BeanUtils.copyProperties(product, homeProductResponseDTO);
         return homeProductResponseDTO;
+    }
+
+    @Override
+    public List<Product> convertProductListDTOToEntity(List<ProductRequestDTO> productRequestDTOS) {
+        List<Product> products = new ArrayList<>();
+        for (ProductRequestDTO productRequestDTO:productRequestDTOS){
+            Product product = null;
+            BeanUtils.copyProperties(productRequestDTO,product);
+            products.add(product);
+        }
+        return products;
     }
 
     public List<ProductImageResponseDTO> convertProductImageEntityToDTO(List<ProductImage> productImageList) {
