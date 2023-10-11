@@ -28,6 +28,10 @@ public class Constant {
 
     public static final String EDIT_INFO_FAIL = "Edit info failure!";
 
+    public static final String GET_USER_INFO_SUCCESS = "Get info successfully!!!";
+
+    public static final String GET_USER_INFO_FAIL = "Get info failure!";
+
     public static final String CHANGE_PASSWORD_SUCCESS = "Change password successfully!!!";
 
     public static final String DELETE_SUCCESS = "Delete successfully!!!";

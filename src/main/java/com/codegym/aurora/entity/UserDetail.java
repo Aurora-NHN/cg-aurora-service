@@ -41,9 +41,6 @@ public class UserDetail {
     @Column(name = "EMAIL")
     private String email;
 
-    @Column(name = "IMAGE_URL")
-    private String imageUrl;
-
     @OneToOne
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     private User user;
