@@ -149,6 +149,7 @@ public class VNPayServiceImpl implements VNPayService {
         if (signValue.equals(vnp_SecureHash)) {
             if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
                 vnPayResponseDTO.setStatus(true);
+                setVip(totalPrice);
             }
         }
         vnPayResponseDTO.setStatus(false);
@@ -156,6 +157,22 @@ public class VNPayServiceImpl implements VNPayService {
         return vnPayResponseDTO;
     }
 
+    void setVip(String price){
+        User user = userRepository.findByUsername(userService.getCurrentUsername());
+        user.setVip(true);
+        switch (price){
+            case "100000":
+                user.setCount(1);
+                break;
+            case "200000":
+                user.setCount(2);
+                break;
+            case "300000":
+                user.setCount(3);
+                break;
+        }
+        userRepository.save(user);
+    }
     void saveHistoryPayment(VNPayResponseDTO vnPayResponseDTO){
         User user = userRepository.findByUsername(userService.getCurrentUsername());
         HistoryPayment historyPayment = new HistoryPayment();
