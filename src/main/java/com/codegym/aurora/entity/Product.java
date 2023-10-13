@@ -70,5 +70,6 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private  List<OrderDetail> orderDetailList= new ArrayList<>();
 
-
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<CartLine> cartLineList = new ArrayList<>();
 }

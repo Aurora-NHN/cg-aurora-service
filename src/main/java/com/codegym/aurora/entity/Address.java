@@ -14,30 +14,39 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "CART_LINE")
-public class CartLine {
+@Table(name = "ADDRESS")
+public class Address {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column(name = "QUANTITY", nullable = false)
-    private Integer quantity;
+    @Column(name = "NAME", nullable = false)
+    private String consigneeName;
 
-    @Column(name = "TOTAL_PRICE", nullable = false)
-    private long totalPrice;
+    @Column(name = "COMPANY_NAME", nullable = false)
+    private String companyName;
+
+    @Column(name = "PHONE_NUMBER", nullable = false)
+    private String phoneNumber;
+
+    @Column(name = "DELIVERY_ADDRESS", nullable = false)
+    private String deliveryAddress;
+
+    @Column(name = "ADDITIONAL_INFORMATION", nullable = false)
+    private String additionalInformation;
+
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "PRODUCT_ID",referencedColumnName = "ID")
-    private Product product;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "CART_ID", referencedColumnName = "ID")
-    private Cart cart;
+    @JoinColumn(name = "ADDRESS_ID",referencedColumnName = "ID")
+    private UserDetail userDetail;
 }

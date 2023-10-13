@@ -46,9 +46,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<PageProductResponseDTO> getProductsPage(Pageable pageable) {
         long totalProducts = productRepository.count();
-        List<Integer> randomPages = generateRandomPages(totalProducts, pageable.getPageSize());
+        List<Integer> randomPages = generateRandomPages(totalProducts, 9);
         int randomPageNumber = getRandomPageNumber(randomPages);
-        PageRequest randomPageRequest = PageRequest.of(randomPageNumber, pageable.getPageSize());
+        PageRequest randomPageRequest = PageRequest.of(randomPageNumber, 9);
         Page<Product> randomProductPage = productRepository.findAll(randomPageRequest);
         Page<PageProductResponseDTO> randomProductPageDTO = productConverter.convertPageEntityToDtoPage(randomProductPage);
 
@@ -60,11 +60,11 @@ public class ProductServiceImpl implements ProductService {
         Page<PageProductResponseDTO> pageSearchProductResponseDTOS = null;
         if (sortOrder != null) {
             if (sortOrder.equalsIgnoreCase("asc")) {
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").ascending());
+                pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").ascending());
                 Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord, pageable);
                 pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             } else if (sortOrder.equalsIgnoreCase("desc")) {
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").descending());
+                pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").descending());
                 Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord, pageable);
                 pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             }
@@ -81,11 +81,11 @@ public class ProductServiceImpl implements ProductService {
         Page<PageProductResponseDTO> pageProductResponseDTOS = null;
         if (sortOrder != null) {
             if (sortOrder.equalsIgnoreCase("asc")) {
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").ascending());
+                pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").ascending());
                 Page<Product> productPage = productRepository.findProductsBySubCategoryId(subCategoryId, pageable);
                 pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             } else if (sortOrder.equalsIgnoreCase("desc")) {
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").descending());
+                pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").descending());
                 Page<Product> productPage = productRepository.findProductsBySubCategoryId(subCategoryId, pageable);
                 pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             }
@@ -98,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<PageProductResponseDTO> getProductsDTOSortedAscending(Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").ascending());
+        pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").ascending());
         Page<Product> products = productRepository.findAll(pageable);
         Page<PageProductResponseDTO> pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(products);
         return pageProductResponseDTOS;
@@ -106,7 +106,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<PageProductResponseDTO> getProductsDTOSortedDescending(Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").descending());
+        pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").descending());
         Page<Product> products = productRepository.findAll(pageable);
         Page<PageProductResponseDTO> pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(products);
         return pageProductResponseDTOS;
