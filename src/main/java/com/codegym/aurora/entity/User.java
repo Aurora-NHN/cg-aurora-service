@@ -59,4 +59,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<NumerologyReport> numeroloryReportList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<HistoryPayment> historyPayments = new ArrayList<>();
+
 }

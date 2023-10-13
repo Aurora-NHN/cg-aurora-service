@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BuyVipRequestDTO {
 
-    private String token;
+    private int amount;
 
-    private int count;
+    private String oderInfo;
 }

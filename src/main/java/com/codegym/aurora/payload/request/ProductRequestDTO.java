@@ -3,18 +3,14 @@ package com.codegym.aurora.payload.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoRequestDTO {
+public class ProductRequestDTO {
+    private long id;
 
-    private String fullName;
+    private long price;
 
-    private String gender;
-
-    private String phoneNumber;
-
-    private String email;
+    private int weight;
 
 }

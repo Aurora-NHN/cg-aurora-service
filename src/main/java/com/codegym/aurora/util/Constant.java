@@ -14,7 +14,7 @@ public class Constant {
 
     public static final String USER_IS_NOT_EXISTS = "User is not exists!";
 
-    public static final String USERNAME_EXISTS = "Username exists, please enter another username!";
+    public static final String USERNAME_EXISTS = "This account already exists";
 
     public static final String EMAIL_EXISTS = "Email exists, please enter another email!";
 
@@ -27,6 +27,10 @@ public class Constant {
     public static final String EDIT_INFO_SUCCESS = "Edit info successfully!!!";
 
     public static final String EDIT_INFO_FAIL = "Edit info failure!";
+
+    public static final String GET_USER_INFO_SUCCESS = "Get info successfully!!!";
+
+    public static final String GET_USER_INFO_FAIL = "Get info failure!";
 
     public static final String CHANGE_PASSWORD_SUCCESS = "Change password successfully!!!";
 

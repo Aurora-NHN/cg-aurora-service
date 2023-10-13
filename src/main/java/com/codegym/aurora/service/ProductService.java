@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
     Page<PageProductResponseDTO> getProductsPage(Pageable pageable);
-    Page<PageProductResponseDTO> searchProductsByName(String keyWord, int page, int size);
+    Page<PageProductResponseDTO> searchProductsByName(String keyWord, Pageable pageable,String sortOrder);
 
-    Page<PageProductResponseDTO> findProductsBySubCategoryId(long id, Pageable pageable);
+    Page<PageProductResponseDTO> findProductsBySubCategoryId(long id, Pageable pageable,String sortOrder);
 
     Page<PageProductResponseDTO> getProductsDTOSortedAscending(Pageable pageable);
     Page<PageProductResponseDTO> getProductsDTOSortedDescending(Pageable pageable);
