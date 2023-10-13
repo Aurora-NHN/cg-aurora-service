@@ -18,7 +18,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/numerologies")
+@RequestMapping("/api/front-store/numerology")
 public class NumerologyController {
     private final NumerologyReportService numerologyReportService;
     @PostMapping
