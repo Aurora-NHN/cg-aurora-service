@@ -14,7 +14,7 @@ public class Constant {
 
     public static final String USER_IS_NOT_EXISTS = "User is not exists!";
 
-    public static final String USERNAME_EXISTS = "Username exists, please enter another username!";
+    public static final String USERNAME_EXISTS = "This account already exists";
 
     public static final String EMAIL_EXISTS = "Email exists, please enter another email!";
 

@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DayOfBirthNumberResponeDTO {
-    private Integer id;
-    private int indicators;
+public class PersonalYearResponseDTO {
+    private int number;
     private String description;
 }

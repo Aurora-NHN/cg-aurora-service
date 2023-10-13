@@ -11,9 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NumeroloryReportRequestDTO {
-
-    private Long id;
+public class NumerologyReportRequestDTO {
 
     @NotBlank
     @Size(min = 5)
@@ -27,4 +25,5 @@ public class NumeroloryReportRequestDTO {
 
     @NotNull
     private int yearOfBirth;
+
 }
