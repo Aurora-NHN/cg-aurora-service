@@ -9,5 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BuyVipRequestDTO {
 
-    private int count;
+    private int amount;
+
+    private String oderInfo;
 }
