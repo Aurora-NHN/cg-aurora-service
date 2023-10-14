@@ -32,5 +32,5 @@ public class UserInfoRequestDTO {
     @Email(message = "Invalid email address")
     private String email;
 
-    private MultipartFile imageUrl;
+    private MultipartFile image;
 }

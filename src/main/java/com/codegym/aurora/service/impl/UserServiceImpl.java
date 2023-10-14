@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
             UserDetail userDetail = user.getUserDetail();
             String email = userInfoRequestDTO.getEmail();
             if (!userDetail.getEmail().equals(email) && !user.getUsername().equals(userInfoRequestDTO.getUsername())) {
-                String imgUrl = imageService.save(userInfoRequestDTO.getImageUrl());
+                String imgUrl = imageService.save(userInfoRequestDTO.getImage());
                 user.setUsername(userInfoRequestDTO.getUsername());
                 userDetail.setEmail(email);
                 userDetail.setGender(userInfoRequestDTO.getGender());
