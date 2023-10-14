@@ -1,4 +1,4 @@
-package com.codegym.aurora.configuration.mail;
+package com.codegym.aurora.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 @Configuration
-public class MailConfig {
+public class MailConfiguration {
     @Value("${mailServer.host}")
     private String host;
     @Value("${mailServer.port}")

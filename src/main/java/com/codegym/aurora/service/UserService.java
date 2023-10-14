@@ -12,6 +12,8 @@ public interface UserService {
 
     ResponseDTO logout();
 
+    ResponseDTO getUserInfo();
+
     ResponseDTO registerUser(RegisterRequestDTO registerRequest);
 
     ResponseDTO registerAdmin(RegisterRequestDTO registerRequest);

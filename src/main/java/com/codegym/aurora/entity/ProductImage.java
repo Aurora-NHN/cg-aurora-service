@@ -28,10 +28,10 @@ public class ProductImage {
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
 
-    @Column(name = "IS_DELETE", nullable = false)
+    @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
     private boolean isDelete;
 
-    @Column(name = "IS_ACTIVATED", nullable = false)
+    @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
     private boolean isActivated;
 
     @ManyToOne

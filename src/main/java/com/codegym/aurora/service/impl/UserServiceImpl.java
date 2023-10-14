@@ -9,10 +9,10 @@ import com.codegym.aurora.payload.request.PasswordRequestDTO;
 import com.codegym.aurora.payload.request.RegisterRequestDTO;
 import com.codegym.aurora.payload.request.UserInfoRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
+import com.codegym.aurora.payload.response.UserResponseDTO;
 import com.codegym.aurora.repository.UserDetailRepository;
 import com.codegym.aurora.repository.UserRepository;
 import com.codegym.aurora.security.JwtTokenProvider;
-import com.codegym.aurora.service.ImageService;
 import com.codegym.aurora.service.UserService;
 import com.codegym.aurora.util.Constant;
 import com.codegym.aurora.util.ERole;
@@ -37,10 +37,9 @@ public class UserServiceImpl implements UserService {
 
     private final UserDetailRepository userDetailRepository;
 
-    private final ImageService imageService;
-
     private final TokenCache tokenCache;
-    private UserConverter userConverter;
+
+    private final UserConverter userConverter;
 
     @Override
     public ResponseDTO login(LoginRequestDTO loginRequestDTO) {
@@ -74,6 +73,23 @@ public class UserServiceImpl implements UserService {
             tokenCache.removeToken(username);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setMessage(Constant.LOGOUT_SUCCESS);
+        }
+        return responseDTO;
+    }
+
+    @Override
+    public ResponseDTO getUserInfo() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            String username = getCurrentUsername();
+            User user = userRepository.findByUsername(username);
+            UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user,user.getUserDetail());
+            responseDTO.setMessage(Constant.GET_USER_INFO_SUCCESS);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setData(userResponseDTO);
+        } catch (Exception e){
+            responseDTO.setMessage(Constant.GET_USER_INFO_FAIL);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
         }
         return responseDTO;
     }
@@ -149,6 +165,9 @@ public class UserServiceImpl implements UserService {
     public boolean checkOldPassword(String password) {
         String username = getCurrentUsername();
         User user = userRepository.findByUsername(username);
+        if(user == null){
+            return false;
+        }
         return passwordEncoder.matches(password, user.getPassword());
     }
 
@@ -173,44 +192,38 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseDTO editInfo(UserInfoRequestDTO userInfoRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            User user = userRepository.findByUsername(getCurrentUsername());
-            UserDetail userDetail = user.getUserDetail();
-            String email = userInfoRequestDTO.getEmail();
-            if (!userDetail.getEmail().equals(email) && !user.getUsername().equals(userInfoRequestDTO.getUsername())) {
-                String imgUrl = imageService.save(userInfoRequestDTO.getImage());
-                user.setUsername(userInfoRequestDTO.getUsername());
-                userDetail.setEmail(email);
-                userDetail.setGender(userInfoRequestDTO.getGender());
-                userDetail.setPhoneNumber(userInfoRequestDTO.getPhoneNumber());
-                userDetail.setFullName(userInfoRequestDTO.getFullName());
-                userDetail.setImageUrl(imgUrl);
-                userRepository.save(user);
-                userDetailRepository.save(userDetail);
-                responseDTO.setStatus(HttpStatus.OK);
-                responseDTO.setMessage(Constant.EDIT_INFO_SUCCESS);
-            } else if (checkValidEmail(email)) {
-                responseDTO.setStatus(HttpStatus.BAD_REQUEST);
-                responseDTO.setMessage(Constant.EMAIL_EXISTS);
-                return responseDTO;
-            } else if (checkUsernameExist(userInfoRequestDTO.getUsername())) {
-                responseDTO.setStatus(HttpStatus.BAD_REQUEST);
-                responseDTO.setMessage(Constant.USERNAME_EXISTS);
-                return responseDTO;
-            }
-        } catch (Exception e) {
-            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
-            responseDTO.setMessage(Constant.EDIT_INFO_FAIL);
+        User user = userRepository.findByUsername(getCurrentUsername());
+        UserDetail userDetail = user.getUserDetail();
+        String email = userInfoRequestDTO.getEmail();
+        if(!userDetail.getEmail().equals(email) && !checkValidEmail(email)){
+            userDetail.setEmail(email);
+            setUserInfo(userInfoRequestDTO);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setMessage(Constant.EDIT_INFO_SUCCESS);
+            return responseDTO;
+        } else if (userDetail.getEmail().equals(email)) {
+            setUserInfo(userInfoRequestDTO);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setMessage(Constant.EDIT_INFO_SUCCESS);
+            return responseDTO;
         }
+        responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+        responseDTO.setMessage(Constant.EMAIL_EXISTS);
         return responseDTO;
+    }
+
+    private void setUserInfo(UserInfoRequestDTO userInfoRequestDTO) {
+        User user = userRepository.findByUsername(getCurrentUsername());
+        UserDetail userDetail = user.getUserDetail();
+        userDetail.setGender(userInfoRequestDTO.getGender());
+        userDetail.setPhoneNumber(userInfoRequestDTO.getPhoneNumber());
+        userDetail.setFullName(userInfoRequestDTO.getFullName());
+        userRepository.save(user);
+        userDetailRepository.save(userDetail);
     }
 
     public String getCurrentUsername() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    public boolean checkUsernameExist(String username) {
-        User user = userRepository.findByUsername(username);
-        return user != null;
-    }
 }

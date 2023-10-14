@@ -37,3 +37,5 @@ out/
 
 ### VS Code ###
 .vscode/
+src/main/resources/numerology
+src/main/resources/application-nhu.properties

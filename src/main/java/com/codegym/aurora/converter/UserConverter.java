@@ -1,10 +1,11 @@
 package com.codegym.aurora.converter;
 
 import com.codegym.aurora.entity.User;
+import com.codegym.aurora.entity.UserDetail;
 import com.codegym.aurora.payload.response.UserResponseDTO;
 
 public interface UserConverter {
 
-    UserResponseDTO converterEntityUserToUserInfoResponseDTO(User user);
+    UserResponseDTO converterEntityUserToUserInfoResponseDTO(User user, UserDetail userDetail);
 
 }

@@ -4,7 +4,9 @@ package com.codegym.aurora.converter.impl;
 import com.codegym.aurora.converter.CategoryConverter;
 import com.codegym.aurora.converter.SubCategoryConverter;
 import com.codegym.aurora.entity.Category;
+import com.codegym.aurora.payload.request.CategoryRequestDTO;
 import com.codegym.aurora.payload.response.CategoryResponseDTO;
+import com.codegym.aurora.payload.response.CategoryResponseDTOForAdmin;
 import com.codegym.aurora.payload.response.SubCategoryResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -24,10 +26,25 @@ public class CategoryConverterImpl implements CategoryConverter {
         for (Category category : categoryList) {
             CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO();
             BeanUtils.copyProperties(category, categoryResponseDTO);
-            List<SubCategoryResponseDTO> subCategoryDTOList = subCategoryConverter.convertToListSubCategoryDTO(category.getSubCategoryList());
+            List<SubCategoryResponseDTO> subCategoryDTOList = subCategoryConverter
+                    .convertToListSubCategoryDTO(category.getSubCategoryList());
             categoryResponseDTO.setSubCategoryList(subCategoryDTOList);
             categoryResponseDTOList.add(categoryResponseDTO);
         }
         return categoryResponseDTOList;
+    }
+
+    @Override
+    public Category convertCategoryRequestToEntity(CategoryRequestDTO requestDTO) {
+        Category category = new Category();
+        BeanUtils.copyProperties(requestDTO, category);
+        return category;
+    }
+
+    @Override
+    public CategoryResponseDTOForAdmin convertEntityToCategoryResponseDTOForAdmin(Category category) {
+        CategoryResponseDTOForAdmin categoryResponseDTOForAdmin = new CategoryResponseDTOForAdmin();
+        BeanUtils.copyProperties(category, categoryResponseDTOForAdmin);
+        return categoryResponseDTOForAdmin;
     }
 }
