@@ -222,6 +222,7 @@ public class UserServiceImpl implements UserService {
         userDetailRepository.save(userDetail);
     }
 
+    @Override
     public String getCurrentUsername() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
