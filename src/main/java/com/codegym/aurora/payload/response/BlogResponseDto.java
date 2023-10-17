@@ -10,6 +10,7 @@ public class BlogResponseDto {
     private String title;
     private String author;
     private String content;
+    private String description;
     private String mainImageUrl;
     private Boolean publish;
     private LocalDateTime createdAt;
