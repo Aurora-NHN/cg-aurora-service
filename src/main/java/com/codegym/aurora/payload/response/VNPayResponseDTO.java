@@ -4,16 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class VNPayResponseDTO {
 
+    private String fullName;
+
     private String oderInfo;
 
-    private String paymentTime;
+    private UUID orderId;
 
-    private String transactionId;
+    private String paymentTime;
 
     private String totalPrice;
 

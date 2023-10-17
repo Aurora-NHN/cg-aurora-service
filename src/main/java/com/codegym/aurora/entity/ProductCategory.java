@@ -22,8 +22,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "CATEGORY", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
-public class Category {
+@Table(name = "PRODUCT_CATEGORY", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+public class ProductCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,7 +37,7 @@ public class Category {
     @Column(name = "IS_ACTIVATED")
     private boolean isActivated;
 
-    @OneToMany(mappedBy = "category", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "productCategory", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<SubCategory> subCategoryList = new ArrayList<>();
 
 }

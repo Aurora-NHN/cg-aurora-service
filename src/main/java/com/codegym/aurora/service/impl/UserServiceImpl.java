@@ -2,6 +2,7 @@ package com.codegym.aurora.service.impl;
 
 import com.codegym.aurora.cache.TokenCache;
 import com.codegym.aurora.converter.UserConverter;
+import com.codegym.aurora.entity.Cart;
 import com.codegym.aurora.entity.User;
 import com.codegym.aurora.entity.UserDetail;
 import com.codegym.aurora.payload.request.LoginRequestDTO;
@@ -10,6 +11,7 @@ import com.codegym.aurora.payload.request.RegisterRequestDTO;
 import com.codegym.aurora.payload.request.UserInfoRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.payload.response.UserResponseDTO;
+import com.codegym.aurora.repository.CartRepository;
 import com.codegym.aurora.repository.UserDetailRepository;
 import com.codegym.aurora.repository.UserRepository;
 import com.codegym.aurora.security.JwtTokenProvider;
@@ -40,6 +42,7 @@ public class UserServiceImpl implements UserService {
     private final TokenCache tokenCache;
 
     private final UserConverter userConverter;
+    private final CartRepository cartRepository;
 
     @Override
     public ResponseDTO login(LoginRequestDTO loginRequestDTO) {
@@ -136,6 +139,9 @@ public class UserServiceImpl implements UserService {
             userDetail.setEmail(registerRequest.getEmail());
             userRepository.save(user);
             userDetailRepository.save(userDetail);
+            Cart cart = new Cart();
+            cart.setUser(user);
+            cartRepository.save(cart);
         } catch (Exception e) {
             responseDTO.setMessage(Constant.REGISTER_FAIL);
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
@@ -222,6 +228,7 @@ public class UserServiceImpl implements UserService {
         userDetailRepository.save(userDetail);
     }
 
+    @Override
     public String getCurrentUsername() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }

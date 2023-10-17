@@ -7,7 +7,10 @@ import com.codegym.aurora.entity.ProductImage;
 import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
 import com.codegym.aurora.payload.response.ProductImageResponseDTO;
+import com.codegym.aurora.payload.response.ProductResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
+import com.codegym.aurora.repository.ProductImageRepository;
+import com.codegym.aurora.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -20,7 +23,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ProductConverterImpl implements ProductConverter {
-
+private final ProductImageRepository productImageRepository;
     @Override
     public Page<PageProductResponseDTO> convertPageEntityToDtoPage(Page<Product> products) {
         List<PageProductResponseDTO> productDtoList = new ArrayList<>();
@@ -50,11 +53,21 @@ public class ProductConverterImpl implements ProductConverter {
     public List<Product> convertProductListDTOToEntity(List<ProductRequestDTO> productRequestDTOS) {
         List<Product> products = new ArrayList<>();
         for (ProductRequestDTO productRequestDTO:productRequestDTOS){
-            Product product = null;
+            Product product = new Product();
             BeanUtils.copyProperties(productRequestDTO,product);
             products.add(product);
         }
         return products;
+    }
+
+    @Override
+    public ProductResponseDTO convertProductEntityInCartLineToDTO(Product product) {
+        ProductResponseDTO productResponseDTO = new ProductResponseDTO();
+        BeanUtils.copyProperties(product,productResponseDTO);
+        List<ProductImage> productImageList = productImageRepository.findProductImageByProductId(product.getId());
+        List<ProductImageResponseDTO> productImageResponseDTOList = convertProductImageEntityToDTO(productImageList);
+        productResponseDTO.setProductImageUrlList(productImageResponseDTOList);
+        return productResponseDTO;
     }
 
     public List<ProductImageResponseDTO> convertProductImageEntityToDTO(List<ProductImage> productImageList) {
