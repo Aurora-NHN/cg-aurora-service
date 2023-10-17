@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -20,16 +22,11 @@ public class BlogConverterImpl implements BlogConverter {
     private final ImageService imageService;
 
     @Override
-    public Blog convert(BlogCreateRequestDto blogCreateRequestDto) throws IOException {
+    public Blog convert(BlogCreateRequestDto blogCreateRequestDto) {
         Blog blog = new Blog();
         BeanUtils.copyProperties(blogCreateRequestDto, blog);
         blog.setCreatedAt(LocalDateTime.now());
         blog.setPublish(false);
-        MultipartFile imageFile = blogCreateRequestDto.getMainImage();
-        if (imageFile != null && !imageFile.isEmpty()){
-            String imageFilename = imageService.save(imageFile);
-            blog.setMainImageFilename(imageFilename);
-        }
         return blog;
     }
 
@@ -38,7 +35,7 @@ public class BlogConverterImpl implements BlogConverter {
         BeanUtils.copyProperties(blogUpdateRequestDto, blog);
         blog.setCreatedAt(LocalDateTime.now());
         MultipartFile imageFile = blogUpdateRequestDto.getMainImage();
-        if (imageFile != null && !imageFile.isEmpty()){
+        if (imageFile != null && !imageFile.isEmpty()) {
             String imageFilename = imageService.save(imageFile);
             blog.setMainImageFilename(imageFilename);
         }
@@ -49,6 +46,15 @@ public class BlogConverterImpl implements BlogConverter {
     public BlogResponseDto convert(Blog blog) {
         BlogResponseDto blogResponseDto = new BlogResponseDto();
         BeanUtils.copyProperties(blog, blogResponseDto);
+        if (blog.getMainImageFilename() != null) {
+            blogResponseDto.setMainImageUrl(imageService
+                    .getImageUrl(blog.getMainImageFilename()));
+        }
         return blogResponseDto;
+    }
+
+    @Override
+    public List<BlogResponseDto> convert(List<Blog> blogs) {
+        return blogs.stream().map(this::convert).collect(Collectors.toList());
     }
 }

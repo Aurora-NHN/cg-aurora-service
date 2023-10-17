@@ -29,6 +29,7 @@ public class Blog {
     private Long id;
     private String title;
     private String author;
+    private String description;
     private String content;
     @Column(name = "main_image")
     private String mainImageFilename;
@@ -36,6 +37,6 @@ public class Blog {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @OneToMany(mappedBy = "blog")
-    @Cascade({CascadeType.MERGE, CascadeType.PERSIST})
+    @Cascade({CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE})
     private List<BlogContentImage> blogContentImages;
 }
