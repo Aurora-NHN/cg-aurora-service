@@ -61,8 +61,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<HistoryPayment> historyPayments = new ArrayList<>();
-    private List<Order> orderList = new ArrayList<>();
+//    private List<Order> orderList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private List<Cart> carts = new ArrayList<>();
+    @OneToOne(mappedBy = "user")
+    private Cart carts ;
 }

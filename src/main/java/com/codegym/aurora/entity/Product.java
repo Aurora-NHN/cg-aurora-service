@@ -1,23 +1,8 @@
 package com.codegym.aurora.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PRODUCT")
+@Builder
 public class Product {
 
     @Id
@@ -54,6 +40,15 @@ public class Product {
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
 
+    @Column(name = "AUTHOR", nullable = false)
+    private String author;
+
+    @Column(name = "INCLUDE", nullable = false)
+    private String include;
+
+    @Column(name = "PRODUCER", nullable = false)
+    private String producer;
+
     @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
     private boolean isDelete;
 
@@ -72,4 +67,6 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<CartLine> cartLineList = new ArrayList<>();
+
+
 }

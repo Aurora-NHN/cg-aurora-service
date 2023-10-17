@@ -3,9 +3,13 @@ package com.codegym.aurora.service.impl;
 
 import com.codegym.aurora.converter.ProductConverter;
 import com.codegym.aurora.entity.Product;
+import com.codegym.aurora.entity.ProductImage;
+import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.repository.ProductRepository;
+import com.codegym.aurora.service.ImageService;
+import com.codegym.aurora.service.ProductImageService;
 import com.codegym.aurora.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +33,10 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
     private final ProductConverter productConverter;
+
+    private final ImageService imageService;
+
+    private final ProductImageService productImageService;
 
     private List<Integer> generateRandomPages(long totalItems, int pageSize) {
         List<Integer> allPageNumbers = new ArrayList<>();
@@ -110,5 +119,25 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> products = productRepository.findAll(pageable);
         Page<PageProductResponseDTO> pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(products);
         return pageProductResponseDTOS;
+    }
+
+    @Override
+    public Product addProduct(ProductRequestDTO productRequestDTO) throws IOException {
+        String productImageUlr = imageService.save(productRequestDTO.getImage());
+        List<String> productUrlList = imageService.save(productRequestDTO.getProductImageList());
+        Product product = new Product();
+        List<ProductImage> productImageList = productImageService.saveListImage(productUrlList,product);
+        product.setImageUrl(productImageUlr);
+        product.setName(productRequestDTO.getName());
+        product.setDescription(productRequestDTO.getDescription());
+        product.setPrice(productRequestDTO.getPrice());
+        product.setQuantity(productRequestDTO.getQuantity());
+        product.setWeight(productRequestDTO.getWeight());
+        product.setProductImageUrlList(productImageList);
+        product.setAuthor(productRequestDTO.getAuthor());
+        product.setInclude(productRequestDTO.getInclude());
+        product.setProducer(productRequestDTO.getProducer());
+        productRepository.save(product);
+        return product;
     }
 }
