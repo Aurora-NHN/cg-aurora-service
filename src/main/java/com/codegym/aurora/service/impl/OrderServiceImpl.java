@@ -1,40 +1,62 @@
-package com.codegym.aurora.service.impl;
-
-import com.codegym.aurora.entity.Order;
-import com.codegym.aurora.entity.OrderDetail;
-import com.codegym.aurora.entity.User;
-import com.codegym.aurora.payload.response.OrderResponseDTO;
-import com.codegym.aurora.service.OrderService;
-import com.codegym.aurora.service.UserService;
-
-import java.util.Date;
-import java.util.List;
-
-//public class OrderServiceImpl   {
+//package com.codegym.aurora.service.impl;
+//
+//import com.codegym.aurora.converter.OrderConverter;
+//import com.codegym.aurora.entity.Address;
+//import com.codegym.aurora.entity.Order;
+//import com.codegym.aurora.entity.OrderDetail;
+//import com.codegym.aurora.entity.Product;
+//import com.codegym.aurora.entity.User;
+//import com.codegym.aurora.payload.request.OrderRequestDTO;
+//import com.codegym.aurora.repository.OrderDetailRepository;
+//import com.codegym.aurora.repository.OrderRepository;
+//import com.codegym.aurora.repository.UserRepository;
+//import com.codegym.aurora.security.JwtTokenProvider;
+//import com.codegym.aurora.service.OrderService;
+//import lombok.RequiredArgsConstructor;
+//import org.springframework.stereotype.Service;
+//
+//import javax.transaction.Transactional;
+//import java.util.Date;
+//import java.util.List;
+//
+//@Service
+//@Transactional
+//@RequiredArgsConstructor
+//public class OrderServiceImpl implements OrderService {
+//    JwtTokenProvider jwtTokenProvider;
+//    UserRepository userRepository;
+//    OrderConverter orderConverter;
+//    OrderRepository orderRepository;
+//    OrderDetailRepository orderDetailRepository;
+//
 //    @Override
-//    public OrderResponseDTO createOrder(List<CartLine> cartlineList, String deliveryAddress) {
+//    public Order createOrder(OrderRequestDTO orderRequestDTO, String token) {
+//        String currentUserName = jwtTokenProvider.getUsernameFromJWT(token);
+//        User user = userRepository.findByUsername(currentUserName);
 //        if (user == null) {
 //            throw new RuntimeException("Token không hợp lệ");
 //        }
 //
-//        // Tạo đơn hàng.
-//        Order order = new Order();
-//        order.setUser(user);
-//        order.setOrderDate(new Date());
-//        order.setStatus("Đang xử lý");
-//        order.setDeliveryAddress(deliveryAddress);
-//
-//        List<OrderDetail> orderDetails = cartLines.stream().map(cartLine -> {
-//            OrderDetail orderDetail = new OrderDetail();
+//        Order order = orderConverter.convertOrderEntityToDTO(orderRequestDTO);
+//        Address address = order.getAddress();
+//        long totalAmount = 0;
+//        List<OrderDetail> orderDetailList = order.getOrderDetailList();
+//        for (OrderDetail orderDetail : orderDetailList) {
+//            Product product = orderDetail.getProduct();
+//            product.setQuantitySold(orderDetail.getQuantity());
+//            int productQuantity = 0;
+//            productQuantity -= orderDetail.getQuantity();
+//            product.setQuantity(productQuantity);
+//            totalAmount += orderDetail.getTotalPrice();
 //            orderDetail.setOrder(order);
-//            orderDetail.setProduct(cartLine.getProductId());
-//            orderDetail.setQuantity(cartLine.getQuantity());
-//            orderDetail.setPrice(cartLine.getPrice());
-//            return orderDetail;
-//        }).collect(Collectors.toList());
+//        }
+//        order.setTotalAmount(totalAmount);
+//        order.setUser(user);
+//        order.setStatus("Đang xử lí và đóng gói đơn hàng");
+//        order.setOrderDate(new Date());
 //
 //        orderRepository.save(order);
-//        orderDetails.forEach(orderRepository::save);
+//        orderDetailRepository.saveAll(orderDetailList);
 //
 //        return order;
 //    }

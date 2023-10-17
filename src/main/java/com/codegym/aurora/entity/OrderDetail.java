@@ -14,11 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 @Entity
@@ -32,11 +29,11 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "PRODUCT_COUNT", nullable = false)
-    private int productCount;
+    @Column(name = "QUANTITY", nullable = false)
+    private Integer quantity;
 
     @Column(name = "TOTAL_PRICE", nullable = false)
-    private long total;
+    private long totalPrice;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "PRODUCT_ID",referencedColumnName = "ID")

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface SubCategoryRepository extends JpaRepository<SubCategory,Long> {
-    List<SubCategory> findSubCategoriesByCategoryId(long id);
+    List<SubCategory> findSubCategoriesByProductCategoryId(long id);
     @Query("SELECT sc FROM SubCategory sc WHERE sc.isActivated = true")
     List<SubCategory> findAllByActivatedTrue();
 
