@@ -1,6 +1,7 @@
 package com.codegym.aurora.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,38 +9,30 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PERSONAL_MONTH", uniqueConstraints = @UniqueConstraint(columnNames = "INDICATORS"))
-
+@Builder
+@Table(name = "PERSONAL_MONTH")
 public class PersonalMonth {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private Integer id;
+    private Long id;
+    @Column(name = "PERSONAL_MONTH_NUMBER")
+    private int personalMonthNumber;
 
-    @Column(name = "INDICATORS")
-    private int indicators;
-    @Column(name = "DESCRIPTION")
-    private String description;
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
-    private boolean isDeleted;
-
-    @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
-    private boolean isActivated;
-
-    @OneToMany(mappedBy = "personalMonth", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private List<NumeroloryReport> numeroloryReportList = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "PERSONAL_YEAR_ID",referencedColumnName = "ID")
+    private PersonalYear personalYear;
 }

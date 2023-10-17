@@ -26,7 +26,8 @@ public class CategoryConverterImpl implements CategoryConverter {
         for (Category category : categoryList) {
             CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO();
             BeanUtils.copyProperties(category, categoryResponseDTO);
-            List<SubCategoryResponseDTO> subCategoryDTOList = subCategoryConverter.convertToListSubCategoryDTO(category.getSubCategoryList());
+            List<SubCategoryResponseDTO> subCategoryDTOList = subCategoryConverter
+                    .convertToListSubCategoryDTO(category.getSubCategoryList());
             categoryResponseDTO.setSubCategoryList(subCategoryDTOList);
             categoryResponseDTOList.add(categoryResponseDTO);
         }

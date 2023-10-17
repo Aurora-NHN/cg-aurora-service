@@ -1,6 +1,7 @@
 package com.codegym.aurora.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,12 +9,14 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,24 +25,25 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PERSONAL_YEAR", uniqueConstraints = @UniqueConstraint(columnNames = "INDICATORS"))
-
+@Builder
+@Table(name = "PERSONAL_YEAR")
 public class PersonalYear {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private Integer id;
+    private Long id;
 
-    @Column(name = "INDICATORS")
-    private int indicators;
-    @Column(name = "DESCRIPTION")
-    private String description;
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
-    private boolean isDeleted;
+    @Column(name = "PERSONAL_YEAR_NUMBER")
+    private int personalYearNumber;
 
-    @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
-    private boolean isActivated;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "NUMEROLOGY_REPORT_ID",referencedColumnName = "ID")
+    private NumerologyReport numerologyReport;
 
     @OneToMany(mappedBy = "personalYear", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private List<NumeroloryReport> numeroloryReportList = new ArrayList<>();
+    private List<PersonalMonth> personalMonthList = new ArrayList<>();
+
+    public PersonalYear(int personalYearNumber) {
+        this.personalYearNumber = personalYearNumber;
+    }
 }

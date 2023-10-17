@@ -1,6 +1,7 @@
 package com.codegym.aurora.controller.back_office;
 
 import com.codegym.aurora.cache.PaymentCache;
+import com.codegym.aurora.entity.HistoryPayment;
 import com.codegym.aurora.payload.request.BuyVipRequestDTO;
 import com.codegym.aurora.repository.HistoryPaymentRepository;
 import com.codegym.aurora.service.VNPayService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -42,19 +44,30 @@ public class VNPayController {
         return new ResponseEntity<>(vnPayUrl, HttpStatus.OK);
     }
 
-//    @GetMapping("/vnpay-payment")
-//    public ResponseEntity<VNPayResponseDTO> payment(VNPayRequestDTO vnPayRequestDTO) {
-//        VNPayResponseDTO vnPayResponseDTO = vnPayService.oderReturn(vnPayRequestDTO);
-//        if (vnPayResponseDTO.isStatus()) {
-//            return new ResponseEntity<>(vnPayResponseDTO, HttpStatus.OK);
-//        }
-//        return new ResponseEntity<>(vnPayResponseDTO, HttpStatus.BAD_REQUEST);
-//    }
-
     @GetMapping("/vnpay/payment-success")
     public void paymentSuccess() throws IOException {
-        Map<String, String[]> params = request.getParameterMap();
-        vnPayService.checkBill(params);
-        response.sendRedirect("http://localhost:3001");
+        try {
+            Map<String, String[]> params = request.getParameterMap();
+            HistoryPayment historyPayment = vnPayService.checkBill(params);
+            boolean status = historyPayment.isStatus();
+            String statusPayment;
+            if (status){
+                statusPayment = Constant.PAYMENT_SUCCESS;
+            } else {
+                statusPayment = Constant.PAYMENT_FAIL;
+            }
+            Cookie cookie = new Cookie("paymentStatus", statusPayment);
+            cookie.setPath("/");
+            cookie.setMaxAge(15);
+            response.addCookie(cookie);
+            response.sendRedirect("http://localhost:3000");
+        } catch (Exception e){
+            Cookie cookie = new Cookie("paymentStatus", Constant.PAYMENT_FAIL);
+            cookie.setPath("/");
+            cookie.setMaxAge(15);
+            response.addCookie(cookie);
+            response.sendRedirect("http://localhost:3000");
+        }
     }
+
 }

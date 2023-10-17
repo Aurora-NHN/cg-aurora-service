@@ -1,7 +1,9 @@
 package com.codegym.aurora.service;
 
-import com.codegym.aurora.payload.response.DayOfBirthNumberResponeDTO;
+import com.codegym.aurora.payload.response.DayOfBirthNumberResponseDTO;
 
 public interface DayOfBirthNumberService {
-    DayOfBirthNumberResponeDTO getDayOfBirthNumber(int day);
+    DayOfBirthNumberResponseDTO getDayOfBirthNumber(int number);
+
+    int calculateDayOfBirthNumber(int day);
 }

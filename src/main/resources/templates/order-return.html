@@ -2,39 +2,51 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid #000;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #000;
+    }
+  </style>
 </head>
 <body>
 <div class="body py-5">
   <div class="container">
     <div class="w-50 m-auto">
-      <!-- Thêm lớp "my-4" để tạo ra khoảng cách trên và dưới tiêu đề trang -->
-      <h1 class="my-3 text-danger text-center">Thanh toán thất bại</h1>
-      <!-- Sử dụng lớp "alert" và "alert-danger" để tạo ra thông báo lỗi -->
+      <h1 class="my-3 text-danger text-center">Thanh toán thành công</h1>
       <h2 class="my-2">Chi tiết đơn hàng</h2>
-      <!-- Sử dụng lớp "table" và "table-bordered" để tạo ra bảng hiển thị thông tin chi tiết đơn hàng -->
-      <table class="table table-bordered">
+      <table>
         <tbody>
         <tr>
+          <td>Tên khách hàng:</td>
+          <td><span th:text="${fullName}"></span></td>
+        </tr>
+        <tr>
           <td>Thông tin đơn hàng:</td>
-          <td><span th:text="${orderId}">[order ID]</span></td>
+          <td><span th:text="${orderInfo}"></span></td>
         </tr>
         <tr>
           <td>Tổng tiền:</td>
-          <td><span th:text="${totalPrice}">[total price]</span></td>
+          <td><span th:text="${totalPrice}"></span></td>
         </tr>
         <tr>
           <td>Thời gian thanh toán:</td>
-          <td><span th:text="${paymentTime}">[payment time]</span></td>
+          <td><span th:text="${paymentTime}"></span></td>
         </tr>
         <tr>
           <td>Mã giao dịch:</td>
-          <td><span th:text="${transactionId}">[transaction ID]</span></td>
+          <td><span th:text="${paymentId}"></span></td>
         </tr>
         </tbody>
       </table>
-      <a href="/" class="btn btn-primary">Về trang chủ</a>
     </div>
   </div>
 </div>

@@ -37,9 +37,6 @@ public class Constant {
     public static final String DELETE_SUCCESS = "Delete successfully!!!";
 
     public static final String DELETE_FAIL = "Delete failure!";
-
-    public static final String BUY_VIP_SUCCESS = "Buy Vip successfully!!!";
-
     public static final String BUY_VIP_FAIL = "Buy Vip Failure! The parameter passed in is incorrect";
     public static final String CREATE_SUCCESS = "Create successfully!!!";
     public static final String GET_CATEGORIES_ACTIVE_SUCCESS = "Get categories active successfully!!!";
@@ -54,5 +51,10 @@ public class Constant {
     public static final String BUY_VIP_PRO = "Pay The Bill: Vip Pro";
 
     public static final String BUY_VIP_SUPER = "Pay The Bill: Vip Super";
+
+    public static final String PAYMENT_SUCCESS = "true";
+
+    public static final String PAYMENT_FAIL = "false";
+
 
 }
