@@ -29,4 +29,6 @@ public interface UserService {
     ResponseDTO editInfo(UserInfoRequestDTO userInfoRequestDTO);
 
     boolean checkValidEmail(String email);
+
+    String getCurrentUsername();
 }

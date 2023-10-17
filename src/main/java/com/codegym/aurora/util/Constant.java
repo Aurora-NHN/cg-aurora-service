@@ -49,4 +49,6 @@ public class Constant {
     public static final String UNACTIVE_SUCCESS = "Unactive successfully!!!";
     public static final String GET_SUB_CATEGORIE_BY_ID_SUCCESS = "Get sub category by id successfully!!!";
 
+    public static  final  String COUNT_NOT_ENOUGH = "Not enough turns, please buy Vip!!!";
+
 }
