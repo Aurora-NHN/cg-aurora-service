@@ -2,7 +2,7 @@ package com.codegym.aurora.converter.impl;
 
 
 import com.codegym.aurora.converter.SubCategoryConverter;
-import com.codegym.aurora.entity.ProductCategory;
+import com.codegym.aurora.entity.Category;
 import com.codegym.aurora.entity.SubCategory;
 import com.codegym.aurora.payload.request.SubCategoryRequestDTO;
 import com.codegym.aurora.payload.request.SubCategoryRequestDtoForCreate;
@@ -40,21 +40,21 @@ public class SubCategoryConverterImpl implements SubCategoryConverter {
     @Override
     public SubCategory convertSubCategoryRequestDtoToEntity(SubCategoryRequestDTO subCategoryRequestDTO) {
         SubCategory subCategory = new SubCategory();
-        ProductCategory productCategory = categoryRepository.findById(subCategoryRequestDTO.getCategoryId()).orElseThrow();
+        Category category = categoryRepository.findById(subCategoryRequestDTO.getCategoryId()).orElseThrow();
         subCategory.setId(subCategoryRequestDTO.getId());
         subCategory.setName(subCategoryRequestDTO.getName());
         subCategory.setActivated(subCategory.isActivated());
         subCategory.setDelete(subCategoryRequestDTO.isDelete());
-        subCategory.setProductCategory(productCategory);
+        subCategory.setCategory(category);
         return subCategory;
     }
 
     @Override
     public SubCategory convertSubCategoryRequestDtoForCreateToEntity(SubCategoryRequestDtoForCreate subCategoryRequestDtoForCreate) {
         SubCategory subCategory = new SubCategory();
-        ProductCategory productCategory = categoryRepository.findById(subCategoryRequestDtoForCreate.getCategoryId()).orElseThrow();
+        Category category = categoryRepository.findById(subCategoryRequestDtoForCreate.getCategoryId()).orElseThrow();
         subCategory.setName(subCategoryRequestDtoForCreate.getName());
-        subCategory.setProductCategory(productCategory);
+        subCategory.setCategory(category);
         return subCategory;
     }
 
