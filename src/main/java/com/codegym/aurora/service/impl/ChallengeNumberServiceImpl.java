@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class ChallengeNumberServiceImpl implements ChallengeNumberService {
     private final ChallengeNumberRepository challengeNumberRepository;
-
     private static List<ChallengeNumberResponseDTO> staticChallengeNumberList = new ArrayList<>();
 
     static {
@@ -87,7 +86,7 @@ public class ChallengeNumberServiceImpl implements ChallengeNumberService {
                 .challengeNumberThird(challengeNumberThird)
                 .challengeNumberFour(challengeNumberFour)
                 .build();
-        return challengeNumber;
+        return challengeNumberRepository.save(challengeNumber);
     }
 
     private  int calculateResult(int numberFirst, int numberSecond){

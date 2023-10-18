@@ -29,10 +29,23 @@ public class PersonalMonth {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
+
+    @Column(name = "MONTH")
+    private int month;
+
     @Column(name = "PERSONAL_MONTH_NUMBER")
     private int personalMonthNumber;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "PERSONAL_YEAR_ID",referencedColumnName = "ID")
     private PersonalYear personalYear;
+
+    public PersonalMonth(int personalMonthNumber) {
+        this.personalMonthNumber = personalMonthNumber;
+    }
+
+    public PersonalMonth(int month, int personalMonthNumber) {
+        this.month = month;
+        this.personalMonthNumber = personalMonthNumber;
+    }
 }

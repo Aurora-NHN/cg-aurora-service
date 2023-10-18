@@ -1,13 +1,20 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.converter.PersonalMonthConverter;
+import com.codegym.aurora.entity.PersonalMonth;
 import com.codegym.aurora.entity.PersonalYear;
 import com.codegym.aurora.payload.from_file.PersonalYearList;
+import com.codegym.aurora.payload.response.PersonalMonthResponseDTO;
 import com.codegym.aurora.payload.response.PersonalYearResponseDTO;
+import com.codegym.aurora.payload.response.PersonalYearResponseDtoForReport;
+import com.codegym.aurora.repository.PersonalMonthRepository;
 import com.codegym.aurora.repository.PersonalYearRepository;
+import com.codegym.aurora.service.PersonalMonthService;
 import com.codegym.aurora.service.PersonalYearService;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +29,10 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class PersonalYearServiceImpl implements PersonalYearService {
     private final PersonalYearRepository personalYearRepository;
+    private final PersonalMonthService personalMonthService;
+    private final PersonalMonthConverter personalMonthConverter;
+    private final PersonalMonthRepository personalMonthRepository;
+
     private static List<PersonalYearResponseDTO> staticPersonalYearList = new ArrayList<>();
 
     static {
@@ -53,9 +64,6 @@ public class PersonalYearServiceImpl implements PersonalYearService {
     public int calculatePersonalYearFirst(int attitudeNumber) {
         int currentYear = NumeroloryUtils.reduceNumber(getCurrentYear());
         int personalYear = currentYear + attitudeNumber;
-        if (personalYear== 11 || personalYear == 22){
-            return personalYear;
-        }
         return NumeroloryUtils.reduceNumber(personalYear);
     }
 
@@ -63,9 +71,6 @@ public class PersonalYearServiceImpl implements PersonalYearService {
     public int calculatePersonalYearSecond(int attitudeNumber) {
         int nextYear = NumeroloryUtils.reduceNumber(getCurrentYear()  + 1);
         int personalYearSecond = nextYear + attitudeNumber;
-        if (personalYearSecond== 11 || personalYearSecond == 22){
-            return personalYearSecond;
-        }
         return NumeroloryUtils.reduceNumber(personalYearSecond);
     }
 
@@ -73,25 +78,52 @@ public class PersonalYearServiceImpl implements PersonalYearService {
     public int calculatePersonalYearThird(int attitudeNumber) {
         int nextTwoYear = NumeroloryUtils.reduceNumber(getCurrentYear() + 2);
         int personalYearThird = nextTwoYear + attitudeNumber;
-        if (personalYearThird == 11 || personalYearThird == 22){
-            return personalYearThird;
-        }
         return NumeroloryUtils.reduceNumber(personalYearThird);
     }
 
     @Override
     public List<PersonalYear> createPersonalYearEntity(int attitudeNumber) {
-
+        int reducedCurrentYear = NumeroloryUtils.reduceNumber(getCurrentYear());
         List<PersonalYear> personalYearList = new ArrayList<>();
-        int calculatePersonalYearFirst = calculatePersonalYearFirst(attitudeNumber);
-        int calculatePersonalPersonalYearSecond = calculatePersonalYearSecond(attitudeNumber);
-        int calculatePersonalPersonalYearThird = calculatePersonalYearThird(attitudeNumber);
-        personalYearList.add( new PersonalYear(calculatePersonalYearFirst));
-        personalYearList.add( new PersonalYear(calculatePersonalPersonalYearSecond));
-        personalYearList.add( new PersonalYear(calculatePersonalPersonalYearThird));
+        List<PersonalMonth> personalMonthList = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            int personalYear = reducedCurrentYear + attitudeNumber + i;
 
-        return personalYearList;
+            if (personalYear == 11 || personalYear == 22) {
+                personalMonthList = personalMonthService
+                        .createPersonalMonthEntityByPersonalYear(personalYear);
+                personalYearList.add(new PersonalYear(personalYear, personalMonthList));
+
+            } else {
+                int reduceNumber = NumeroloryUtils.reduceNumber(personalYear);
+                personalMonthList = personalMonthService
+                        .createPersonalMonthEntityByPersonalYear(reduceNumber);
+                personalYearList.add(new PersonalYear(reduceNumber, personalMonthList));
+            }
+
+        }
+        personalMonthRepository.saveAll(personalMonthList);
+        return personalYearRepository.saveAll(personalYearList);
     }
+
+    @Override
+    public List<PersonalYearResponseDtoForReport> createPersonalYearResponseDtoForReport(List<PersonalYear> personalYearList) {
+        List<PersonalYearResponseDtoForReport> personalYearResponseDtoForReportList = new ArrayList<>();
+        for (PersonalYear personalYear: personalYearList){
+
+            List<PersonalMonthResponseDTO> personalMonthResponseDTOList = personalMonthConverter
+                    .converEntityToResponeDtoList(personalYear.getPersonalMonthList());
+            PersonalYearResponseDtoForReport personalYearResponseDto = new PersonalYearResponseDtoForReport();
+            PersonalYearResponseDTO getResponseDtoDataInStatic = getPersonalYearItem(personalYear.getPersonalYearNumber());
+            BeanUtils.copyProperties(getResponseDtoDataInStatic, personalYearResponseDto);
+            personalYearResponseDto.setPersonalMonthResponseDTOList(personalMonthResponseDTOList);
+
+            personalYearResponseDtoForReportList.add(personalYearResponseDto);
+
+        }
+        return personalYearResponseDtoForReportList;
+    }
+
     private int getCurrentYear(){
         LocalDate date = LocalDate.now();
         return date.getYear();
