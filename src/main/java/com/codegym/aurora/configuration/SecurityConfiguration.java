@@ -100,7 +100,7 @@ public class SecurityConfiguration  {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         httpSecurity.authorizeHttpRequests() // links start with /api/
-                .antMatchers("/api/*", "/api/login","api/register-user", "api/register-admin") // perform segregate authorize
+                .antMatchers("/api/**", "/api/login","api/register-user", "api/register-admin") // perform segregate authorize
                 .permitAll();
 
 //        // Pages require login with role: ROLE_ADMIN.

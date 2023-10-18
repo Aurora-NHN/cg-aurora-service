@@ -30,5 +30,5 @@ public interface UserService {
 
     boolean checkValidEmail(String email);
 
-    String getCurrentUsername();
+    public String getCurrentUsername();
 }

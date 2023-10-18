@@ -37,9 +37,6 @@ public class Order {
     @Column(name = "TOTAL_AMOUNT", nullable = false)
     private long totalAmount;
 
-    @Column(name = "DELIVERY_ADDRESS", nullable = false)
-    private String deliveryAddress;
-
     @Column(name = "STATUS", nullable = false)
     private String status;
 
@@ -49,6 +46,5 @@ public class Order {
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "ORDER_ID",referencedColumnName = "ID")
     private User user;
-
 
 }

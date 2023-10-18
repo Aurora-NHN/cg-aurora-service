@@ -5,6 +5,7 @@ import com.codegym.aurora.payload.request.RegisterRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,6 @@ public class LoginController {
     @PostMapping(value = "/logout")
     public ResponseEntity<ResponseDTO> logout() {
         ResponseDTO responseDto = userService.logout();
-        return new ResponseEntity<>(responseDto, responseDto.getStatus());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

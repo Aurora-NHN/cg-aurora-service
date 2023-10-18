@@ -3,19 +3,22 @@ package com.codegym.aurora.service.impl;
 
 import com.codegym.aurora.converter.ProductConverter;
 import com.codegym.aurora.entity.Product;
+import com.codegym.aurora.entity.ProductImage;
+import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
-import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.repository.ProductRepository;
+import com.codegym.aurora.service.ImageService;
+import com.codegym.aurora.service.ProductImageService;
 import com.codegym.aurora.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +31,10 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
     private final ProductConverter productConverter;
+
+    private final ImageService imageService;
+
+    private final ProductImageService productImageService;
 
     private List<Integer> generateRandomPages(long totalItems, int pageSize) {
         List<Integer> allPageNumbers = new ArrayList<>();
@@ -46,9 +53,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<PageProductResponseDTO> getProductsPage(Pageable pageable) {
         long totalProducts = productRepository.count();
-        List<Integer> randomPages = generateRandomPages(totalProducts, pageable.getPageSize());
+        List<Integer> randomPages = generateRandomPages(totalProducts, 9);
         int randomPageNumber = getRandomPageNumber(randomPages);
-        PageRequest randomPageRequest = PageRequest.of(randomPageNumber, pageable.getPageSize());
+        PageRequest randomPageRequest = PageRequest.of(randomPageNumber, 9);
         Page<Product> randomProductPage = productRepository.findAll(randomPageRequest);
         Page<PageProductResponseDTO> randomProductPageDTO = productConverter.convertPageEntityToDtoPage(randomProductPage);
 
@@ -60,11 +67,11 @@ public class ProductServiceImpl implements ProductService {
         Page<PageProductResponseDTO> pageSearchProductResponseDTOS = null;
         if (sortOrder != null) {
             if (sortOrder.equalsIgnoreCase("asc")) {
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").ascending());
+                pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").ascending());
                 Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord, pageable);
                 pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             } else if (sortOrder.equalsIgnoreCase("desc")) {
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").descending());
+                pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").descending());
                 Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord, pageable);
                 pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             }
@@ -81,11 +88,11 @@ public class ProductServiceImpl implements ProductService {
         Page<PageProductResponseDTO> pageProductResponseDTOS = null;
         if (sortOrder != null) {
             if (sortOrder.equalsIgnoreCase("asc")) {
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").ascending());
+                pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").ascending());
                 Page<Product> productPage = productRepository.findProductsBySubCategoryId(subCategoryId, pageable);
                 pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             } else if (sortOrder.equalsIgnoreCase("desc")) {
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").descending());
+                pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").descending());
                 Page<Product> productPage = productRepository.findProductsBySubCategoryId(subCategoryId, pageable);
                 pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             }
@@ -98,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<PageProductResponseDTO> getProductsDTOSortedAscending(Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").ascending());
+        pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").ascending());
         Page<Product> products = productRepository.findAll(pageable);
         Page<PageProductResponseDTO> pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(products);
         return pageProductResponseDTOS;
@@ -106,9 +113,33 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<PageProductResponseDTO> getProductsDTOSortedDescending(Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("price").descending());
+        pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").descending());
         Page<Product> products = productRepository.findAll(pageable);
         Page<PageProductResponseDTO> pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(products);
         return pageProductResponseDTOS;
+    }
+
+    @Override
+    public boolean addProduct(ProductRequestDTO productRequestDTO) throws IOException {
+        try {
+            String productImageUlr = imageService.save(productRequestDTO.getImage());
+            List<String> productUrlList = imageService.save(productRequestDTO.getProductImageList());
+            Product product = new Product();
+            List<ProductImage> productImageList = productImageService.saveListImage(productUrlList,product);
+            product.setImageUrl(productImageUlr);
+            product.setName(productRequestDTO.getName());
+            product.setDescription(productRequestDTO.getDescription());
+            product.setPrice(productRequestDTO.getPrice());
+            product.setQuantity(productRequestDTO.getQuantity());
+            product.setWeight(productRequestDTO.getWeight());
+            product.setProductImageUrlList(productImageList);
+            product.setAuthor(productRequestDTO.getAuthor());
+            product.setInclude(productRequestDTO.getInclude());
+            product.setProducer(productRequestDTO.getProducer());
+            productRepository.save(product);
+        } catch (Exception e){
+            return false;
+        }
+        return true;
     }
 }
