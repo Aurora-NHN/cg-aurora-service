@@ -3,7 +3,7 @@ package com.codegym.aurora.converter.impl;
 
 import com.codegym.aurora.converter.CategoryConverter;
 import com.codegym.aurora.converter.SubCategoryConverter;
-import com.codegym.aurora.entity.ProductCategory;
+import com.codegym.aurora.entity.Category;
 import com.codegym.aurora.payload.request.CategoryRequestDTO;
 import com.codegym.aurora.payload.response.CategoryResponseDTO;
 import com.codegym.aurora.payload.response.CategoryResponseDTOForAdmin;
@@ -21,13 +21,13 @@ public class CategoryConverterImpl implements CategoryConverter {
     private final SubCategoryConverter subCategoryConverter;
 
     @Override
-    public List<CategoryResponseDTO> convertCategoryEntityToDTO(List<ProductCategory> productCategoryList) {
+    public List<CategoryResponseDTO> convertCategoryEntityToDTO(List<Category> categoryList) {
         List<CategoryResponseDTO> categoryResponseDTOList = new ArrayList<>();
-        for (ProductCategory productCategory : productCategoryList) {
+        for (Category category : categoryList) {
             CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO();
-            BeanUtils.copyProperties(productCategory, categoryResponseDTO);
+            BeanUtils.copyProperties(category, categoryResponseDTO);
             List<SubCategoryResponseDTO> subCategoryDTOList = subCategoryConverter
-                    .convertToListSubCategoryDTO(productCategory.getSubCategoryList());
+                    .convertToListSubCategoryDTO(category.getSubCategoryList());
             categoryResponseDTO.setSubCategoryList(subCategoryDTOList);
             categoryResponseDTOList.add(categoryResponseDTO);
         }
@@ -35,16 +35,16 @@ public class CategoryConverterImpl implements CategoryConverter {
     }
 
     @Override
-    public ProductCategory convertCategoryRequestToEntity(CategoryRequestDTO requestDTO) {
-        ProductCategory productCategory = new ProductCategory();
-        BeanUtils.copyProperties(requestDTO, productCategory);
-        return productCategory;
+    public Category convertCategoryRequestToEntity(CategoryRequestDTO requestDTO) {
+        Category category = new Category();
+        BeanUtils.copyProperties(requestDTO, category);
+        return category;
     }
 
     @Override
-    public CategoryResponseDTOForAdmin convertEntityToCategoryResponseDTOForAdmin(ProductCategory productCategory) {
+    public CategoryResponseDTOForAdmin convertEntityToCategoryResponseDTOForAdmin(Category category) {
         CategoryResponseDTOForAdmin categoryResponseDTOForAdmin = new CategoryResponseDTOForAdmin();
-        BeanUtils.copyProperties(productCategory, categoryResponseDTOForAdmin);
+        BeanUtils.copyProperties(category, categoryResponseDTOForAdmin);
         return categoryResponseDTOForAdmin;
     }
 }

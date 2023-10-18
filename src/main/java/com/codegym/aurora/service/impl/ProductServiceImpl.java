@@ -6,14 +6,12 @@ import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.ProductImage;
 import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
-import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.repository.ProductRepository;
 import com.codegym.aurora.service.ImageService;
 import com.codegym.aurora.service.ProductImageService;
 import com.codegym.aurora.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -122,22 +120,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product addProduct(ProductRequestDTO productRequestDTO) throws IOException {
-        String productImageUlr = imageService.save(productRequestDTO.getImage());
-        List<String> productUrlList = imageService.save(productRequestDTO.getProductImageList());
-        Product product = new Product();
-        List<ProductImage> productImageList = productImageService.saveListImage(productUrlList,product);
-        product.setImageUrl(productImageUlr);
-        product.setName(productRequestDTO.getName());
-        product.setDescription(productRequestDTO.getDescription());
-        product.setPrice(productRequestDTO.getPrice());
-        product.setQuantity(productRequestDTO.getQuantity());
-        product.setWeight(productRequestDTO.getWeight());
-        product.setProductImageUrlList(productImageList);
-        product.setAuthor(productRequestDTO.getAuthor());
-        product.setInclude(productRequestDTO.getInclude());
-        product.setProducer(productRequestDTO.getProducer());
-        productRepository.save(product);
-        return product;
+    public boolean addProduct(ProductRequestDTO productRequestDTO) throws IOException {
+        try {
+            String productImageUlr = imageService.save(productRequestDTO.getImage());
+            List<String> productUrlList = imageService.save(productRequestDTO.getProductImageList());
+            Product product = new Product();
+            List<ProductImage> productImageList = productImageService.saveListImage(productUrlList,product);
+            product.setImageUrl(productImageUlr);
+            product.setName(productRequestDTO.getName());
+            product.setDescription(productRequestDTO.getDescription());
+            product.setPrice(productRequestDTO.getPrice());
+            product.setQuantity(productRequestDTO.getQuantity());
+            product.setWeight(productRequestDTO.getWeight());
+            product.setProductImageUrlList(productImageList);
+            product.setAuthor(productRequestDTO.getAuthor());
+            product.setInclude(productRequestDTO.getInclude());
+            product.setProducer(productRequestDTO.getProducer());
+            productRepository.save(product);
+        } catch (Exception e){
+            return false;
+        }
+        return true;
     }
 }
