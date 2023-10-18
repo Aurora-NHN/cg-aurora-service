@@ -35,6 +35,14 @@ public class LifePhase {
     private int matureStateNumber;
     @Column(name = "OLD_STAGE_NUMBER")
     private int oldStateNumber;
+
+
+
     @OneToOne(mappedBy = "lifePhase", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private NumerologyReport numerologyReport;
+    public LifePhase(int youngStateNumber, int matureStateNumber, int oldStateNumber) {
+        this.youngStateNumber = youngStateNumber;
+        this.matureStateNumber = matureStateNumber;
+        this.oldStateNumber = oldStateNumber;
+    }
 }

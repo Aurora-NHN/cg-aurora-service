@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OldStateNumberResponseDTO {
-    private int number;
-    private String name;
-    private String title;
-    private String description;
+public class UserResponseDtoForNumerologyReport {
+    private long id;
+    private int count;
 }

@@ -9,5 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MatureStateNumberResponseDTO {
     private int number;
+    private String name;
+    private String title;
     private String description;
 }

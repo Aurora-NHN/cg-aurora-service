@@ -9,6 +9,8 @@ public interface NumerologyReportConverter {
     NumerologyReportResponseDTO convertEntityToResponseDTO(NumerologyReport numerologyReport);
     NumerologyReport convertRequestDtoToEntity(NumerologyReportRequestDTO numerologyReportRequestDTO);
 
+    NumerologyReport convertRequestDtoToEntityForFreeNumber(NumerologyReportRequestDTO numerologyReportRequestDTO);
+
     FreeNumerologyReportResponseDTO convertEntityToFreeNumerologyReportResponseDTO(NumerologyReport numerologyReport);
 
 }

@@ -33,7 +33,8 @@ public class SubCategoryControllerForAdmin {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<?> createSubCategory(@Valid @RequestBody SubCategoryRequestDtoForCreate subCategoryRequestDtoForCreate,
+    public ResponseEntity<?> createSubCategory(
+            @Valid @RequestBody SubCategoryRequestDtoForCreate subCategoryRequestDtoForCreate,
                                             BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);

@@ -12,12 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class NumerologyReportResponseDTO {
-
+    private Long id;
     private String fullName;
     private String nickName;
     private int dayOfBirth;
     private int monthOfBirth;
     private int yearOfBirth;
+    private UserResponseDtoForNumerologyReport userResponseDtoForNumerologyReport;
     private LifePathResponseDTO lifePathResponseDTO;
     private DayOfBirthNumberResponseDTO dayOfBirthNumberResponseDTO;
     private AttitudeNumberResponseDTO attitudeNumberResponseDTO;

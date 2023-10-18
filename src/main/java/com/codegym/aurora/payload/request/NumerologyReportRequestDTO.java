@@ -25,5 +25,6 @@ public class NumerologyReportRequestDTO {
 
     @NotNull
     private int yearOfBirth;
-
+    @NotNull
+    private Boolean vip;
 }

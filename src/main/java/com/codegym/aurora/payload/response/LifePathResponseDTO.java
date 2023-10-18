@@ -11,9 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LifePathResponseDTO {
     private int number;
-    private String overview;
+    private String name;
     private String title;
-    private String paragraph_1;
-    private String paragraph_2;
+    private String description;
 
 }

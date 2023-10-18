@@ -11,6 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 public class PersonalYearResponseDtoForReport {
     private int number;
+    private String name;
+    private String title;
     private String description;
     private List<PersonalMonthResponseDTO> personalMonthResponseDTOList;
 }

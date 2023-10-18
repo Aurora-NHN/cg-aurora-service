@@ -20,6 +20,5 @@ public class FreeNumerologyReportResponseDTO {
     private LifePathResponseDTO lifePathResponseDTO;
     private AttitudeNumberResponseDTO attitudeNumberResponseDTO;
     private MissionNumberResponseDTO missionNumberResponseDtTO;
-    private DayOfBirthNumberResponseDTO dayOfBirthNumberResponseDTO;
 
 }

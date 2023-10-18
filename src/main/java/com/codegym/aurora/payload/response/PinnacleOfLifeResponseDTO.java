@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PinnacleOfLifeResponseDTO {
+    private Long id;
     private int number;
+    private String name;
+    private String title;
     private String description;
 }

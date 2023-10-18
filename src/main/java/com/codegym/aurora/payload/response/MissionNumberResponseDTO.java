@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MissionNumberResponseDTO {
     private int number;
+    private String name;
     private String title;
-    private String paragraph;
+    private String description;
+
 }

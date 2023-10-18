@@ -25,11 +25,16 @@ public class NumerologyReportServiceImpl implements NumerologyReportService {
 
     @Override
     public ResponseDTO createNumerologyReportResponeDTO(NumerologyReportRequestDTO numerologyReportRequestDTO) {
+        User user = userRepository.findByUsername(userService.getCurrentUsername());
+        user.setCount(user.getCount()-1);
+        userRepository.save(user);
         NumerologyReport numerologyReport = numerologyReportConverter
                 .convertRequestDtoToEntity(numerologyReportRequestDTO);
         NumerologyReportResponseDTO numerologyReportResponseDTO = numerologyReportConverter
                 .convertEntityToResponseDTO(numerologyReport);
+
         //Nhớ lưu báo cáo
+        numerologyReportRepository.save(numerologyReport);
         return createResponseDTO(
                 HttpStatus.CREATED,
                 "Create numerology report response DTO successfully!",
@@ -38,9 +43,11 @@ public class NumerologyReportServiceImpl implements NumerologyReportService {
 
     @Override
     public ResponseDTO createFreeNumerologyReportResponeDTO(NumerologyReportRequestDTO numerologyReportRequestDTO) {
+
         NumerologyReport numerologyReport = numerologyReportConverter
-                .convertRequestDtoToEntity(numerologyReportRequestDTO);
-        FreeNumerologyReportResponseDTO freeNumerologyReportResponseDTO = numerologyReportConverter.convertEntityToFreeNumerologyReportResponseDTO(numerologyReport);
+                .convertRequestDtoToEntityForFreeNumber(numerologyReportRequestDTO);
+        FreeNumerologyReportResponseDTO freeNumerologyReportResponseDTO = numerologyReportConverter
+                .convertEntityToFreeNumerologyReportResponseDTO(numerologyReport);
         return createResponseDTO(
                 HttpStatus.CREATED,
                 "Create free numerology report response DTO successfully!",

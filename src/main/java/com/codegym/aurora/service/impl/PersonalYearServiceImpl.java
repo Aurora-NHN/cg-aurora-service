@@ -7,6 +7,7 @@ import com.codegym.aurora.payload.from_file.PersonalYearList;
 import com.codegym.aurora.payload.response.PersonalMonthResponseDTO;
 import com.codegym.aurora.payload.response.PersonalYearResponseDTO;
 import com.codegym.aurora.payload.response.PersonalYearResponseDtoForReport;
+import com.codegym.aurora.repository.PersonalMonthRepository;
 import com.codegym.aurora.repository.PersonalYearRepository;
 import com.codegym.aurora.service.PersonalMonthService;
 import com.codegym.aurora.service.PersonalYearService;
@@ -30,6 +31,7 @@ public class PersonalYearServiceImpl implements PersonalYearService {
     private final PersonalYearRepository personalYearRepository;
     private final PersonalMonthService personalMonthService;
     private final PersonalMonthConverter personalMonthConverter;
+    private final PersonalMonthRepository personalMonthRepository;
 
     private static List<PersonalYearResponseDTO> staticPersonalYearList = new ArrayList<>();
 
@@ -83,22 +85,25 @@ public class PersonalYearServiceImpl implements PersonalYearService {
     public List<PersonalYear> createPersonalYearEntity(int attitudeNumber) {
         int reducedCurrentYear = NumeroloryUtils.reduceNumber(getCurrentYear());
         List<PersonalYear> personalYearList = new ArrayList<>();
-
+        List<PersonalMonth> personalMonthList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             int personalYear = reducedCurrentYear + attitudeNumber + i;
 
             if (personalYear == 11 || personalYear == 22) {
-                personalYearList.add(new PersonalYear(personalYear, personalMonthService
-                        .createPersonalMonthEntityByPersonalYear(personalYear)));
+                personalMonthList = personalMonthService
+                        .createPersonalMonthEntityByPersonalYear(personalYear);
+                personalYearList.add(new PersonalYear(personalYear, personalMonthList));
 
             } else {
                 int reduceNumber = NumeroloryUtils.reduceNumber(personalYear);
-                personalYearList.add(new PersonalYear(reduceNumber, personalMonthService
-                        .createPersonalMonthEntityByPersonalYear(reduceNumber)));
+                personalMonthList = personalMonthService
+                        .createPersonalMonthEntityByPersonalYear(reduceNumber);
+                personalYearList.add(new PersonalYear(reduceNumber, personalMonthList));
             }
 
         }
-        return personalYearList;
+        personalMonthRepository.saveAll(personalMonthList);
+        return personalYearRepository.saveAll(personalYearList);
     }
 
     @Override

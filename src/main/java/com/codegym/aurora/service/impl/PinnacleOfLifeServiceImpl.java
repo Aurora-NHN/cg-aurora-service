@@ -3,6 +3,7 @@ package com.codegym.aurora.service.impl;
 import com.codegym.aurora.entity.PinnacleOfLife;
 import com.codegym.aurora.payload.from_file.PinnacleOfLifeList;
 import com.codegym.aurora.payload.response.PinnacleOfLifeResponseDTO;
+import com.codegym.aurora.repository.PinnacleOfLifeRepository;
 import com.codegym.aurora.service.PinnacleOfLifeService;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class PinnacleOfLifeServiceImpl implements PinnacleOfLifeService {
+    private final PinnacleOfLifeRepository pinnacleOfLifeRepository;
     private static List<PinnacleOfLifeResponseDTO> staticPinnacleOfLifeList = new ArrayList<>();
     private static final int SPECIAL_NUMBER_FOR_CALCULATE_AGE = 36;
     private static final int AGE_CYCLE = 9;
@@ -116,7 +118,7 @@ public class PinnacleOfLifeServiceImpl implements PinnacleOfLifeService {
         pinnacleOfLifeList.add(pinnacleOfLifeThird);
         pinnacleOfLifeList.add(pinnacleOfLifeFour);
 
-        return pinnacleOfLifeList;
+        return pinnacleOfLifeRepository.saveAll(pinnacleOfLifeList);
     }
 
 

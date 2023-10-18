@@ -3,6 +3,7 @@ package com.codegym.aurora.service.impl;
 import com.codegym.aurora.entity.ChallengeNumber;
 import com.codegym.aurora.payload.from_file.ChallengeNumberList;
 import com.codegym.aurora.payload.response.ChallengeNumberResponseDTO;
+import com.codegym.aurora.repository.ChallengeNumberRepository;
 import com.codegym.aurora.service.ChallengeNumberService;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +20,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class ChallengeNumberServiceImpl implements ChallengeNumberService {
-
+    private final ChallengeNumberRepository challengeNumberRepository;
     private static List<ChallengeNumberResponseDTO> staticChallengeNumberList = new ArrayList<>();
 
     static {
@@ -85,7 +86,7 @@ public class ChallengeNumberServiceImpl implements ChallengeNumberService {
                 .challengeNumberThird(challengeNumberThird)
                 .challengeNumberFour(challengeNumberFour)
                 .build();
-        return challengeNumber;
+        return challengeNumberRepository.save(challengeNumber);
     }
 
     private  int calculateResult(int numberFirst, int numberSecond){

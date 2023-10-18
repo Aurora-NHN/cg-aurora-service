@@ -23,22 +23,30 @@ import javax.validation.Valid;
 public class NumerologyController {
     private final NumerologyReportService numerologyReportService;
     @PostMapping
-    public ResponseEntity<?> createNumerologyReportFree(@Valid @RequestBody NumerologyReportRequestDTO numerologyReportRequestDTO,
-                                                                    BindingResult bindingResult){
+    public ResponseEntity<?> createNumerologyReportFree(
+            @Valid @RequestBody NumerologyReportRequestDTO numerologyReportRequestDTO,
+            BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
-        ResponseDTO responseDTO = numerologyReportService.createFreeNumerologyReportResponeDTO(numerologyReportRequestDTO);
+        ResponseDTO responseDTO = numerologyReportService.
+                createFreeNumerologyReportResponeDTO(numerologyReportRequestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping("/full-vip")
-    public ResponseEntity<?> createNumerologyReportFullNumber(@Valid @RequestBody NumerologyReportRequestDTO numerologyReportRequestDTO, BindingResult bindingResult){
-        // viết hàm check count  --> nếu còn thì cho tạo, trả bad reques --> bạn chưa mua vip
-        if (numerologyReportService.checkCount() == 0){
-            return new ResponseEntity<>(Constant.COUNT_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
-        }
-        return null;
-    }
+//    @PostMapping("/full-vip")
+//    public ResponseEntity<?> createNumerologyReportFullNumber(
+//            @Valid @RequestBody NumerologyReportRequestDTO numerologyReportRequestDTO,
+//            BindingResult bindingResult){
+//        if (bindingResult.hasErrors()) {
+//            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+//        }
+//        if (numerologyReportService.checkCount() == 0){
+//            return new ResponseEntity<>(Constant.COUNT_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
+//        }
+//        ResponseDTO responseDTO = numerologyReportService.
+//                createFullNumerologyReportResponseDTO(numerologyReportRequestDTO);
+//        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+//    }
 
 }
