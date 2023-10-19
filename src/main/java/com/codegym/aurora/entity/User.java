@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -54,6 +55,7 @@ public class User {
     private boolean isActivated;
 
     @OneToOne(mappedBy = "user")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private UserDetail userDetail;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})

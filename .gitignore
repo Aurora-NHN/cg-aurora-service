@@ -39,3 +39,4 @@ out/
 .vscode/
 src/main/resources/numerology
 src/main/resources/application-nhu.properties
+src/main/resources/application-hong.properties
