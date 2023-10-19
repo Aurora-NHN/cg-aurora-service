@@ -46,7 +46,7 @@ public class AttitudeNumberServiceImpl implements AttitudeNumberService {
     @Override
     public int calculateAttitudeNumber(int day, int month) {
         int sum = day + month;
-        int attitudeNumber = NumeroloryUtils.calculateDigitSum(sum);
+        int attitudeNumber = NumeroloryUtils.reduceNumber(sum);
         return getAttitudeNumber(attitudeNumber).getNumber();
     }
 

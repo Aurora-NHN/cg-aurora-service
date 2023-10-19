@@ -1,7 +1,7 @@
 package com.codegym.aurora.controller.back_office;
 import com.codegym.aurora.payload.request.CategoryRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
-import com.codegym.aurora.service.ProductCategoryService;
+import com.codegym.aurora.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,16 +22,16 @@ import javax.validation.Valid;
 @RequestMapping("/api/admin/categories")
 @RequiredArgsConstructor
 public class CategoryControllerForAdmin {
-    private final ProductCategoryService productCategoryService;
+    private final CategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO> getCategories() {
-        ResponseDTO responseDTO = productCategoryService.findByActiveTrue();
+        ResponseDTO responseDTO = categoryService.findByActiveTrue();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
     @GetMapping({"{id}/detail"})
     public ResponseEntity<ResponseDTO> getCategoryDetail(@PathVariable Long id) {
-        ResponseDTO responseDTO = productCategoryService.findCategoryByIdAndDeteteFalse(id);
+        ResponseDTO responseDTO = categoryService.findCategoryByIdAndDeteteFalse(id);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
@@ -42,7 +42,7 @@ public class CategoryControllerForAdmin {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
-        ResponseDTO responseDTO = productCategoryService.create(categoryRequestDTO);
+        ResponseDTO responseDTO = categoryService.create(categoryRequestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
@@ -52,24 +52,24 @@ public class CategoryControllerForAdmin {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
-        ResponseDTO responseDTO = productCategoryService.update(categoryRequestDTO);
+        ResponseDTO responseDTO = categoryService.update(categoryRequestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> deleteCategory(@PathVariable Long id) {
-        ResponseDTO responseDTO = productCategoryService.deleteById(id);
+        ResponseDTO responseDTO = categoryService.deleteById(id);
         return new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
 
     @PostMapping("/{id}/enable-category")
     public ResponseEntity<?> enableCategory(@PathVariable Long id) {
-        ResponseDTO responseDTO = productCategoryService.activeById(id);
+        ResponseDTO responseDTO = categoryService.activeById(id);
         return new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
     @PostMapping("/{id}/disable-category")
     public ResponseEntity<ResponseDTO> disableCategory(@PathVariable Long id) {
-        ResponseDTO responseDTO = productCategoryService.unactiveById(id);
+        ResponseDTO responseDTO = categoryService.unactiveById(id);
         return new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
 

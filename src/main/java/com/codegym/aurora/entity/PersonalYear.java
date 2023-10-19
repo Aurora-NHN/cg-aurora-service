@@ -46,4 +46,9 @@ public class PersonalYear {
     public PersonalYear(int personalYearNumber) {
         this.personalYearNumber = personalYearNumber;
     }
+
+    public PersonalYear(int personalYearNumber, List<PersonalMonth> personalMonthList) {
+        this.personalYearNumber = personalYearNumber;
+        this.personalMonthList = personalMonthList;
+    }
 }

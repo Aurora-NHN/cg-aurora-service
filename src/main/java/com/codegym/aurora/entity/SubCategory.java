@@ -42,7 +42,7 @@ public class SubCategory {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "CATEGORY_ID",referencedColumnName = "ID")
-    private ProductCategory productCategory;
+    private Category category;
 
     @OneToMany(mappedBy = "subCategory",  cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Product> products;

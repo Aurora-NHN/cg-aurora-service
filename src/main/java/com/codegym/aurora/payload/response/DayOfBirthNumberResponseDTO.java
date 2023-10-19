@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 public class DayOfBirthNumberResponseDTO {
 
     private int number;
+    private String name;
+    private String title;
     private String description;
 }

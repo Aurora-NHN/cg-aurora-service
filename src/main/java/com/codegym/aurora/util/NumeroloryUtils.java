@@ -21,5 +21,18 @@ public class NumeroloryUtils {
         return number;
     }
 
+    public static int reduceToSingleDigit(int number) {
+        if (number <= 9) {
+            return number;
+        }
+
+        int sum = 0;
+        while (number > 0) {
+            sum += number % 10;
+            number /= 10;
+        }
+
+        return reduceToSingleDigit(sum);
+    }
 
 }
