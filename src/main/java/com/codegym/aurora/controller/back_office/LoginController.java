@@ -48,4 +48,10 @@ public class LoginController {
         ResponseDTO responseDto = userService.googleAuthenticate(credential);
         return new ResponseEntity<>(responseDto, responseDto.getStatus());
     }
+
+    @PostMapping(value = "/admin/login")
+    public ResponseEntity<ResponseDTO> loginAdmin(@RequestBody LoginRequestDTO loginRequestDTO) {
+        ResponseDTO responseDto = userService.loginAdmin(loginRequestDTO);
+        return new ResponseEntity<>(responseDto, responseDto.getStatus());
+    }
 }

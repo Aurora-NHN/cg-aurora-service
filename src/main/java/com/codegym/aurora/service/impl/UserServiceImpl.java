@@ -32,8 +32,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 @Service
@@ -62,6 +60,37 @@ public class UserServiceImpl implements UserService {
             responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
             return responseDTO;
         } else if (!passwordEncoder.matches(loginRequestDTO.getPassword(), userCheck.getPassword())) {
+            responseDTO.setMessage(Constant.WRONG_PASSWORD);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
+            return responseDTO;
+        } else if (userCheck.isDelete()) {
+            responseDTO.setMessage(Constant.ACCOUNT_BLOCK);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
+            return responseDTO;
+        }
+        String token = jwtTokenProvider.generateToken(userCheck.getUsername());
+        tokenCache.addToken(loginRequestDTO.getUsername(), token);
+        responseDTO.setMessage(Constant.LOGIN_SUCCESS);
+        responseDTO.setStatus(HttpStatus.OK);
+        responseDTO.setData(token);
+        return responseDTO;
+    }
+
+    @Override
+    public ResponseDTO loginAdmin(LoginRequestDTO loginRequestDTO) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        User userCheck = userRepository.findByUsername(loginRequestDTO.getUsername());
+        if (userCheck == null) {
+            responseDTO.setMessage(Constant.USER_IS_NOT_EXISTS);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
+            return responseDTO;
+        }
+        String role = userCheck.getRole();
+        if (!role.equals("ROLE_ADMIN")){
+            responseDTO.setMessage(Constant.UNAUTHORIZED);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
+            return responseDTO;
+        }else if (!passwordEncoder.matches(loginRequestDTO.getPassword(), userCheck.getPassword())) {
             responseDTO.setMessage(Constant.WRONG_PASSWORD);
             responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
             return responseDTO;

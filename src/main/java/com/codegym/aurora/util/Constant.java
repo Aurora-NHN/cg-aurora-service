@@ -56,7 +56,9 @@ public class Constant {
 
     public static final String PAYMENT_FAIL = "false";
 
+    public static final String UNAUTHORIZED = "You are not admin";
 
     public static  final  String COUNT_NOT_ENOUGH = "Not enough turns, please buy Vip!!!";
 
+    public static final String ACCOUNT_BLOCK = "Your Account is blocked";
 }
