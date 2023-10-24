@@ -56,6 +56,7 @@ public class Constant {
 
     public static final String PAYMENT_FAIL = "false";
 
+    public  static  final  String GET_COUNT_SUCCESS = " Get count of user success";
     public static final String UNAUTHORIZED = "You are not admin";
 
     public static  final  String COUNT_NOT_ENOUGH = "Not enough turns, please buy Vip!!!";

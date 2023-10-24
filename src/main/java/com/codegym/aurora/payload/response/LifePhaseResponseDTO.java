@@ -9,12 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LifePhaseResponseDTO {
 
-    private Long id;
-
     private YoungStateNumberResponseDTO youngStateNumberResponseDTO;
 
     private MatureStateNumberResponseDTO matureStateNumberResponseDTO;
 
-    private OldStateNumberResponseDTO oldStateNumberResponseDTOr;
-
+    private OldStateNumberResponseDTO oldStateNumberResponseDTO;
 }

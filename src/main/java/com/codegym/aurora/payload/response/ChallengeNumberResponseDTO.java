@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChallengeNumberResponseDTO {
-    private Long id;
     private int number;
     private String name;
     private String title;

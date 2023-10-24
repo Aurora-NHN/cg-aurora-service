@@ -9,4 +9,5 @@ public interface PersonalMonthService {
     PersonalMonthResponseDTO getPersonalMonthItem(int number);
     int calculatePersonalMonth(int personalYear, int month);
     List<PersonalMonth> createPersonalMonthEntityByPersonalYear(int personalYear);
+    void saveByPersonalYearId(Long id);
 }

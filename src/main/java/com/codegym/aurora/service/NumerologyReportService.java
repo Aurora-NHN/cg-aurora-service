@@ -4,12 +4,7 @@ import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 
 public interface NumerologyReportService {
-    ResponseDTO createNumerologyReportResponeDTO(NumerologyReportRequestDTO numerologyReportRequestDTO);
-
-    ResponseDTO createFreeNumerologyReportResponeDTO(NumerologyReportRequestDTO numerologyReportRequestDTO);
+    ResponseDTO createNumerologyReportResponse(NumerologyReportRequestDTO numerologyReportRequestDTO);
 
     int checkCount();
-
-    ResponseDTO createFullNumerologyReportResponseDTO(NumerologyReportRequestDTO numerologyReportRequestDTO);
-
 }

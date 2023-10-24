@@ -7,11 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PinnacleOfLifeResponseDTOForReport {
-
-    private int number;
-    private String name;
-    private String title;
-    private String description;
-    private  int age;
+public class MeanOfNumberResponseDTO {
+    private String nameOfNumber;
+    private String mean;
 }

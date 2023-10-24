@@ -83,7 +83,8 @@ public class PersonalYearServiceImpl implements PersonalYearService {
 
     @Override
     public List<PersonalYear> createPersonalYearEntity(int attitudeNumber) {
-        int reducedCurrentYear = NumeroloryUtils.reduceNumber(getCurrentYear());
+        int currentYear = getCurrentYear();
+        int reducedCurrentYear = NumeroloryUtils.reduceNumber(currentYear);
         List<PersonalYear> personalYearList = new ArrayList<>();
         List<PersonalMonth> personalMonthList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -92,18 +93,17 @@ public class PersonalYearServiceImpl implements PersonalYearService {
             if (personalYear == 11 || personalYear == 22) {
                 personalMonthList = personalMonthService
                         .createPersonalMonthEntityByPersonalYear(personalYear);
-                personalYearList.add(new PersonalYear(personalYear, personalMonthList));
+                personalYearList.add(new PersonalYear((currentYear + i),personalYear, personalMonthList));
 
             } else {
                 int reduceNumber = NumeroloryUtils.reduceNumber(personalYear);
                 personalMonthList = personalMonthService
                         .createPersonalMonthEntityByPersonalYear(reduceNumber);
-                personalYearList.add(new PersonalYear(reduceNumber, personalMonthList));
+                personalYearList.add(new PersonalYear((currentYear + i),reduceNumber, personalMonthList));
             }
-
         }
-        personalMonthRepository.saveAll(personalMonthList);
-        return personalYearRepository.saveAll(personalYearList);
+
+        return personalYearList;
     }
 
     @Override
@@ -117,7 +117,6 @@ public class PersonalYearServiceImpl implements PersonalYearService {
             PersonalYearResponseDTO getResponseDtoDataInStatic = getPersonalYearItem(personalYear.getPersonalYearNumber());
             BeanUtils.copyProperties(getResponseDtoDataInStatic, personalYearResponseDto);
             personalYearResponseDto.setPersonalMonthResponseDTOList(personalMonthResponseDTOList);
-
             personalYearResponseDtoForReportList.add(personalYearResponseDto);
 
         }
