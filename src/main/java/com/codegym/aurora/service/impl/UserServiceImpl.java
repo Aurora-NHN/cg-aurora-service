@@ -290,4 +290,15 @@ public class UserServiceImpl implements UserService {
         }
         return responseDTO;
     }
+
+    @Override
+    public ResponseDTO getCountOfUser() {
+        User user = userRepository.findByUsername(getCurrentUsername());
+        int count = user.getCount();
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setMessage(Constant.GET_COUNT_SUCCESS);
+        responseDTO.setStatus(HttpStatus.OK);
+        responseDTO.setData(count);
+        return responseDTO;
+    }
 }

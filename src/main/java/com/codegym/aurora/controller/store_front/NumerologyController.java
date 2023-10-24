@@ -19,34 +19,23 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/front-store/numerology")
+@RequestMapping("/api/store-front/numerology")
 public class NumerologyController {
     private final NumerologyReportService numerologyReportService;
     @PostMapping
     public ResponseEntity<?> createNumerologyReportFree(
             @Valid @RequestBody NumerologyReportRequestDTO numerologyReportRequestDTO,
             BindingResult bindingResult){
+
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
+
         ResponseDTO responseDTO = numerologyReportService.
-                createFreeNumerologyReportResponeDTO(numerologyReportRequestDTO);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+                createNumerologyReportResponse(numerologyReportRequestDTO);
+
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
 
-//    @PostMapping("/full-vip")
-//    public ResponseEntity<?> createNumerologyReportFullNumber(
-//            @Valid @RequestBody NumerologyReportRequestDTO numerologyReportRequestDTO,
-//            BindingResult bindingResult){
-//        if (bindingResult.hasErrors()) {
-//            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
-//        }
-//        if (numerologyReportService.checkCount() == 0){
-//            return new ResponseEntity<>(Constant.COUNT_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
-//        }
-//        ResponseDTO responseDTO = numerologyReportService.
-//                createFullNumerologyReportResponseDTO(numerologyReportRequestDTO);
-//        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-//    }
 
 }

@@ -18,16 +18,20 @@ public class NumerologyReportResponseDTO {
     private int dayOfBirth;
     private int monthOfBirth;
     private int yearOfBirth;
+    private List<MeanOfNumberResponseDTO> meanOfNumberResponseDTOList;
     private UserResponseDtoForNumerologyReport userResponseDtoForNumerologyReport;
+
     private LifePathResponseDTO lifePathResponseDTO;
-    private DayOfBirthNumberResponseDTO dayOfBirthNumberResponseDTO;
-    private AttitudeNumberResponseDTO attitudeNumberResponseDTO;
-    private SoulNumberResponseDTO soulNumberResponseDTO;
     private MissionNumberResponseDTO missionNumberResponseDtTO;
+    private AttitudeNumberResponseDTO attitudeNumberResponseDTO;
+    private DayOfBirthNumberResponseDTO dayOfBirthNumberResponseDTO;
+    private SoulNumberResponseDTO soulNumberResponseDTO;
     private MiddleAgedNumberResponseDto middleAgedNumberResponseDto;
+    private BalanceNumberResponseDTO balanceNumberResponseDTO;
     private LifePhaseResponseDTO lifePhaseResponseDTO;
+
+    private List<ChallengeNumberResponseDTO> challengeNumberResponseDTOList;
     private List<PersonalYearResponseDtoForReport> personalYearResponseDTOList;
     private List<PinnacleOfLifeResponseDTOForReport> pinnacleOfLifeResponseDTOForReportList;
-    private List<ChallengeNumberResponseDTO> challengeNumberResponseDTOList;
-    private BalanceNumberResponseDTO balanceNumberResponseDTO;
+
 }

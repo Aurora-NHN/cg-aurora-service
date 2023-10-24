@@ -1,5 +1,8 @@
 package com.codegym.aurora.util;
 
+import java.text.Normalizer;
+import java.util.regex.Pattern;
+
 public class NumeroloryUtils {
     public static int calculateDigitSum(int number) {
         int sum = 0;
@@ -35,4 +38,11 @@ public class NumeroloryUtils {
         return reduceToSingleDigit(sum);
     }
 
+    public static String removeAccent(String text) {
+        text = text.toUpperCase().trim();
+        String temp = Normalizer.normalize(text, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        temp = pattern.matcher(temp).replaceAll("");
+        return temp.replaceAll("Đ", "D");
+    }
 }

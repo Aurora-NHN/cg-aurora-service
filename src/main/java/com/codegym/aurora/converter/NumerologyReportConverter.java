@@ -6,11 +6,13 @@ import com.codegym.aurora.payload.response.FreeNumerologyReportResponseDTO;
 import com.codegym.aurora.payload.response.NumerologyReportResponseDTO;
 
 public interface NumerologyReportConverter {
-    NumerologyReportResponseDTO convertEntityToResponseDTO(NumerologyReport numerologyReport);
     NumerologyReport convertRequestDtoToEntity(NumerologyReportRequestDTO numerologyReportRequestDTO);
 
     NumerologyReport convertRequestDtoToEntityForFreeNumber(NumerologyReportRequestDTO numerologyReportRequestDTO);
 
-    FreeNumerologyReportResponseDTO convertEntityToFreeNumerologyReportResponseDTO(NumerologyReport numerologyReport);
+    NumerologyReportResponseDTO convertEntityToNumerologyReportForFreeVersion(NumerologyReport numerologyReport);
+    NumerologyReportResponseDTO convertEntityToResponseDTO(NumerologyReport numerologyReport);
+
+
 
 }

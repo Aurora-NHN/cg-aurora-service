@@ -8,10 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonalYearResponseDTO {
-    private Long id;
     private int number;
     private String name;
     private String title;
     private String description;
-
 }

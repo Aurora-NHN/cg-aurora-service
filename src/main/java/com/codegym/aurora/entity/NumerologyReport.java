@@ -46,6 +46,9 @@ public class NumerologyReport{
     @Column(name = "YEAR_OF_BIRTH")
     private int yearOfBirth;
 
+    @Column(name = "NICKNAME")
+    private String nickname;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "USER_ID",referencedColumnName = "ID")
     private User user;
