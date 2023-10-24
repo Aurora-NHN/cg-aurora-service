@@ -10,6 +10,8 @@ public interface UserService {
 
     ResponseDTO login (LoginRequestDTO loginRequestDTO);
 
+    ResponseDTO loginAdmin(LoginRequestDTO loginRequestDTO);
+
     ResponseDTO logout();
 
     ResponseDTO getUserInfo();
