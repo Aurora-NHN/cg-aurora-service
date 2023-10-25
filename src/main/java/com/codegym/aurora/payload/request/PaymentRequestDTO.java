@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BuyVipRequestDTO {
+public class PaymentRequestDTO {
 
     @Min(1)
-    @Max(3)
+    @Max(4)
     @NotNull
     private Integer vipPack;
 }
