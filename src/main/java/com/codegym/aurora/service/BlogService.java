@@ -11,4 +11,8 @@ public interface BlogService {
     ResponseEntity<Object> save(BlogUpdateRequestDto blogUpdateRequestDto);
 
     ResponseEntity<Object> uploadContentImage(BlogContentImageDto blogContentImageDto);
+
+    ResponseEntity<Object> getBlog();
+
+    ResponseEntity<Object> deleteBlog(Long blogId);
 }

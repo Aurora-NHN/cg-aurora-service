@@ -46,6 +46,9 @@ public class NumerologyReport{
     @Column(name = "YEAR_OF_BIRTH")
     private int yearOfBirth;
 
+    @Column(name = "NICKNAME")
+    private String nickname;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "USER_ID",referencedColumnName = "ID")
     private User user;
@@ -57,41 +60,29 @@ public class NumerologyReport{
     private int attitudeNumber;
     @Column(name = "SOUL_NUMBER")
     private int soulNumber;
-    @Column(name = "PERSONALITY_NUMBER")
-    private int personalityNumber;
+
     @Column(name = "MISSION_NUMBER")
     private int missionNumber;
+
     @Column(name = "MIDDLE_AGE_NUMBER")
-    private int middleAgeNumber;
+    private int middleAgedNumber;
 
     @OneToOne
     @JoinColumn(name = "LIFE_PHASE_ID")
     private LifePhase lifePhase;
 
-    @Column(name = "KARMIC_DEBT")
-    private int karmicDebt;
-
     @OneToMany(mappedBy = "numerologyReport", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<PersonalYear> personalYearList = new ArrayList<>();
 
-//    @Column(name = "PERSONAL_MONTH")
-//    private int personalMonth;
-    @Column(name = "PINNACLE_OF_LIFE")
-    private int pinnacleOfLife;
-    @Column(name = "FEELING_INSIDE_NUMBER")
-    private int feelingInsideNumber;
-    @Column(name = "DEFECT_NUMBER_OF_NAME_CHART")
-    private int defectNumberOfNameChart;
+    @OneToMany(mappedBy = "numerologyReport", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<PinnacleOfLife> pinnacleOfLifeList;
 
     @OneToOne
     @JoinColumn(name = "CHALLENGE_NUMBER_ID")
     private ChallengeNumber challengeNumber;
 
-
-    @Column(name = "NUMBERS_IN_CHART")
-    private int numbersInChart;
-    @Column(name = "BALANCE_CHART")
-    private int balanceChart;
+    @Column(name = "BALANCE_NUMBER")
+    private int balanceNumber;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
     private boolean isDeleted;

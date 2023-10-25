@@ -29,10 +29,9 @@ public class LifePhaseConverterImpl implements LifePhaseConverter {
         OldStateNumberResponseDTO oldStateNumberResponseDTO = oldStateNumberService
                 .getOldStateNumber(lifePhase.getOldStateNumber());
 
-        lifePhaseResponseDTO.setId(lifePhase.getId());
         lifePhaseResponseDTO.setYoungStateNumberResponseDTO(youngStateNumberResponseDTO);
         lifePhaseResponseDTO.setMatureStateNumberResponseDTO(matureStateNumberResponseDTO);
-        lifePhaseResponseDTO.setOldStateNumberResponseDTOr(oldStateNumberResponseDTO);
+        lifePhaseResponseDTO.setOldStateNumberResponseDTO(oldStateNumberResponseDTO);
         return lifePhaseResponseDTO;
     }
 }

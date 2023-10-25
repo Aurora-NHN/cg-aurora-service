@@ -1,7 +1,10 @@
 package com.codegym.aurora.controller.store_front;
 
 
+import com.codegym.aurora.entity.Product;
+import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
+import com.codegym.aurora.payload.response.ProductResponseDTO;
 import com.codegym.aurora.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,6 +13,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -58,6 +63,15 @@ public class ProductController {
         Page<PageProductResponseDTO> pageProductsResponseDTOS = productService.findProductsBySubCategoryId(subCategoryId, pageable,sortOrder);
         return new ResponseEntity<>(pageProductsResponseDTOS, HttpStatus.OK);
 
+    }
+
+    @PostMapping("/new-product")
+    public ResponseEntity<?> createProduct(@RequestBody ProductRequestDTO productRequestDTO) throws IOException {
+        boolean status = productService.addProduct(productRequestDTO);
+        if(status){
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

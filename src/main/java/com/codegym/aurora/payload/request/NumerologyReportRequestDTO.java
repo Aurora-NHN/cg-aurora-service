@@ -17,6 +17,7 @@ public class NumerologyReportRequestDTO {
     @Size(min = 5)
     private String fullName;
 
+    private String nickname;
     @NotNull
     private int dayOfBirth;
 
@@ -25,5 +26,6 @@ public class NumerologyReportRequestDTO {
 
     @NotNull
     private int yearOfBirth;
-
+    @NotNull
+    private Boolean vip;
 }

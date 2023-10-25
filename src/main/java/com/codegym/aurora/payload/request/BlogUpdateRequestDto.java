@@ -14,6 +14,7 @@ public class BlogUpdateRequestDto {
     private String title;
     @NotBlank(message = "Author can not be blank!")
     private String author;
+    private String description;
     private String content;
     private MultipartFile mainImage;
     @NotNull

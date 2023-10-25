@@ -19,12 +19,12 @@ public class JwtTokenProvider {
     private static final long JWT_EXPIRATION = EnvVariable.JWT_EXPIRATION_IN_MS;
 
 
-    public String generateToken(User authentication) {
+    public String generateToken(String subject) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
 
         return Jwts.builder()
-                .setSubject(authentication.getUsername())
+                .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_KEY)

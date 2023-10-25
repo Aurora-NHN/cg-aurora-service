@@ -33,6 +33,10 @@ public class PersonalYear {
     @Column(name = "ID")
     private Long id;
 
+    @Column(name = "PERSONAL_YEAR")
+    private int personalYear;
+
+
     @Column(name = "PERSONAL_YEAR_NUMBER")
     private int personalYearNumber;
 
@@ -45,5 +49,16 @@ public class PersonalYear {
 
     public PersonalYear(int personalYearNumber) {
         this.personalYearNumber = personalYearNumber;
+    }
+
+    public PersonalYear(int personalYearNumber, List<PersonalMonth> personalMonthList) {
+        this.personalYearNumber = personalYearNumber;
+        this.personalMonthList = personalMonthList;
+    }
+
+    public PersonalYear(int personalYear, int personalYearNumber, List<PersonalMonth> personalMonthList) {
+        this.personalYear = personalYear;
+        this.personalYearNumber = personalYearNumber;
+        this.personalMonthList = personalMonthList;
     }
 }

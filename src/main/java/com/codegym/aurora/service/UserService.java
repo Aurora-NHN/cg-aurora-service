@@ -10,6 +10,8 @@ public interface UserService {
 
     ResponseDTO login (LoginRequestDTO loginRequestDTO);
 
+    ResponseDTO loginAdmin(LoginRequestDTO loginRequestDTO);
+
     ResponseDTO logout();
 
     ResponseDTO getUserInfo();
@@ -31,4 +33,8 @@ public interface UserService {
     boolean checkValidEmail(String email);
 
     public String getCurrentUsername();
+
+    ResponseDTO googleAuthenticate(String credential);
+
+    ResponseDTO getCountOfUser();
 }

@@ -31,5 +31,11 @@ public class LifePhaseServiceImpl implements LifePhaseService {
         return lifePhase;
     }
 
+    @Override
+    public LifePhase createLifePhase(int youngStateNumber, int matureStateNumber, int oldStateNumber) {
+        LifePhase lifePhase = caculateLifephase(youngStateNumber, matureStateNumber, oldStateNumber);
+        return lifePhaseRepository.save(lifePhase);
+    }
+
 
 }

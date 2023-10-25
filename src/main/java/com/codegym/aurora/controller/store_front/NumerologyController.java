@@ -3,6 +3,7 @@ package com.codegym.aurora.controller.store_front;
 import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.service.NumerologyReportService;
+import com.codegym.aurora.util.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +19,23 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/front-store/numerology")
+@RequestMapping("/api/store-front/numerology")
 public class NumerologyController {
     private final NumerologyReportService numerologyReportService;
     @PostMapping
-    public ResponseEntity<?> createNumerologyReportFree(@Valid @RequestBody NumerologyReportRequestDTO numerologyReportRequestDTO,
-                                                                    BindingResult bindingResult){
+    public ResponseEntity<?> createNumerologyReportFree(
+            @Valid @RequestBody NumerologyReportRequestDTO numerologyReportRequestDTO,
+            BindingResult bindingResult){
+
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
-        ResponseDTO responseDTO = numerologyReportService.createNumerologyReportResponeDTO(numerologyReportRequestDTO);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+
+        ResponseDTO responseDTO = numerologyReportService.
+                createNumerologyReportResponse(numerologyReportRequestDTO);
+
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
+
 
 }

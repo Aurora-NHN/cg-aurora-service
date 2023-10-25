@@ -6,7 +6,7 @@ import com.codegym.aurora.payload.response.CategoryResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 
 import java.util.List;
-public interface ProductCategoryService {
+public interface CategoryService {
     List<CategoryResponseDTO> findListCategoryResponseDTO();
 
     ResponseDTO findByActiveTrue();
