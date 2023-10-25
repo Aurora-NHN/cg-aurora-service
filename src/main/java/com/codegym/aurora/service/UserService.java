@@ -36,5 +36,5 @@ public interface UserService {
 
     ResponseDTO googleAuthenticate(String credential);
 
-
+    ResponseDTO getCountOfUser();
 }

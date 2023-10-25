@@ -52,4 +52,9 @@ public class UserController {
         ResponseDTO responseDTO = userService.editInfo(userInfoRequestDTO);
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
+    @GetMapping ("/count")
+    public ResponseEntity<ResponseDTO> getCountUser(){
+        ResponseDTO responseDTO = userService.getCountOfUser();
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
+    }
 }

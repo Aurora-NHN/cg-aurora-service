@@ -1,8 +1,11 @@
 package com.codegym.aurora.service.impl;
 
 import com.codegym.aurora.entity.PersonalMonth;
+import com.codegym.aurora.entity.PersonalYear;
 import com.codegym.aurora.payload.from_file.PersonalMonthList;
 import com.codegym.aurora.payload.response.PersonalMonthResponseDTO;
+import com.codegym.aurora.repository.PersonalMonthRepository;
+import com.codegym.aurora.repository.PersonalYearRepository;
 import com.codegym.aurora.service.PersonalMonthService;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +22,8 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class PersonalMonthServiceImpl implements PersonalMonthService {
+    private final PersonalMonthRepository personalMonthRepository;
+    private final PersonalYearRepository personalYearRepository;
 
     private static List<PersonalMonthResponseDTO> staticPersonalMonthList = new ArrayList<>();
 
@@ -62,4 +67,15 @@ public class PersonalMonthServiceImpl implements PersonalMonthService {
         }
         return personalMonths;
     }
+
+    @Override
+    public void saveByPersonalYearId(Long id) {
+        PersonalYear personalYear = personalYearRepository.findById(id).orElseThrow();
+        List<PersonalMonth> personalMonths = createPersonalMonthEntityByPersonalYear(personalYear.getPersonalYearNumber());
+        for (PersonalMonth item: personalMonths){
+            item.setPersonalYear(personalYear);
+            personalMonthRepository.save(item);
+        }
+    }
+
 }

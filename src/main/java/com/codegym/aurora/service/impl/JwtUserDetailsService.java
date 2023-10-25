@@ -16,26 +16,28 @@ import java.util.List;
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		com.codegym.aurora.entity.User user = userRepository.findByUsername(username);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        com.codegym.aurora.entity.User user = userRepository.findByUsername(username);
 
-		if (user == null) {
-			throw new UsernameNotFoundException("This" + username + "was not found in database!");
-		}
+        if (user == null) {
+            throw new UsernameNotFoundException("This" + username + "was not found in database!");
+        }
 
-		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-		grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole()));
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole()));
 
-		UserDetails userDetails = new User(
-				user.getUsername(),
-				user.getPassword(),
-				grantedAuthorities);
+        UserDetails userDetails = new User(
+                user.getUsername(),
+                user.getPassword() == null
+                        ? "password"
+                        : user.getPassword(),
+                grantedAuthorities);
 
-		return userDetails;
-	}
+        return userDetails;
+    }
 
 }

@@ -14,5 +14,4 @@ public class LifePathResponseDTO {
     private String name;
     private String title;
     private String description;
-
 }

@@ -12,5 +12,4 @@ public class MissionNumberResponseDTO {
     private String name;
     private String title;
     private String description;
-
 }
