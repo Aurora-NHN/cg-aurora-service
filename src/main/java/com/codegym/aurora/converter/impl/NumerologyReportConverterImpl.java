@@ -149,7 +149,7 @@ public class NumerologyReportConverterImpl implements NumerologyReportConverter 
         int day = numerologyReportRequestDTO.getDayOfBirth();
         int month = numerologyReportRequestDTO.getMonthOfBirth();
         int year = numerologyReportRequestDTO.getYearOfBirth();
-        String fullName = numerologyReportRequestDTO.getFullName();
+        String fullName = NumeroloryUtils.removeAccent(numerologyReportRequestDTO.getFullName());
 
         BeanUtils.copyProperties(numerologyReportRequestDTO, numerologyReport);
         int lifePathNumber = lifePathNumberService.calculateLifePathNumber(day, month, year);

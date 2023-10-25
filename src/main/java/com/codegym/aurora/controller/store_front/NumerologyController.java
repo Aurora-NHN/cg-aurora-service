@@ -30,10 +30,13 @@ public class NumerologyController {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
-
         ResponseDTO responseDTO = numerologyReportService.
                 createNumerologyReportResponse(numerologyReportRequestDTO);
-
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
+    }
+    @GetMapping("/history")
+    public ResponseEntity<ResponseDTO> getAllNumerologyReportForUser(){
+        ResponseDTO responseDTO = numerologyReportService.findAllNumerologyReporForUser();
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
 

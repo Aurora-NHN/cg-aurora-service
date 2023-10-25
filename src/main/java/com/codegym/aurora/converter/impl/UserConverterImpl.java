@@ -27,6 +27,6 @@ public class UserConverterImpl implements UserConverter {
 
     @Override
     public UserResponseDtoForNumerologyReport convertEntityToUserForNumerologyReportResponseDTO(User user) {
-        return new UserResponseDtoForNumerologyReport(user.getId(), user.getCount());
+        return new UserResponseDtoForNumerologyReport(user.getId(), user.getCount(), user.isVip());
     }
 }
