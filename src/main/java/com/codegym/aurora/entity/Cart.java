@@ -1,6 +1,7 @@
 package com.codegym.aurora.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 

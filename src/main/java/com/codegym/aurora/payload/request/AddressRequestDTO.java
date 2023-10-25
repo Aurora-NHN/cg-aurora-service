@@ -12,10 +12,12 @@ public class AddressRequestDTO {
 
     private String phoneNumber;
 
-    private String companyName;
+    private String city;
 
     private String deliveryAddress;
 
     private String additionalInformation;
+
+    private long deliveryCharges;
 
 }

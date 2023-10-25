@@ -5,6 +5,7 @@ import com.codegym.aurora.converter.ProductConverter;
 import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.ProductImage;
 import com.codegym.aurora.payload.request.ProductRequestDTO;
+import com.codegym.aurora.payload.request.ProductRequestInCartLineDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
 import com.codegym.aurora.payload.response.ProductImageResponseDTO;
 import com.codegym.aurora.payload.response.ProductResponseDTO;
@@ -23,7 +24,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ProductConverterImpl implements ProductConverter {
-private final ProductImageRepository productImageRepository;
+    private final ProductImageRepository productImageRepository;
     @Override
     public Page<PageProductResponseDTO> convertPageEntityToDtoPage(Page<Product> products) {
         List<PageProductResponseDTO> productDtoList = new ArrayList<>();
@@ -68,6 +69,13 @@ private final ProductImageRepository productImageRepository;
         List<ProductImageResponseDTO> productImageResponseDTOList = convertProductImageEntityToDTO(productImageList);
         productResponseDTO.setProductImageUrlList(productImageResponseDTOList);
         return productResponseDTO;
+    }
+
+    @Override
+    public Product convertProductDTOToEntity(ProductRequestInCartLineDTO productRequestInCartLineDTO) {
+        Product product = new Product();
+        BeanUtils.copyProperties(productRequestInCartLineDTO,product);
+        return product;
     }
 
     public List<ProductImageResponseDTO> convertProductImageEntityToDTO(List<ProductImage> productImageList) {
