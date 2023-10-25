@@ -35,4 +35,6 @@ public interface UserService {
     public String getCurrentUsername();
 
     ResponseDTO googleAuthenticate(String credential);
+
+
 }

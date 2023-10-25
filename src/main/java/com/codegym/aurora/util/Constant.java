@@ -61,4 +61,6 @@ public class Constant {
     public static  final  String COUNT_NOT_ENOUGH = "Not enough turns, please buy Vip!!!";
 
     public static final String ACCOUNT_BLOCK = "Your Account is blocked";
+
+    public static final String PAY_PURCHASE_INVOICE = "Pay purchase invoice";
 }
