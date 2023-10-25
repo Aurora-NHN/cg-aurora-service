@@ -55,8 +55,8 @@ public class HistoryPayment {
     @Column(name = "TOTAL_PRICE")
     private String totalPrice;
 
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
-    private boolean isDeleted;
+    @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
+    private boolean isDelete;
 
     @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
     private boolean isActivated;
