@@ -18,10 +18,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
     private final UserServiceImpl userService;
@@ -126,7 +128,7 @@ public class CartServiceImpl implements CartService {
         long newToTalAmount = 0;
         for (CartLine cartLine : cartLineList) {
             if (cartLine.getProduct().getId() == productId) {
-                cartLineRepository.delete(cartLine);
+                cartLineRepository.deleteCartLineByProductId(productId);
             } else {
                 newCartLineList.add(cartLine);
                 newToTalAmount += cartLine.getTotalPrice();
@@ -158,7 +160,7 @@ public class CartServiceImpl implements CartService {
             }
             totalAmount += cartLine.getTotalPrice();
             cart.setTotalAmount(totalAmount);
-//            cartRepository.save(cart);
+            cartRepository.save(cart);
         }
         cartCache.addToCart(user.getId(), cart);
         CartDTO cartDTO = cartConverter.convertCartEntityToDTO(cart);

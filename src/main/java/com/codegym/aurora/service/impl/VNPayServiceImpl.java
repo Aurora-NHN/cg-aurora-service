@@ -1,9 +1,11 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.cache.OrderCache;
 import com.codegym.aurora.cache.PaymentCache;
 import com.codegym.aurora.configuration.EnvVariable;
 import com.codegym.aurora.configuration.VNPayConfiguration;
 import com.codegym.aurora.entity.HistoryPayment;
+import com.codegym.aurora.entity.Order;
 import com.codegym.aurora.entity.User;
 import com.codegym.aurora.entity.UserDetail;
 import com.codegym.aurora.payload.request.PaymentRequestDTO;
@@ -49,6 +51,8 @@ public class VNPayServiceImpl implements VNPayService {
 
     private final ClientService clientService;
 
+    private final OrderCache orderCache;
+
     public static final String VIP = "25000000";
 
     public static final String VIP_PRO = "65000000";
@@ -60,6 +64,8 @@ public class VNPayServiceImpl implements VNPayService {
         String username = userService.getCurrentUsername();
         UUID uuid = UUID.randomUUID();
         paymentCache.addPaymentId(username, uuid);
+        Order order = orderCache.getOrder(username);
+        String totalAmount = String.valueOf(order.getTotalAmount());
 
         String amount = null;
         String totalPrice = null;
@@ -81,6 +87,7 @@ public class VNPayServiceImpl implements VNPayService {
                 orderInfo = Constant.BUY_VIP_SUPER;
                 break;
             case 4:
+                amount = totalAmount + "00";
                 orderInfo = Constant.PAY_PURCHASE_INVOICE;
         }
 
@@ -150,7 +157,11 @@ public class VNPayServiceImpl implements VNPayService {
         String paymentUrl = EnvVariable.VN_PAY_URL + "?" + queryUrl;
 
         // Save history payment
-        saveHistoryPayment(uuid,orderInfo,totalPrice);
+        if(paymentRequestDTO.getVipPack() != 4){
+            saveHistoryPayment(uuid,orderInfo,totalPrice);
+        } else {
+            saveHistoryPayment(uuid,orderInfo,totalAmount);
+        }
         return paymentUrl;
     }
 
