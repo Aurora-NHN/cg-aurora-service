@@ -4,26 +4,23 @@ import com.codegym.aurora.converter.NumerologyReportConverter;
 import com.codegym.aurora.entity.ChallengeNumber;
 import com.codegym.aurora.entity.LifePhase;
 import com.codegym.aurora.entity.NumerologyReport;
-import com.codegym.aurora.entity.PersonalYear;
-import com.codegym.aurora.entity.PinnacleOfLife;
 import com.codegym.aurora.entity.User;
 import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
-import com.codegym.aurora.payload.response.FreeNumerologyReportResponseDTO;
 import com.codegym.aurora.payload.response.NumerologyReportResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.repository.ChallengeNumberRepository;
 import com.codegym.aurora.repository.LifePhaseRepository;
 import com.codegym.aurora.repository.NumerologyReportRepository;
-import com.codegym.aurora.repository.PersonalYearRepository;
-import com.codegym.aurora.repository.PinnacleOfLifeRepository;
 import com.codegym.aurora.repository.UserRepository;
 import com.codegym.aurora.service.NumerologyReportService;
-import com.codegym.aurora.service.PersonalMonthService;
 import com.codegym.aurora.service.UserService;
+import com.codegym.aurora.util.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,12 +32,13 @@ public class NumerologyReportServiceImpl implements NumerologyReportService {
     private final UserRepository userRepository;
     private final LifePhaseRepository lifePhaseRepository;
     private final ChallengeNumberRepository challengeNumberRepository;
+
     @Override
     public ResponseDTO createNumerologyReportResponse(NumerologyReportRequestDTO numerologyReportRequestDTO) {
         HttpStatus status;
         NumerologyReportResponseDTO numerologyReportResponseDTO = null;
         String message;
-
+        LocalDateTime createTime = LocalDateTime.now();
         if (numerologyReportRequestDTO.getVip()) {
 
             User user = userRepository.findByUsername(userService.getCurrentUsername());
@@ -62,6 +60,7 @@ public class NumerologyReportServiceImpl implements NumerologyReportService {
                         .convertEntityToResponseDTO(numerologyReport);
                 numerologyReport.setDeleted(false);
                 numerologyReport.setActivated(true);
+                numerologyReport.setCreateTime(createTime);
                 numerologyReportRepository.save(numerologyReport);
                 ChallengeNumber challengeNumber = numerologyReport.getChallengeNumber();
                 challengeNumber.setNumerologyReport(numerologyReport);
@@ -87,6 +86,23 @@ public class NumerologyReportServiceImpl implements NumerologyReportService {
                     numerologyReportResponseDTO);
         }
 
+    }
+
+    @Override
+    public ResponseDTO findAllNumerologyReporForUser(){
+        User user = userRepository.findByUsername(userService.getCurrentUsername());
+        List<NumerologyReport> numerologyReportList = numerologyReportRepository.findAllByUserId(user.getId());
+        List<NumerologyReportResponseDTO> numerologyReportResponseDTOList = new ArrayList<>();
+        for (NumerologyReport numerologyReport : numerologyReportList){
+            NumerologyReportResponseDTO numerologyReportResponseDTO = numerologyReportConverter
+                    .convertEntityToResponseDTO(numerologyReport);
+            numerologyReportResponseDTOList.add(numerologyReportResponseDTO);
+        }
+
+        return createResponseDTO(
+                HttpStatus.OK,
+                Constant.GET_ALL_NUMEROLOGY_FOR_USER,
+                numerologyReportResponseDTOList);
     }
 
     @Override

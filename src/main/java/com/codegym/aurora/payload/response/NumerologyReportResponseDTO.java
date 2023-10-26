@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,6 +19,8 @@ public class NumerologyReportResponseDTO {
     private int dayOfBirth;
     private int monthOfBirth;
     private int yearOfBirth;
+    private LocalDateTime createTime;
+
     private List<MeanOfNumberResponseDTO> meanOfNumberResponseDTOList;
     private UserResponseDtoForNumerologyReport userResponseDtoForNumerologyReport;
 
