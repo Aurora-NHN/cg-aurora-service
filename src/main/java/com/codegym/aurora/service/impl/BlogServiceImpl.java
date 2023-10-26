@@ -87,7 +87,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public ResponseEntity<Object> getBlog() {
-        List<Blog> blogs = blogRepository.findAll();
+        List<Blog> blogs = blogRepository.findAllByPublishIsTrue();
         List<BlogResponseDto> responseDtoList = blogConverter.convert(blogs);
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
