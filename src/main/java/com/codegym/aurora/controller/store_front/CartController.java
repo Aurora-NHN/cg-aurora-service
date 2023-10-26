@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/cart")
 public class CartController {
     private final CartService cartService;
+
     @PostMapping("/add")
     public ResponseEntity<ResponseDTO> addToCart(
             @RequestParam(name = "productId") Long productId,
             @RequestParam(name = "quantity") int quantity) {
-        ResponseDTO responseDTO = cartService.addToCart(productId,quantity);
+        ResponseDTO responseDTO = cartService.addToCart(productId, quantity);
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
 
@@ -25,10 +26,25 @@ public class CartController {
         ResponseDTO responseDTO = cartService.showCart();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
     @DeleteMapping("/delete-cart-line")
     public ResponseEntity<ResponseDTO> removeCartLine(
-            @RequestParam(name = "cartLineId") long cartLineId){
-        ResponseDTO responseDTO = cartService.removeCartLine(cartLineId);
+            @RequestParam(name = "productId") long productId) {
+        ResponseDTO responseDTO = cartService.removeCartLine(productId);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @PostMapping("/add-quantity-to-cart")
+    public ResponseEntity<ResponseDTO> addNewQuantityToCart(
+            @RequestParam(name = "productId") Long productId,
+            @RequestParam(name = "quantity") int quantity
+    ) {
+        ResponseDTO responseDTO = cartService.addNewQuantityToCart(productId, quantity);
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
+    }
+    @GetMapping("/save-cart")
+    public ResponseEntity<ResponseDTO> saveCart(){
+        ResponseDTO responseDTO = cartService.saveCart();
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
 }

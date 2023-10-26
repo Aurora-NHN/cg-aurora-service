@@ -15,7 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,11 +32,11 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "NAME", nullable = false)
+    @Column(name = "CONSIGNEE_NAME", nullable = false)
     private String consigneeName;
 
-    @Column(name = "COMPANY_NAME", nullable = false)
-    private String companyName;
+    @Column(name = "CITY", nullable = false)
+    private String city;
 
     @Column(name = "PHONE_NUMBER", nullable = false)
     private String phoneNumber;
@@ -42,11 +44,13 @@ public class Address {
     @Column(name = "DELIVERY_ADDRESS", nullable = false)
     private String deliveryAddress;
 
+    @Column(name = "DELIVERY_CHARGES", nullable = false)
+    private long deliveryCharges;
+
     @Column(name = "ADDITIONAL_INFORMATION", nullable = false)
     private String additionalInformation;
 
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "ADDRESS_ID",referencedColumnName = "ID")
-    private UserDetail userDetail;
+    @OneToOne
+    @JoinColumn(name = "ORDER_ID", referencedColumnName = "ID")
+    private Order order;
 }

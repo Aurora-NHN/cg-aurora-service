@@ -3,6 +3,7 @@ package com.codegym.aurora.converter;
 
 import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.payload.request.ProductRequestDTO;
+import com.codegym.aurora.payload.request.ProductRequestInCartLineDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
 import com.codegym.aurora.payload.response.ProductResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
@@ -19,5 +20,7 @@ public interface ProductConverter {
     List<Product> convertProductListDTOToEntity(List<ProductRequestDTO> productRequestDTOS);
 
     ProductResponseDTO convertProductEntityInCartLineToDTO(Product product);
+
+    Product convertProductDTOToEntity(ProductRequestInCartLineDTO productRequestInCartLineDTO);
 
 }

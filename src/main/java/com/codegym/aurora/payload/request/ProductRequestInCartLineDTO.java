@@ -1,7 +1,5 @@
 package com.codegym.aurora.payload.request;
 
-import com.codegym.aurora.entity.OrderDetail;
-import com.codegym.aurora.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartLineRequestDTO {
+public class ProductRequestInCartLineDTO {
+    private String name;
 
-    private long ProductId;
+    private long price;
+
+    private int weight;
 
     private int quantity;
 

@@ -10,14 +10,16 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class CartLineConverterImpl implements CartLineConverter {
     private final ProductConverter productConverter;
+
     @Override
     public List<CartLineDTO> convertCartLineListEntityToDTO(List<CartLine> cartLineList) {
         List<CartLineDTO> cartLineDTOList = new ArrayList<>();
-        for(CartLine cartLine:cartLineList){
+        for (CartLine cartLine : cartLineList) {
             CartLineDTO cartLineDTO = new CartLineDTO();
             cartLineDTO.setQuantity(cartLine.getQuantity());
             cartLineDTO.setTotalPrice(cartLine.getTotalPrice());
@@ -28,4 +30,5 @@ public class CartLineConverterImpl implements CartLineConverter {
         }
         return cartLineDTOList;
     }
+
 }
