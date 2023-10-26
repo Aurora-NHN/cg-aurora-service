@@ -49,7 +49,4 @@ public class UserDetail {
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     private User user;
 
-    @OneToMany(mappedBy = "userDetail", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    List<Address> addressList = new ArrayList<>();
-
 }

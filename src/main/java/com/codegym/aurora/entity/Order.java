@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,11 +41,17 @@ public class Order {
     @Column(name = "STATUS", nullable = false)
     private String status;
 
+    @Column(name = "EXPECTED_DELIVERY", nullable = false)
+    private String expectedDelivery;
+
     @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<OrderDetail> orderDetailList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "ORDER_ID",referencedColumnName = "ID")
     private User user;
+
+    @OneToOne(mappedBy = "order")
+    private Address address ;
 
 }

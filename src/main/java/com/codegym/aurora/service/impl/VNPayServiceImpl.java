@@ -1,12 +1,14 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.cache.OrderCache;
 import com.codegym.aurora.cache.PaymentCache;
 import com.codegym.aurora.configuration.EnvVariable;
 import com.codegym.aurora.configuration.VNPayConfiguration;
 import com.codegym.aurora.entity.HistoryPayment;
+import com.codegym.aurora.entity.Order;
 import com.codegym.aurora.entity.User;
 import com.codegym.aurora.entity.UserDetail;
-import com.codegym.aurora.payload.request.BuyVipRequestDTO;
+import com.codegym.aurora.payload.request.PaymentRequestDTO;
 import com.codegym.aurora.payload.response.VNPayResponseDTO;
 import com.codegym.aurora.repository.HistoryPaymentRepository;
 import com.codegym.aurora.repository.UserRepository;
@@ -49,6 +51,8 @@ public class VNPayServiceImpl implements VNPayService {
 
     private final ClientService clientService;
 
+    private final OrderCache orderCache;
+
     public static final String VIP = "25000000";
 
     public static final String VIP_PRO = "65000000";
@@ -56,19 +60,17 @@ public class VNPayServiceImpl implements VNPayService {
     public static final String VIP_SUPER = "90000000";
 
     @Override
-    public String createOrder(BuyVipRequestDTO buyVipRequestDTO) {
+    public String createOrder(PaymentRequestDTO paymentRequestDTO) {
         String username = userService.getCurrentUsername();
         UUID uuid = UUID.randomUUID();
         paymentCache.addPaymentId(username, uuid);
-        HistoryPayment historyPayment = new HistoryPayment();
-        historyPayment.setPaymentId(uuid);
-        historyPayment.setUser(userRepository.findByUsername(username));
-        historyPayment.setStatus(false);
+        Order order = orderCache.getOrder(username);
+        String totalAmount = String.valueOf(order.getTotalAmount());
 
         String amount = null;
         String totalPrice = null;
         String orderInfo = null;
-        switch (buyVipRequestDTO.getVipPack()){
+        switch (paymentRequestDTO.getVipPack()){
             case 1:
                 amount = VIP;
                 totalPrice = "250000";
@@ -84,9 +86,10 @@ public class VNPayServiceImpl implements VNPayService {
                 totalPrice = "900000";
                 orderInfo = Constant.BUY_VIP_SUPER;
                 break;
+            case 4:
+                amount = totalAmount + "00";
+                orderInfo = Constant.PAY_PURCHASE_INVOICE;
         }
-        historyPayment.setOderInfo(orderInfo);
-        historyPayment.setTotalPrice(totalPrice);
 
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
@@ -113,12 +116,9 @@ public class VNPayServiceImpl implements VNPayService {
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
-        String time = format.format(cld.getTime());
-        historyPayment.setPaymentTime(time);
 
         cld.add(Calendar.MINUTE, 15);
         String vnp_ExpireDate = formatter.format(cld.getTime());
@@ -155,8 +155,28 @@ public class VNPayServiceImpl implements VNPayService {
         String vnp_SecureHash = vnPayConfiguration.hmacSHA512(EnvVariable.VN_PAY_HASH_SECRET, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = EnvVariable.VN_PAY_URL + "?" + queryUrl;
-        historyPaymentRepository.save(historyPayment);
+
+        // Save history payment
+        if(paymentRequestDTO.getVipPack() != 4){
+            saveHistoryPayment(uuid,orderInfo,totalPrice);
+        } else {
+            saveHistoryPayment(uuid,orderInfo,totalAmount);
+        }
         return paymentUrl;
+    }
+
+    private void saveHistoryPayment(UUID uuid, String orderInfo, String totalPrice) {
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String time = format.format(cld.getTime());
+        HistoryPayment historyPayment = new HistoryPayment();
+        historyPayment.setPaymentId(uuid);
+        historyPayment.setUser(userRepository.findByUsername(userService.getCurrentUsername()));
+        historyPayment.setStatus(false);
+        historyPayment.setOderInfo(orderInfo);
+        historyPayment.setTotalPrice(totalPrice);
+        historyPayment.setPaymentTime(time);
+        historyPaymentRepository.save(historyPayment);
     }
 
     @Override
@@ -211,9 +231,12 @@ public class VNPayServiceImpl implements VNPayService {
         UserDetail userDetail = user.getUserDetail();
         HistoryPayment historyPayment = historyPaymentRepository.findByPaymentId(paymentId);
         String totalPrice = historyPayment.getTotalPrice() + "00";
+        String orderInfo = historyPayment.getOderInfo();
 
         if (paymentId.equals(historyPayment.getPaymentId()) && amount.equals(totalPrice) && status.equals("00")) {
-            setVip(amount, user);
+            if (!orderInfo.equals(Constant.PAY_PURCHASE_INVOICE)){
+                setVip(amount, user);
+            }
             historyPayment.setStatus(true);
             clientService.sendOrderReturn(userDetail.getEmail(), paymentId);
         }

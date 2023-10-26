@@ -2,7 +2,7 @@ package com.codegym.aurora.controller.back_office;
 
 import com.codegym.aurora.cache.PaymentCache;
 import com.codegym.aurora.entity.HistoryPayment;
-import com.codegym.aurora.payload.request.BuyVipRequestDTO;
+import com.codegym.aurora.payload.request.PaymentRequestDTO;
 import com.codegym.aurora.repository.HistoryPaymentRepository;
 import com.codegym.aurora.service.VNPayService;
 import com.codegym.aurora.util.Constant;
@@ -35,12 +35,12 @@ public class VNPayController {
     private final HistoryPaymentRepository historyPaymentRepository;
 
     @PostMapping("/vnpay-order")
-    public ResponseEntity<String> submitOder(@Valid @RequestBody BuyVipRequestDTO buyVipRequestDTO,
+    public ResponseEntity<String> submitOder(@Valid @RequestBody PaymentRequestDTO paymentRequestDTO,
                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(Constant.BUY_VIP_FAIL, HttpStatus.BAD_REQUEST);
         }
-        String vnPayUrl = vnPayService.createOrder(buyVipRequestDTO);
+        String vnPayUrl = vnPayService.createOrder(paymentRequestDTO);
         return new ResponseEntity<>(vnPayUrl, HttpStatus.OK);
     }
 

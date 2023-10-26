@@ -1,5 +1,6 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.cache.CartCache;
 import com.codegym.aurora.cache.TokenCache;
 import com.codegym.aurora.converter.UserConverter;
 import com.codegym.aurora.entity.Cart;
@@ -48,6 +49,7 @@ public class UserServiceImpl implements UserService {
     private final TokenCache tokenCache;
     private final UserConverter userConverter;
     private final CartRepository cartRepository;
+    private final CartCache cartCache;
     @Value("${client_id}")
     private String clientId;
 
@@ -180,6 +182,7 @@ public class UserServiceImpl implements UserService {
             Cart cart = new Cart();
             cart.setUser(user);
             cartRepository.save(cart);
+            cartCache.addToCart(user.getId(),cart);
         } catch (Exception e) {
             responseDTO.setMessage(Constant.REGISTER_FAIL);
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
