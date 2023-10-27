@@ -13,10 +13,10 @@ import java.util.List;
 
 public interface ProductConverter {
 
-
     Page<PageProductResponseDTO> convertPageEntityToDtoPage(Page<Product> products);
 
     PageProductResponseDTO convertProductEntityToDTO(Product product);
+
     List<Product> convertProductListDTOToEntity(List<ProductRequestDTO> productRequestDTOS);
 
     ProductResponseDTO convertProductEntityInCartLineToDTO(Product product);

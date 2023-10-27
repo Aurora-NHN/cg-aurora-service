@@ -35,11 +35,11 @@ public class OrderDetail {
     @Column(name = "TOTAL_PRICE", nullable = false)
     private long totalPrice;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "PRODUCT_ID",referencedColumnName = "ID")
     private Product product;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "ORDER_ID", referencedColumnName = "ID")
     private Order order;
 

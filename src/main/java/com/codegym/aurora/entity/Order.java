@@ -26,11 +26,11 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ORDER")
+@Table(name = "ORDERS")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "ORDER_DATE", nullable = false)
     private Date orderDate;
@@ -38,20 +38,20 @@ public class Order {
     @Column(name = "TOTAL_AMOUNT", nullable = false)
     private long totalAmount;
 
-    @Column(name = "STATUS", nullable = false)
+    @Column(name = "STATUS")
     private String status;
 
-    @Column(name = "EXPECTED_DELIVERY", nullable = false)
-    private String expectedDelivery;
+    @Column(name = "EXPECTED_DELIVERY")
+    private Date expectedDelivery;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL})
     private List<OrderDetail> orderDetailList = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "ORDER_ID",referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     private User user;
 
     @OneToOne(mappedBy = "order")
-    private Address address ;
+    private Address address;
 
 }
