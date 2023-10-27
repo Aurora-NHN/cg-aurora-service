@@ -58,11 +58,11 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<ProductImage> productImageUrlList = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     @JoinColumn(name = "SUB_CATEGORY_ID",referencedColumnName = "ID")
     private SubCategory subCategory;
 
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.MERGE})
     private  List<OrderDetail> orderDetailList= new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
