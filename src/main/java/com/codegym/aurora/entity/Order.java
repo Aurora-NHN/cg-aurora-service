@@ -44,14 +44,14 @@ public class Order {
     @Column(name = "EXPECTED_DELIVERY")
     private Date expectedDelivery;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE})
     private List<OrderDetail> orderDetailList = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "USER_ID",referencedColumnName = "ID")
     private User user;
 
-    @OneToOne(mappedBy = "order")
-    private Address address;
+    @OneToOne(mappedBy = "order",cascade = CascadeType.PERSIST)
+    private Address address ;
 
 }
