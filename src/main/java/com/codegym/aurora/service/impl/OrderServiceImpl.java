@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@Transactional
+
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
@@ -50,13 +50,14 @@ public class OrderServiceImpl implements OrderService {
         User user = userRepository.findByUsername(username);
         Cart cartUser = cartCache.getCart(user.getId());
         Order order = new Order();
-        order.setAddress(address);
         if (address.getCity().equalsIgnoreCase("Hồ Chí Minh")) {
             address.setDeliveryCharges(25000);
         } else {
             address.setDeliveryCharges(35000);
         }
         order.setTotalAmount(cartUser.getTotalAmount() + address.getDeliveryCharges());
+        address.setOrder(order);
+        order.setAddress(address);
         orderCache.addToOrder(username, order);
         return ResponseDTO.builder()
                 .status(HttpStatus.OK)
@@ -65,14 +66,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public ResponseDTO createOrder() {
         String username = userService.getCurrentUsername();
         User user = userRepository.findByUsername(username);
-        Cart cart = cartRepository.findCartByUser(user);
+        Cart currentCart = cartRepository.findCartByUser(user);
         Order order = orderCache.getOrder(username);
         order.setOrderDate(new Date());
         order.setUser(user);
-        List<CartLine> cartLineList = cart.getCartLineList();
+        List<CartLine> cartLineList = currentCart.getCartLineList();
         List<OrderDetail> orderDetailList = new ArrayList<>();
         for (CartLine cartLine : cartLineList) {
             OrderDetail orderDetail = new OrderDetail();
@@ -81,12 +83,10 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setOrderDetailList(orderDetailList);
         orderRepository.save(order);
-        cart.setTotalAmount(0);
-        cartLineRepository.deleteByCartId(cart.getId());
-        CartDTO cartDTO = cartConverter.convertCartEntityToDTO(cart);
         return ResponseDTO.builder()
                 .status(HttpStatus.OK)
                 .message("create order successfully")
                 .build();
     }
 }
+

@@ -24,10 +24,9 @@ public class OrderController {
         ResponseDTO responseDTO = orderService.createOrderDetail(addressRequestDTO);
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
-    @PostMapping("/save-order")
+    @PostMapping("/save")
     public ResponseEntity<ResponseDTO> saveOrder(){
         ResponseDTO responseDTO = orderService.createOrder();
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
-
     }
 }

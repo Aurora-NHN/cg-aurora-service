@@ -30,7 +30,7 @@ import java.util.List;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "ORDER_DATE", nullable = false)
     private Date orderDate;
@@ -41,8 +41,8 @@ public class Order {
     @Column(name = "STATUS")
     private String status;
 
-    @Column(name = "EXPECTED_DELIVERY")
-    private Date expectedDelivery;
+    @Column(name = "EXPECTED_DELIVERY", nullable = false)
+    private String expectedDelivery;
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE})
     private List<OrderDetail> orderDetailList = new ArrayList<>();
