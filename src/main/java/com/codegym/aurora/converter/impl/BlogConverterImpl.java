@@ -33,7 +33,7 @@ public class BlogConverterImpl implements BlogConverter {
     public Blog convert(BlogUpdateRequestDto blogUpdateRequestDto) throws IOException {
         Blog blog = new Blog();
         BeanUtils.copyProperties(blogUpdateRequestDto, blog);
-        blog.setCreatedAt(LocalDateTime.now());
+        blog.setLastModify(LocalDateTime.now());
         MultipartFile imageFile = blogUpdateRequestDto.getMainImage();
         if (imageFile != null && !imageFile.isEmpty()) {
             String imageFilename = imageService.save(imageFile);
