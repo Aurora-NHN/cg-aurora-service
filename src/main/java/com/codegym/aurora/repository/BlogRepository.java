@@ -13,8 +13,8 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     @Query(nativeQuery = true,
             value = "SELECT * from blog where publish = true " +
-                    "and title like concat('%',:keyword,'%') " +
+                    "and (title like concat('%',:keyword,'%') " +
                     "or author like concat('%',:keyword,'%') " +
-                    "or description like concat('%',:keyword,'%')")
+                    "or description like concat('%',:keyword,'%'))")
     List<Blog> searchBlogs(@Param("keyword") String keyword);
 }
