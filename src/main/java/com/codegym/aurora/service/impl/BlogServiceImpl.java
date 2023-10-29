@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public ResponseEntity<Object> save(BlogUpdateRequestDto blogUpdateRequestDto) {
-        if (blogUpdateRequestDto.getMainImage() != null){
+        if (blogUpdateRequestDto.getMainImage() != null) {
             Blog savedBlog = blogRepository.findById(blogUpdateRequestDto.getId()).orElse(null);
             if (savedBlog == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             try {
@@ -87,7 +88,14 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public ResponseEntity<Object> getBlog() {
-        List<Blog> blogs = blogRepository.findAll();
+        List<Blog> blogs = blogRepository.findAllByPublishIsTrue();
+        List<BlogResponseDto> responseDtoList = blogConverter.convert(blogs);
+        return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getBlog(String keyword) {
+        List<Blog> blogs = blogRepository.searchBlogs(keyword);
         List<BlogResponseDto> responseDtoList = blogConverter.convert(blogs);
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
@@ -96,7 +104,7 @@ public class BlogServiceImpl implements BlogService {
     public ResponseEntity<Object> deleteBlog(Long blogId) {
         Blog blog = blogRepository.findById(blogId).orElse(null);
         if (blog == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Blog not found!",HttpStatus.BAD_REQUEST);
         }
 
         List<BlogContentImage> contentImages = blog.getBlogContentImages();

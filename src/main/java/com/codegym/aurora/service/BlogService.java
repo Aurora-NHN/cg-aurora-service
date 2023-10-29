@@ -15,4 +15,6 @@ public interface BlogService {
     ResponseEntity<Object> getBlog();
 
     ResponseEntity<Object> deleteBlog(Long blogId);
+
+    ResponseEntity<Object> getBlog(String keyword);
 }
