@@ -66,4 +66,7 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Cart carts ;
+
+//    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+//    List<Order> orderList = new ArrayList<>();
 }

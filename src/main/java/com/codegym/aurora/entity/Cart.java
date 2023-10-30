@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,7 +22,8 @@ public class Cart {
     @Column(name = "TOTAL_AMOUNT", nullable = false)
     private long totalAmount;
 
-    @OneToMany(mappedBy = "cart", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+//    @OneToMany(mappedBy = "cart", cascade = {CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "cart", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<CartLine> cartLineList = new ArrayList<>();
 
     @OneToOne

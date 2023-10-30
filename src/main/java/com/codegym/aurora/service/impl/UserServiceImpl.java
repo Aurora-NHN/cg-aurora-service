@@ -72,6 +72,8 @@ public class UserServiceImpl implements UserService {
         }
         String token = jwtTokenProvider.generateToken(userCheck.getUsername());
         tokenCache.addToken(loginRequestDTO.getUsername(), token);
+        Cart cart = cartRepository.findCartByUser(userCheck);
+        cartCache.addToCart(userCheck.getId(),cart);
         responseDTO.setMessage(Constant.LOGIN_SUCCESS);
         responseDTO.setStatus(HttpStatus.OK);
         responseDTO.setData(token);
@@ -182,7 +184,6 @@ public class UserServiceImpl implements UserService {
             Cart cart = new Cart();
             cart.setUser(user);
             cartRepository.save(cart);
-            cartCache.addToCart(user.getId(),cart);
         } catch (Exception e) {
             responseDTO.setMessage(Constant.REGISTER_FAIL);
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
