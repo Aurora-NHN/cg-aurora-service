@@ -51,7 +51,7 @@ public class NumerologyReportServiceImpl implements NumerologyReportService {
                 count = count - 1;
                 user.setCount(count);
                 if (count == 0){
-                    user.setVip(false);
+                    user.setCount(0);
                 }
                 userRepository.save(user);
                 NumerologyReport numerologyReport = numerologyReportConverter

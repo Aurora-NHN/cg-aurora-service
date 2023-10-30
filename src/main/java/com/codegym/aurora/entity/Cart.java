@@ -20,7 +20,7 @@ public class Cart {
     @Column(name = "TOTAL_AMOUNT", nullable = false)
     private long totalAmount;
 
-    @OneToMany(mappedBy = "cart", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "cart", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<CartLine> cartLineList = new ArrayList<>();
 
     @OneToOne

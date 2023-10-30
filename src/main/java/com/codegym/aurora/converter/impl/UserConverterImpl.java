@@ -16,10 +16,12 @@ public class UserConverterImpl implements UserConverter {
     @Override
     public UserResponseDTO converterEntityUserToUserInfoResponseDTO(User user, UserDetail userDetail) {
         return UserResponseDTO.builder()
+                .id(user.getId())
                 .fullName(userDetail.getFullName())
                 .email(userDetail.getEmail())
                 .gender(userDetail.getGender())
-                .isVip(user.isVip())
+                .count(user.getCount())
+                .totalCount(user.getTotalCount())
                 .phoneNumber(userDetail.getPhoneNumber())
                 .username(user.getUsername())
                 .build();
@@ -27,6 +29,6 @@ public class UserConverterImpl implements UserConverter {
 
     @Override
     public UserResponseDtoForNumerologyReport convertEntityToUserForNumerologyReportResponseDTO(User user) {
-        return new UserResponseDtoForNumerologyReport(user.getId(), user.getCount(), user.isVip());
+        return new UserResponseDtoForNumerologyReport(user.getId(), user.getCount());
     }
 }

@@ -31,7 +31,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private long id;
+    private Long id;
 
     @Column(name = "USERNAME")
     private String username;
@@ -45,8 +45,8 @@ public class User {
     @Column(name = "COUNT")
     private int count;
 
-    @Column(name = "IS_VIP")
-    private boolean isVip;
+    @Column(name = "TOTAL_COUNT")
+    private int totalCount;
 
     @Column(name = "IS_DELETE")
     private boolean isDelete;
