@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +27,7 @@ public class CategoryControllerForAdmin {
 
     @GetMapping
     public ResponseEntity<ResponseDTO> getCategories() {
-        ResponseDTO responseDTO = categoryService.findByActiveTrue();
+        ResponseDTO responseDTO = categoryService.findAll();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
     @GetMapping({"{id}/detail"})
@@ -36,7 +37,7 @@ public class CategoryControllerForAdmin {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO,
+    public ResponseEntity<?> createCategory(@Valid @ModelAttribute CategoryRequestDTO categoryRequestDTO,
                                             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {

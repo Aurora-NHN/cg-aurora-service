@@ -12,12 +12,14 @@ import com.codegym.aurora.repository.CategoryRepository;
 import com.codegym.aurora.repository.ProductRepository;
 import com.codegym.aurora.repository.SubCategoryRepository;
 import com.codegym.aurora.service.CategoryService;
+import com.codegym.aurora.service.ImageService;
 import com.codegym.aurora.util.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryConverter categoryConverter;
     private final ProductRepository productRepository;
     private final SubCategoryRepository subCategoryRepository;
+    private final ImageService imageService;
     public List<CategoryResponseDTO> findListCategoryResponseDTO(){
         List<Category> categoryList = categoryRepository.findAll();
         List<CategoryResponseDTO> categoryResponseDTOList = categoryConverter.convertCategoryEntityToDTO(categoryList);
@@ -37,9 +40,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseDTO findByActiveTrue() {
+    public ResponseDTO findAll() {
         ResponseDTO responseDTO = new ResponseDTO();
-        List<Category> categories = categoryRepository.findAllByActivatedTrue().orElseThrow();
+        List<Category> categories = categoryRepository.findAll();
         List<CategoryResponseDTOForAdmin> categoryResponseDTOForAdminList = categories.stream()
                 .map(categoryConverter::convertEntityToCategoryResponseDTOForAdmin)
                 .collect(Collectors.toList());
@@ -58,13 +61,25 @@ public class CategoryServiceImpl implements CategoryService {
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
             return responseDTO;
         }
+
         Category category = categoryConverter.convertCategoryRequestToEntity(categoryRequestDTO);
-        category.setActivated(true);
+        category.setActive(true);
         category.setDelete(false);
+        String thumb = null;
+        try {
+            thumb = imageService.save(categoryRequestDTO.getThumb());
+        }catch (IOException e){
+            System.err.println(e);
+        }
+
+        category.setThumb(thumb);
         categoryRepository.save(category);
         responseDTO.setMessage(Constant.CREATE_SUCCESS);
         responseDTO.setStatus(HttpStatus.CREATED);
-        responseDTO.setData(categoryConverter.convertEntityToCategoryResponseDTOForAdmin(category));
+
+        CategoryResponseDTOForAdmin responseDTOForAdmin = categoryConverter.convertEntityToCategoryResponseDTOForAdmin(category);
+        responseDTOForAdmin.setThumbUrl(imageService.getImageUrl(thumb));
+        responseDTO.setData(responseDTOForAdmin);
         return responseDTO;
     }
 
@@ -81,12 +96,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseDTO deleteById(Long categoryId) {
         ResponseDTO responseDTO = new ResponseDTO();
-        Category category = categoryRepository.findCategoryByActivatedTrue(categoryId);
+        Category category = categoryRepository.findCategoryByActiveTrue(categoryId);
         List<SubCategory> subCategories = category.getSubCategoryList();
         List<Product> allProducts = getAllProductsBySubCategories(subCategories);
 
         category.setDelete(true);
-        category.setActivated(false);
+        category.setActive(false);
 
         if (!subCategories.isEmpty()){
             subCategories.forEach(subCategory -> {
@@ -111,11 +126,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseDTO activeById(Long categoryId) {
         ResponseDTO responseDTO = new ResponseDTO();
-        Category category = categoryRepository.findCategoryByActivatedFalseAndDeletedFalse(categoryId);
+        Category category = categoryRepository.findCategoryByActiveFalseAndDeletedFalse(categoryId);
         List<SubCategory> subCategories = category.getSubCategoryList();
         List<Product> allProducts = getAllProductsBySubCategories(subCategories);
 
-        category.setActivated(true);
+        category.setActive(true);
         if (!subCategories.isEmpty()){
             subCategories.forEach(subCategory -> subCategory.setActivated(true));
             if (!allProducts.isEmpty()){
@@ -133,10 +148,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseDTO unactiveById(Long categoryId) {
         ResponseDTO responseDTO = new ResponseDTO();
-        Category category = categoryRepository.findCategoryByActivatedTrueAndDeletedFalse(categoryId);
+        Category category = categoryRepository.findCategoryByActiveTrueAndDeletedFalse(categoryId);
         List<SubCategory> subCategories = category.getSubCategoryList();
         List<Product> allProducts = getAllProductsBySubCategories(subCategories);
-        category.setActivated(false);
+        category.setActive(false);
         if (!subCategories.isEmpty()){
             subCategories.forEach(subCategory -> subCategory.setActivated(false));
             if (!allProducts.isEmpty()){

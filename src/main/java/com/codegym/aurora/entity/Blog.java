@@ -29,13 +29,16 @@ public class Blog {
     private Long id;
     private String title;
     private String author;
-    private String description;
+    private Boolean publish;
     private String content;
+    private String description;
+    private String tag;
     @Column(name = "main_image")
     private String mainImageFilename;
-    private Boolean publish;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "last_modify")
+    private LocalDateTime lastModify;
     @OneToMany(mappedBy = "blog")
     @Cascade({CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE})
     private List<BlogContentImage> blogContentImages;
