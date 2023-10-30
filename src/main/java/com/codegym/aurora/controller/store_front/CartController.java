@@ -34,7 +34,7 @@ public class CartController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/add-quantity-to-cart")
+    @PostMapping("/add-quantity")
     public ResponseEntity<ResponseDTO> addNewQuantityToCart(
             @RequestParam(name = "productId") Long productId,
             @RequestParam(name = "quantity") int quantity
@@ -42,9 +42,16 @@ public class CartController {
         ResponseDTO responseDTO = cartService.addNewQuantityToCart(productId, quantity);
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
-    @GetMapping("/save-cart")
+    @GetMapping("/save")
     public ResponseEntity<ResponseDTO> saveCart(){
         ResponseDTO responseDTO = cartService.saveCart();
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
+
+    @GetMapping("/reset")
+    public ResponseEntity<ResponseDTO> resetCart(){
+        ResponseDTO responseDTO = cartService.resetCart();
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
+    }
+
 }

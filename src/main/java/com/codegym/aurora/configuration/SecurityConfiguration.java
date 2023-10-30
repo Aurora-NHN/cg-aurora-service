@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -99,6 +100,13 @@ public class SecurityConfiguration  {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        httpSecurity.authorizeHttpRequests()
+                .antMatchers("/api/admin/login")
+                .permitAll()
+                .antMatchers("/api/admin/**")
+                .hasRole("ADMIN");
+
+
         httpSecurity.authorizeHttpRequests() // links start with /api/
                 .antMatchers("/api/**", "/api/login","api/register-user", "api/register-admin") // perform segregate authorize
                 .permitAll();
@@ -111,9 +119,7 @@ public class SecurityConfiguration  {
 //
 //        // Pages require login with role: ROLE_CUSTOMER
 //        // If not login at user role yet, redirect to /login
-//        httpSecurity.authorizeHttpRequests()
-//                .antMatchers("/api/admin/**")
-//                .hasRole("ADMIN");
+
 //
 //        // When user login with ROLE_CUSTOMER, but try to
 //        // access pages require ROLE_ADMIN, redirect to /error-403
