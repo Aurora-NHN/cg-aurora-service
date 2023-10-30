@@ -1,6 +1,8 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.SoulNumberList;
+import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.SoulNumberResponseDTO;
 import com.codegym.aurora.service.SoulNumberService;
 import com.codegym.aurora.util.NumeroloryConstants;
@@ -42,7 +44,7 @@ public class SoulNumberServiceImpl implements SoulNumberService {
     }
 
     @Override
-    public SoulNumberResponseDTO getSoulNumberResponseDtoInStatic(int soulNumber) {
+    public SoulNumberResponseDTO getSoulNumberResponseDtoInStatic(Integer soulNumber) {
         SoulNumberResponseDTO result = staticSoulNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == soulNumber)
                 .findFirst()
@@ -51,8 +53,8 @@ public class SoulNumberServiceImpl implements SoulNumberService {
     }
 
     @Override
-    public int calculateSoulNumber(String fullName) {
-        int soulNumber = 0;
+    public Integer calculateSoulNumber(String fullName) {
+        Integer soulNumber = 0;
         String upperCaseName = fullName.toUpperCase();
         String[] namePhrases = upperCaseName.split(" ");
 
@@ -85,11 +87,19 @@ public class SoulNumberServiceImpl implements SoulNumberService {
 
             }
         }
-        int reduceSoulNumber = NumeroloryUtils.calculateDigitSum(soulNumber);
-        if (reduceSoulNumber == 11 || reduceSoulNumber == 22){
+        Integer reduceSoulNumber = NumeroloryUtils.calculateDigitSum(soulNumber);
+        if (reduceSoulNumber == NumeroloryConstants.MASTER_NUMBER_11 ||
+                reduceSoulNumber == NumeroloryConstants.MASTER_NUMBER_22){
             return reduceSoulNumber;
         }
         return NumeroloryUtils.reduceNumber(reduceSoulNumber);
+    }
+
+    @Override
+    public SoulNumberResponseDTO findSoulNumber(DataNumerologyReport data) {
+        String fullName = NumeroloryUtils.removeAccent(data.getFullName());
+        Integer soulNumer = calculateSoulNumber(fullName);
+        return getSoulNumberResponseDtoInStatic(soulNumer);
     }
 
 }

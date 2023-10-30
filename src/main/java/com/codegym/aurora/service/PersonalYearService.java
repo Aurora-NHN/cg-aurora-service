@@ -1,6 +1,5 @@
 package com.codegym.aurora.service;
 
-import com.codegym.aurora.entity.PersonalYear;
 import com.codegym.aurora.payload.response.PersonalYearResponseDTO;
 import com.codegym.aurora.payload.response.PersonalYearResponseDtoForReport;
 
@@ -8,12 +7,11 @@ import java.util.List;
 
 public interface PersonalYearService {
 
-    PersonalYearResponseDTO getPersonalYearItem(int number);
-    int calculatePersonalYearFirst(int attitudeNumber);
-    int calculatePersonalYearSecond(int attitudeNumber);
-    int calculatePersonalYearThird(int attitudeNumber);
+    PersonalYearResponseDTO getPersonalYearItem(Integer number);
 
-    List<PersonalYear> createPersonalYearEntity(int attitudeNumber);
+    Integer calculatePersonalYear(Integer attitudeNumber,Integer year);
+    List<PersonalYearResponseDtoForReport> createPersonalYearList(Integer attitudeNumber);
 
-    List<PersonalYearResponseDtoForReport> createPersonalYearResponseDtoForReport(List<PersonalYear> personalYearList);
+
+
 }

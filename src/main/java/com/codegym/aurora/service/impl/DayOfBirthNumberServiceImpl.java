@@ -1,8 +1,11 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.DayOfBirthNumber;
+import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.DayOfBirthNumberResponseDTO;
 import com.codegym.aurora.service.DayOfBirthNumberService;
+import com.codegym.aurora.util.NumeroloryConstants;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.ClassPathResource;
@@ -34,7 +37,7 @@ public class DayOfBirthNumberServiceImpl implements DayOfBirthNumberService {
         }
     }
     @Override
-    public DayOfBirthNumberResponseDTO getDayOfBirthNumber(int number) {
+    public DayOfBirthNumberResponseDTO getDayOfBirthNumber(Integer number) {
         DayOfBirthNumberResponseDTO result = staticDayOfBirthNumber.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
@@ -43,15 +46,22 @@ public class DayOfBirthNumberServiceImpl implements DayOfBirthNumberService {
     }
 
     @Override
-    public int calculateDayOfBirthNumber(int day) {
-        if (day == 11 || day == 22) {
+    public Integer calculateDayOfBirthNumber(Integer day) {
+        if (day == NumeroloryConstants.MASTER_NUMBER_11 ||
+                day == NumeroloryConstants.MASTER_NUMBER_22) {
             return getDayOfBirthNumber(day).getNumber();
         }
         int reduceNumber = calculateReducedNumber(day);
         return getDayOfBirthNumber(reduceNumber).getNumber();
     }
 
-    private int calculateReducedNumber(int number) {
+    @Override
+    public DayOfBirthNumberResponseDTO findDayOfBirthNumber(DataNumerologyReport data) {
+        Integer dayOfBirthNumber = calculateDayOfBirthNumber(data.getDayOfBirth());
+        return getDayOfBirthNumber(dayOfBirthNumber);
+    }
+
+    private int calculateReducedNumber(Integer number) {
         while (number >10){
             number = NumeroloryUtils.calculateDigitSum(number);
         }

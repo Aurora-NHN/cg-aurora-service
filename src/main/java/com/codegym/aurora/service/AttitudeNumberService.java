@@ -1,9 +1,12 @@
 package com.codegym.aurora.service;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
+import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.AttitudeNumberResponseDTO;
 
 public interface AttitudeNumberService {
-    AttitudeNumberResponseDTO getAttitudeNumber(int number);
+    AttitudeNumberResponseDTO getAttitudeNumber(Integer number);
 
-    int calculateAttitudeNumber(int day, int month);
+    AttitudeNumberResponseDTO findAttitudeNumber(NumerologyReportRequestDTO requestDTO);
+    AttitudeNumberResponseDTO findAttitudeNumber(DataNumerologyReport data);
 }

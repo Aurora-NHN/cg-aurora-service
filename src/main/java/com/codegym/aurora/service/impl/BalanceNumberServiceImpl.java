@@ -1,7 +1,9 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.BalanceNumberList;
 import com.codegym.aurora.payload.from_file.SoulNumberList;
+import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.BalanceNumberResponseDTO;
 import com.codegym.aurora.payload.response.SoulNumberResponseDTO;
 import com.codegym.aurora.service.BalanceNumberService;
@@ -44,7 +46,7 @@ public class BalanceNumberServiceImpl implements BalanceNumberService {
     }
 
     @Override
-    public BalanceNumberResponseDTO getBalanceNumberResponseDtoInStatic(int balanceNumber) {
+    public BalanceNumberResponseDTO getBalanceNumberResponseDtoInStatic(Integer balanceNumber) {
        BalanceNumberResponseDTO result = staticBalanceNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == balanceNumber)
                 .findFirst()
@@ -53,8 +55,9 @@ public class BalanceNumberServiceImpl implements BalanceNumberService {
     }
 
     @Override
-    public int calculateBalanceNumber(String fullName) {
-        int balanceNumberSum = 0;
+    public Integer calculateBalanceNumber(DataNumerologyReport data) {
+        Integer balanceNumberSum = 0;
+        String fullName = NumeroloryUtils.removeAccent(data.getFullName());
         String upperCaseName = fullName.toUpperCase();
         String[] namePhrases = upperCaseName.split(" ");
 
@@ -66,6 +69,12 @@ public class BalanceNumberServiceImpl implements BalanceNumberService {
         }
 
         return NumeroloryUtils.reduceToSingleDigit(balanceNumberSum);
+    }
+
+    @Override
+    public BalanceNumberResponseDTO findBalanceNumber(DataNumerologyReport data) {
+        Integer balanceNumer = calculateBalanceNumber(data);
+        return getBalanceNumberResponseDtoInStatic(balanceNumer);
     }
 
 

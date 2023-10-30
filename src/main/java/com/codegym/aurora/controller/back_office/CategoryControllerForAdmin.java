@@ -73,5 +73,4 @@ public class CategoryControllerForAdmin {
         return new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
 
-
 }

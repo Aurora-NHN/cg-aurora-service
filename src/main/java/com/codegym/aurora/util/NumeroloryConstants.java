@@ -109,4 +109,8 @@ public class NumeroloryConstants {
         consonantLettersMap.put('Y', 7);
         consonantLettersMap.put('Z', 8);
     }
+
+    public static final int MASTER_NUMBER_33 = 33;
+    public static final int MASTER_NUMBER_11= 11;
+    public static final int MASTER_NUMBER_22 = 22;
 }

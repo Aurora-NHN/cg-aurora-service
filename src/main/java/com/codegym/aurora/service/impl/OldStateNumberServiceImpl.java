@@ -1,5 +1,6 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.OldStateNumber;
 import com.codegym.aurora.payload.response.OldStateNumberResponseDTO;
 import com.codegym.aurora.service.OldStateNumberService;
@@ -36,7 +37,7 @@ public class OldStateNumberServiceImpl implements OldStateNumberService {
     }
 
     @Override
-    public OldStateNumberResponseDTO getOldStateNumber(int number) {
+    public OldStateNumberResponseDTO getOldStateNumber(Integer number) {
         OldStateNumberResponseDTO result = staticOldStateNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
@@ -45,12 +46,13 @@ public class OldStateNumberServiceImpl implements OldStateNumberService {
     }
 
     @Override
-    public int calculateOldStateNumber(int year) {
-        int sumYear = NumeroloryUtils.calculateDigitSum(year);
-        int oldStateNumber = calculateReducedNumber(sumYear);
-        return getOldStateNumber(oldStateNumber).getNumber();
+    public OldStateNumberResponseDTO findOldStateNumber(DataNumerologyReport data) {
+        Integer sumYear = NumeroloryUtils.calculateDigitSum(data.getYearOfBirth());
+        Integer oldStateNumber = calculateReducedNumber(sumYear);
+        return getOldStateNumber(oldStateNumber);
     }
-    private int calculateReducedNumber(int number) {
+
+    private int calculateReducedNumber(Integer number) {
         while (number > 9) {
             number = NumeroloryUtils.calculateDigitSum(number);
         }

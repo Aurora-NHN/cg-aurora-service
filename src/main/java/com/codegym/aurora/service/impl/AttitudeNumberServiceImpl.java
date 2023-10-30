@@ -1,6 +1,8 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.AttitudeNumber;
+import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.AttitudeNumberResponseDTO;
 import com.codegym.aurora.service.AttitudeNumberService;
 import com.codegym.aurora.util.NumeroloryUtils;
@@ -36,18 +38,26 @@ public class AttitudeNumberServiceImpl implements AttitudeNumberService {
         }
     }
     @Override
-    public AttitudeNumberResponseDTO getAttitudeNumber(int number) {
+    public AttitudeNumberResponseDTO getAttitudeNumber(Integer number) {
        AttitudeNumberResponseDTO result = staticAttitudeNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy chỉ số thái độ phù hợp"));
         return result;
     }
+
     @Override
-    public int calculateAttitudeNumber(int day, int month) {
-        int sum = day + month;
-        int attitudeNumber = NumeroloryUtils.reduceNumber(sum);
-        return getAttitudeNumber(attitudeNumber).getNumber();
+    public AttitudeNumberResponseDTO findAttitudeNumber(NumerologyReportRequestDTO requestDTO) {
+        Integer attitudeNumber = NumeroloryUtils.reduceNumber(
+                requestDTO.getDayOfBirth() + requestDTO.getDayOfBirth());
+        return getAttitudeNumber(attitudeNumber);
+    }
+
+    @Override
+    public AttitudeNumberResponseDTO findAttitudeNumber(DataNumerologyReport data) {
+        Integer attitudeNumber = NumeroloryUtils.reduceNumber(
+                data.getDayOfBirth() + data.getDayOfBirth());
+        return getAttitudeNumber(attitudeNumber);
     }
 
 }
