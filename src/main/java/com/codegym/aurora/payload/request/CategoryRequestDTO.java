@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ public class CategoryRequestDTO {
     @NotBlank
     @Size(max = 255)
     private String name;
-    private boolean isDelete;
-    private boolean isActivated;
+    private String description;
+    private MultipartFile thumb;
+    private boolean active;
 }

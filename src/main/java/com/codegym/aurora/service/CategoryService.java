@@ -9,7 +9,7 @@ import java.util.List;
 public interface CategoryService {
     List<CategoryResponseDTO> findListCategoryResponseDTO();
 
-    ResponseDTO findByActiveTrue();
+    ResponseDTO findAll();
     ResponseDTO create(CategoryRequestDTO categoryRequestDTO);
 
     ResponseDTO update(CategoryRequestDTO categoryRequestDTO);

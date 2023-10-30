@@ -1,12 +1,16 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.converter.BlogCategoryConverter;
 import com.codegym.aurora.converter.BlogConverter;
 import com.codegym.aurora.entity.Blog;
+import com.codegym.aurora.entity.BlogCategory;
 import com.codegym.aurora.entity.BlogContentImage;
 import com.codegym.aurora.payload.request.BlogContentImageDto;
 import com.codegym.aurora.payload.request.BlogCreateRequestDto;
 import com.codegym.aurora.payload.request.BlogUpdateRequestDto;
+import com.codegym.aurora.payload.response.BlogCategoryResponseDto;
 import com.codegym.aurora.payload.response.BlogResponseDto;
+import com.codegym.aurora.repository.BlogCategoryRepository;
 import com.codegym.aurora.repository.BlogRepository;
 import com.codegym.aurora.service.BlogService;
 import com.codegym.aurora.service.ImageService;
@@ -15,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,6 +32,8 @@ public class BlogServiceImpl implements BlogService {
     private final BlogRepository blogRepository;
     private final ImageService imageService;
     private final BlogConverter blogConverter;
+    private final BlogCategoryRepository blogCategoryRepository;
+    private final BlogCategoryConverter blogCategoryConverter;
 
     @Override
     public ResponseEntity<Object> save(BlogCreateRequestDto blogCreateRequestDto) {
@@ -104,7 +109,7 @@ public class BlogServiceImpl implements BlogService {
     public ResponseEntity<Object> deleteBlog(Long blogId) {
         Blog blog = blogRepository.findById(blogId).orElse(null);
         if (blog == null) {
-            return new ResponseEntity<>("Blog not found!",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Blog not found!", HttpStatus.BAD_REQUEST);
         }
 
         List<BlogContentImage> contentImages = blog.getBlogContentImages();
@@ -142,5 +147,11 @@ public class BlogServiceImpl implements BlogService {
         }
 
         return unDeletedImages;
+    }
+
+    @Override
+    public List<BlogCategoryResponseDto> findAllBlogCategory() {
+        List<BlogCategory> categories = blogCategoryRepository.findAll();
+        return blogCategoryConverter.convert(categories);
     }
 }
