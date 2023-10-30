@@ -5,6 +5,7 @@ import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.request.ProductRequestInCartLineDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
+import com.codegym.aurora.payload.response.ProductInAdminResponseDTO;
 import com.codegym.aurora.payload.response.ProductResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import org.springframework.data.domain.Page;
@@ -24,4 +25,7 @@ public interface ProductConverter {
     Product convertProductDTOToEntity(ProductRequestInCartLineDTO productRequestInCartLineDTO);
     List<ProductResponseDTO> convertProductListEntityToDTO(List<Product> productList);
 
+    ProductInAdminResponseDTO  convert(Product product);
+    Page<ProductInAdminResponseDTO> convert(Page<Product> products);
+    List<ProductInAdminResponseDTO> convertProductsToReponseList(List<Product> productList);
 }

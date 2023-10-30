@@ -1,9 +1,9 @@
 package com.codegym.aurora.service;
 
 
-import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
+import com.codegym.aurora.payload.response.ProductInAdminResponseDTO;
 import com.codegym.aurora.payload.response.ProductResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +22,7 @@ public interface ProductService {
 
     boolean addProduct(ProductRequestDTO productRequestDTO) throws IOException;
     List<ProductResponseDTO> getOtherProducts();
+
+
+    Page<ProductInAdminResponseDTO> getProductsPageInAdmin(Integer size, Pageable pageable);
 }

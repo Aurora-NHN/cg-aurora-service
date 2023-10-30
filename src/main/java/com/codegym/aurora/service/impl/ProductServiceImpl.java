@@ -6,6 +6,7 @@ import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.ProductImage;
 import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
+import com.codegym.aurora.payload.response.ProductInAdminResponseDTO;
 import com.codegym.aurora.payload.response.ProductResponseDTO;
 import com.codegym.aurora.repository.ProductRepository;
 import com.codegym.aurora.service.ImageService;
@@ -20,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @Transactional
@@ -132,5 +130,16 @@ public class ProductServiceImpl implements ProductService {
         List<Product> randomProducts = productRepository.findRandomProducts(4);
         List<ProductResponseDTO> productResponseDTOS = productConverter.convertProductListEntityToDTO(randomProducts);
         return productResponseDTOS;
+    }
+
+    @Override
+    public Page<ProductInAdminResponseDTO> getProductsPageInAdmin(Integer size, Pageable pageable) {
+        pageable = PageRequest.of(
+                pageable.getPageNumber(),
+                size,
+                Sort.by(Sort.Direction.DESC, "createDay"));
+        Page<Product> productPage = productRepository.findAll(pageable);
+        Page<ProductInAdminResponseDTO> productInAdminResponseDTOPage = productConverter.convert(productPage);
+        return productInAdminResponseDTOPage;
     }
 }

@@ -8,6 +8,7 @@ import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.request.ProductRequestInCartLineDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
 import com.codegym.aurora.payload.response.ProductImageResponseDTO;
+import com.codegym.aurora.payload.response.ProductInAdminResponseDTO;
 import com.codegym.aurora.payload.response.ProductResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.repository.ProductImageRepository;
@@ -83,6 +84,49 @@ public class ProductConverterImpl implements ProductConverter {
         List<ProductResponseDTO> products = new ArrayList<>();
         for (Product product:productList){
             ProductResponseDTO productResponseDTO = new ProductResponseDTO();
+            BeanUtils.copyProperties(product,productResponseDTO);
+            products.add(productResponseDTO);
+            List<ProductImage> productImageList = product.getProductImageUrlList();
+            List<ProductImageResponseDTO> productImageResponseDTOList= convertProductImageEntityToDTO(productImageList);
+            productResponseDTO.setProductImageUrlList(productImageResponseDTOList);
+        }
+        return products;
+    }
+
+    @Override
+    public ProductInAdminResponseDTO convert(Product product) {
+        ProductInAdminResponseDTO productResponseDTO = new ProductInAdminResponseDTO();
+        BeanUtils.copyProperties(product,productResponseDTO);
+        List<ProductImage> productImageList = productImageRepository.findProductImageByProductId(product.getId());
+        List<ProductImageResponseDTO> productImageResponseDTOList = convertProductImageEntityToDTO(productImageList);
+        productResponseDTO.setProductImageUrlList(productImageResponseDTOList);
+        return productResponseDTO;
+    }
+
+
+    @Override
+    public Page<ProductInAdminResponseDTO> convert(Page<Product> products) {
+        List<ProductInAdminResponseDTO> productDtoList = new ArrayList<>();
+        List<ProductImageResponseDTO> productImageResponseDTOList = new ArrayList<>();
+        for (Product product : products.getContent()) {
+            if (product.getProductImageUrlList() == null) {
+                ProductInAdminResponseDTO productDto = convert(product);
+                productDtoList.add(productDto);
+            } else {
+                ProductInAdminResponseDTO productDto = convert(product);
+                productImageResponseDTOList = convertProductImageEntityToDTO(product.getProductImageUrlList());
+                productDto.setProductImageUrlList(productImageResponseDTOList);
+                productDtoList.add(productDto);
+            }
+        }
+        return new PageImpl<>(productDtoList, products.getPageable(), products.getTotalElements());
+    }
+
+    @Override
+    public List<ProductInAdminResponseDTO> convertProductsToReponseList(List<Product> productList) {
+        List<ProductInAdminResponseDTO> products = new ArrayList<>();
+        for (Product product:productList){
+            ProductInAdminResponseDTO productResponseDTO = new ProductInAdminResponseDTO();
             BeanUtils.copyProperties(product,productResponseDTO);
             products.add(productResponseDTO);
             List<ProductImage> productImageList = product.getProductImageUrlList();
