@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponseDtoForNumerologyReport {
-    private long id;
-    private int count;
+public class LoginResponseDTO {
+
+    private String jwtToken;
+
+    private UserResponseDTO userResponseDTO;
+
 }

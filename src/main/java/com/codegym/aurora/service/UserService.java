@@ -5,6 +5,9 @@ import com.codegym.aurora.payload.request.PasswordRequestDTO;
 import com.codegym.aurora.payload.request.RegisterRequestDTO;
 import com.codegym.aurora.payload.request.UserInfoRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
+import com.codegym.aurora.payload.response.UserAdminResponseDTO;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -37,4 +40,6 @@ public interface UserService {
     ResponseDTO googleAuthenticate(String credential);
 
     ResponseDTO getCountOfUser();
+
+    List<UserAdminResponseDTO> getAll();
 }

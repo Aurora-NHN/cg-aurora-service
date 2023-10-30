@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponseDTO {
+public class UserAdminResponseDTO {
 
     private Long id;
 
@@ -27,4 +27,7 @@ public class UserResponseDTO {
 
     private String email;
 
+    private boolean isDelete;
+
+    private boolean isActivated;
 }

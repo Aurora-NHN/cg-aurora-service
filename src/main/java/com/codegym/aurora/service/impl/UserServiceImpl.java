@@ -10,7 +10,9 @@ import com.codegym.aurora.payload.request.LoginRequestDTO;
 import com.codegym.aurora.payload.request.PasswordRequestDTO;
 import com.codegym.aurora.payload.request.RegisterRequestDTO;
 import com.codegym.aurora.payload.request.UserInfoRequestDTO;
+import com.codegym.aurora.payload.response.LoginResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
+import com.codegym.aurora.payload.response.UserAdminResponseDTO;
 import com.codegym.aurora.payload.response.UserResponseDTO;
 import com.codegym.aurora.repository.CartRepository;
 import com.codegym.aurora.repository.UserDetailRepository;
@@ -33,7 +35,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @Transactional
@@ -56,6 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseDTO login(LoginRequestDTO loginRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
         User userCheck = userRepository.findByUsername(loginRequestDTO.getUsername());
         if (userCheck == null) {
             responseDTO.setMessage(Constant.USER_IS_NOT_EXISTS);
@@ -71,12 +76,15 @@ public class UserServiceImpl implements UserService {
             return responseDTO;
         }
         String token = jwtTokenProvider.generateToken(userCheck.getUsername());
+        UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(userCheck, userCheck.getUserDetail());
+        loginResponseDTO.setJwtToken(token);
+        loginResponseDTO.setUserResponseDTO(userResponseDTO);
         tokenCache.addToken(loginRequestDTO.getUsername(), token);
         Cart cart = cartRepository.findCartByUser(userCheck);
         cartCache.addToCart(userCheck.getId(),cart);
         responseDTO.setMessage(Constant.LOGIN_SUCCESS);
         responseDTO.setStatus(HttpStatus.OK);
-        responseDTO.setData(token);
+        responseDTO.setData(loginResponseDTO);
         return responseDTO;
     }
 
@@ -333,5 +341,25 @@ public class UserServiceImpl implements UserService {
         responseDTO.setStatus(HttpStatus.OK);
         responseDTO.setData(count);
         return responseDTO;
+    }
+
+    @Override
+    public List<UserAdminResponseDTO> getAll() {
+        List<UserAdminResponseDTO> list = new ArrayList<>();
+        List<User> users = userRepository.findAll();
+        for (User user: users){
+            UserAdminResponseDTO userAdminResponseDTO = new UserAdminResponseDTO();
+            userAdminResponseDTO.setActivated(user.isActivated());
+            userAdminResponseDTO.setDelete(user.isDelete());
+            userAdminResponseDTO.setCount(user.getCount());
+            userAdminResponseDTO.setTotalCount(user.getTotalCount());
+            userAdminResponseDTO.setUsername(user.getUsername());
+            userAdminResponseDTO.setEmail(user.getUserDetail().getEmail());
+            userAdminResponseDTO.setGender(user.getUserDetail().getGender());
+            userAdminResponseDTO.setPhoneNumber(user.getUserDetail().getPhoneNumber());
+            userAdminResponseDTO.setFullName(user.getUserDetail().getFullName());
+            list.add(userAdminResponseDTO);
+        }
+        return list;
     }
 }
