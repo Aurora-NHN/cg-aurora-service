@@ -23,8 +23,7 @@ public class Cart {
     private long totalAmount;
 
 //    @OneToMany(mappedBy = "cart", cascade = {CascadeType.MERGE})
-@OneToMany(mappedBy = "cart", cascade = {CascadeType.MERGE})
-
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "cart", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<CartLine> cartLineList = new ArrayList<>();
 
     @OneToOne

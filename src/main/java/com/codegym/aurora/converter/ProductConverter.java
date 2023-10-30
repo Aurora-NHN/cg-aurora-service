@@ -22,5 +22,6 @@ public interface ProductConverter {
     ProductResponseDTO convertProductEntityInCartLineToDTO(Product product);
 
     Product convertProductDTOToEntity(ProductRequestInCartLineDTO productRequestInCartLineDTO);
+    List<ProductResponseDTO> convertProductListEntityToDTO(List<Product> productList);
 
 }

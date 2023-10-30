@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -73,5 +74,10 @@ public class ProductController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+    @GetMapping("/other-product")
+    public ResponseEntity<List<ProductResponseDTO>> getOtherProducts() {
+        List<ProductResponseDTO> productResponseDTOS = productService.getOtherProducts();
+        return new ResponseEntity<>(productResponseDTOS, HttpStatus.OK);
 
+    }
 }

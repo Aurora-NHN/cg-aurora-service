@@ -9,13 +9,14 @@ import com.codegym.aurora.entity.Cart;
 import com.codegym.aurora.entity.CartLine;
 import com.codegym.aurora.entity.Order;
 import com.codegym.aurora.entity.OrderDetail;
+import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.User;
 import com.codegym.aurora.payload.request.AddressRequestDTO;
-import com.codegym.aurora.payload.response.CartDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.repository.CartLineRepository;
 import com.codegym.aurora.repository.CartRepository;
 import com.codegym.aurora.repository.OrderRepository;
+import com.codegym.aurora.repository.ProductRepository;
 import com.codegym.aurora.repository.UserRepository;
 import com.codegym.aurora.service.OrderService;
 import com.codegym.aurora.service.UserService;
@@ -37,11 +38,10 @@ public class OrderServiceImpl implements OrderService {
     private final UserService userService;
     private final UserRepository userRepository;
     private final AddressConvert addressConvert;
-    private final CartLineRepository cartLineRepository;
     private final CartCache cartCache;
     private final OrderCache orderCache;
     private final OrderRepository orderRepository;
-    private final CartConverter cartConverter;
+    private final ProductRepository productRepository;
 
     @Override
     public ResponseDTO createOrderDetail(AddressRequestDTO addressRequestDTO) {
@@ -80,6 +80,11 @@ public class OrderServiceImpl implements OrderService {
             OrderDetail orderDetail = new OrderDetail();
             BeanUtils.copyProperties(cartLine, orderDetail);
             orderDetailList.add(orderDetail);
+            Product cartLineProduct = cartLine.getProduct();
+            Product product = productRepository.findProductById(cartLineProduct.getId());
+            int newQuantity = product.getQuantity() - cartLineProduct.getQuantity();
+            product.setQuantity(newQuantity);
+            productRepository.save(product);
         }
         order.setOrderDetailList(orderDetailList);
         orderRepository.save(order);

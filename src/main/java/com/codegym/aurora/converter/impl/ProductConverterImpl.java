@@ -78,6 +78,20 @@ public class ProductConverterImpl implements ProductConverter {
         return product;
     }
 
+    @Override
+    public List<ProductResponseDTO> convertProductListEntityToDTO(List<Product> productList) {
+        List<ProductResponseDTO> products = new ArrayList<>();
+        for (Product product:productList){
+            ProductResponseDTO productResponseDTO = new ProductResponseDTO();
+            BeanUtils.copyProperties(product,productResponseDTO);
+            products.add(productResponseDTO);
+            List<ProductImage> productImageList = product.getProductImageUrlList();
+            List<ProductImageResponseDTO> productImageResponseDTOList= convertProductImageEntityToDTO(productImageList);
+            productResponseDTO.setProductImageUrlList(productImageResponseDTOList);
+        }
+        return products;
+    }
+
     public List<ProductImageResponseDTO> convertProductImageEntityToDTO(List<ProductImage> productImageList) {
         List<ProductImageResponseDTO> productImageResponseDTOList = new ArrayList<>();
         for (ProductImage productImage : productImageList) {
@@ -87,5 +101,6 @@ public class ProductConverterImpl implements ProductConverter {
         }
         return productImageResponseDTOList;
     }
+
 
 }
