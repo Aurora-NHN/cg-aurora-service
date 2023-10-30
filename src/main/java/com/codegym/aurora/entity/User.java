@@ -6,10 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,15 +56,18 @@ public class User {
     @Column(name = "IS_ACTIVATED")
     private boolean isActivated;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private UserDetail userDetail;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private List<NumerologyReport> numeroloryReportList = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+//    private List<NumerologyReport> numeroloryReportList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<HistoryPayment> historyPayments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<DataNumerologyReport> dataNumerologyReportList = new ArrayList<>();
 
     @OneToOne(mappedBy = "user")
     private Cart carts ;

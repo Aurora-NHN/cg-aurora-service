@@ -1,13 +1,16 @@
 package com.codegym.aurora.service.impl;
 
-import com.codegym.aurora.entity.PinnacleOfLife;
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.PinnacleOfLifeList;
+import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.PinnacleOfLifeResponseDTO;
-import com.codegym.aurora.repository.PinnacleOfLifeRepository;
+import com.codegym.aurora.payload.response.PinnacleOfLifeResponseDTOForReport;
 import com.codegym.aurora.service.PinnacleOfLifeService;
+import com.codegym.aurora.util.NumeroloryConstants;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +23,12 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class PinnacleOfLifeServiceImpl implements PinnacleOfLifeService {
-    private final PinnacleOfLifeRepository pinnacleOfLifeRepository;
+
     private static List<PinnacleOfLifeResponseDTO> staticPinnacleOfLifeList = new ArrayList<>();
-    private static final int SPECIAL_NUMBER_FOR_CALCULATE_AGE = 36;
-    private static final int AGE_CYCLE = 9;
+    private static final Integer SPECIAL_NUMBER_FOR_CALCULATE_AGE = 36;
+    private static final Integer AGE_CYCLE = 9;
+    private static final  Integer SPECIAL_PINNACLE_OF_LIFE_NUMBER_10 = 10;
+    private static final  Integer SPECIAL_PINNACLE_OF_LIFE_NUMBER_11 = 11;
     static {
         try {
             staticPinnacleOfLifeList= loadStaticPinnacleOfLifeList();
@@ -42,7 +47,7 @@ public class PinnacleOfLifeServiceImpl implements PinnacleOfLifeService {
     }
 
     @Override
-    public PinnacleOfLifeResponseDTO getPinnacleOfLifeResponseDtoInStaticList(int pinnacleOfLifeNumber) {
+    public PinnacleOfLifeResponseDTO getPinnacleOfLifeResponseDtoInStaticList(Integer pinnacleOfLifeNumber) {
         PinnacleOfLifeResponseDTO result = staticPinnacleOfLifeList.stream()
                 .filter(dto -> dto.getNumber() == pinnacleOfLifeNumber)
                 .findFirst()
@@ -51,76 +56,106 @@ public class PinnacleOfLifeServiceImpl implements PinnacleOfLifeService {
     }
 
     @Override
-    public int calculatePinnacleOfLifeFirst(int month, int day) {
-        int monthReduce = NumeroloryUtils.reduceToSingleDigit(month);
-        int dayReduce = NumeroloryUtils.reduceToSingleDigit(day);
+    public Integer calculatePinnacleOfLifeFirst(DataNumerologyReport data) {
+        Integer monthReduce = NumeroloryUtils.reduceToSingleDigit(data.getMonthOfBirth());
+        Integer dayReduce = NumeroloryUtils.reduceToSingleDigit(data.getDayOfBirth());
         return NumeroloryUtils.reduceToSingleDigit(monthReduce + dayReduce);
     }
 
     @Override
-    public int calculatePinnacleOfLifeSecond(int day, int year) {
-        int dayReduce = NumeroloryUtils.reduceToSingleDigit(day);
-        int yearReduce = NumeroloryUtils.reduceToSingleDigit(year);
+    public Integer calculatePinnacleOfLifeSecond(DataNumerologyReport data) {
+        Integer dayReduce = NumeroloryUtils.reduceToSingleDigit(data.getDayOfBirth());
+        Integer yearReduce = NumeroloryUtils.reduceToSingleDigit(data.getYearOfBirth());
         return NumeroloryUtils.reduceToSingleDigit(dayReduce + yearReduce);
     }
 
     @Override
-    public int calculatePinnacleOfLifeThird(int pinnacleOfLifeFirst, int pinnacleOfLifeSecond) {
-        int sum = pinnacleOfLifeFirst + pinnacleOfLifeSecond;
-        if (sum == 10 || sum == 11){
+    public Integer calculatePinnacleOfLifeThird(Integer pinnacleOfLifeFirst, Integer pinnacleOfLifeSecond) {
+        Integer sum = pinnacleOfLifeFirst + pinnacleOfLifeSecond;
+        if (sum == SPECIAL_PINNACLE_OF_LIFE_NUMBER_10 ||
+                sum == SPECIAL_PINNACLE_OF_LIFE_NUMBER_11){
             return sum;
         }
         return NumeroloryUtils.reduceToSingleDigit(sum);
     }
 
     @Override
-    public int calculatePinnacleOfLifeFour(int month, int year) {
-        int reduceMonth = NumeroloryUtils.reduceToSingleDigit(month);
-        int reduceYear = NumeroloryUtils.reduceToSingleDigit(year);
-        int sum = reduceMonth + reduceYear;
-        if (sum == 10 || sum == 11){
+    public Integer calculatePinnacleOfLifeFour(DataNumerologyReport data) {
+        Integer reduceMonth = NumeroloryUtils.reduceToSingleDigit(data.getMonthOfBirth());
+        Integer reduceYear = NumeroloryUtils.reduceToSingleDigit(data.getYearOfBirth());
+        Integer sum = reduceMonth + reduceYear;
+        if (sum == SPECIAL_PINNACLE_OF_LIFE_NUMBER_10 ||
+                sum == SPECIAL_PINNACLE_OF_LIFE_NUMBER_11){
             return sum;
         }
         return NumeroloryUtils.reduceToSingleDigit(sum);
     }
 
     @Override
-    public int calculateAgeForPinnacleOfLifeFirst(int lifePathNumber) {
+    public Integer calculateAgeForPinnacleOfLifeFirst(Integer lifePathNumber) {
         return SPECIAL_NUMBER_FOR_CALCULATE_AGE - lifePathNumber;
     }
 
     @Override
-    public int calculateAgeForOrtherPinnacleOfLife(int age) {
-        return age + AGE_CYCLE;
+    public List<PinnacleOfLifeResponseDTO> getPinnacleOfLifeListInStatic(DataNumerologyReport data) {
+        List<PinnacleOfLifeResponseDTO> pinnacleOfLifeList = new ArrayList<>();
+
+        Integer pinnacleOfLifeFirstNumber = calculatePinnacleOfLifeFirst(data);
+        Integer pinnacleOfLifeSecondNumber = calculatePinnacleOfLifeSecond(data);
+        Integer pinnacleOfLifeThirdNumber = calculatePinnacleOfLifeThird(
+                pinnacleOfLifeFirstNumber,
+                pinnacleOfLifeSecondNumber);
+        Integer pinnacleOfLifeFourNumber = calculatePinnacleOfLifeFour(data);
+
+        pinnacleOfLifeList.add(getPinnacleOfLifeResponseDtoInStaticList(pinnacleOfLifeFirstNumber));
+        pinnacleOfLifeList.add(getPinnacleOfLifeResponseDtoInStaticList(pinnacleOfLifeSecondNumber));
+        pinnacleOfLifeList.add(getPinnacleOfLifeResponseDtoInStaticList(pinnacleOfLifeThirdNumber));
+        pinnacleOfLifeList.add(getPinnacleOfLifeResponseDtoInStaticList(pinnacleOfLifeFourNumber));
+
+        return pinnacleOfLifeList;
     }
 
     @Override
-    public List<PinnacleOfLife> createPinnacOfLifeEntity(int day, int month, int year, int lifePathNumber) {
-        List<PinnacleOfLife> pinnacleOfLifeList = new ArrayList<>();
+    public List<PinnacleOfLifeResponseDTOForReport> createPinnacleOfLifeList(
+            List<PinnacleOfLifeResponseDTO> dtoList, Integer lifePathNumber) {
+        List<PinnacleOfLifeResponseDTOForReport> pinnacleOfLifeListForReport = new ArrayList<>();
 
-        int pinnacleOfLifeFirstNumber = calculatePinnacleOfLifeFirst(month, day);
-        int pinnacleOfLifeSecondNumber = calculatePinnacleOfLifeSecond(day, year);
-        int pinnacleOfLifeThirdNumber = calculatePinnacleOfLifeThird(pinnacleOfLifeFirstNumber, pinnacleOfLifeSecondNumber);
-        int pinnacleOfLifeFourNumber = calculatePinnacleOfLifeFour(month,year);
+        for (int index = 0; index < dtoList.size(); index ++){
+            PinnacleOfLifeResponseDTO item = dtoList.get(index);
+            PinnacleOfLifeResponseDTOForReport pinnacleOfLifeResponseDTOForReport =
+                    new PinnacleOfLifeResponseDTOForReport();
+            BeanUtils.copyProperties(item, pinnacleOfLifeResponseDTOForReport);
+            Integer age;
 
-        int ageForPinnacleOfLifeFirst = calculateAgeForPinnacleOfLifeFirst(lifePathNumber);
-        int ageForPinnacleOfLifeSecond = calculateAgeForOrtherPinnacleOfLife(ageForPinnacleOfLifeFirst);
-        int ageForPinnacleOfLifeThird = calculateAgeForOrtherPinnacleOfLife(ageForPinnacleOfLifeSecond);
-        int ageForPinnacleOfLifeFour = calculateAgeForOrtherPinnacleOfLife(ageForPinnacleOfLifeThird);
+            if (index == 0){
+                age = calculateAgeForPinnacleOfLifeFirst(lifePathNumber);
+            }else {
+                age = calculateAgeForPinnacleOfLifeFirst(lifePathNumber) + (index * AGE_CYCLE);
+            }
+            pinnacleOfLifeResponseDTOForReport.setAge(age);
+            pinnacleOfLifeListForReport.add(pinnacleOfLifeResponseDTOForReport);
+        }
 
-        PinnacleOfLife pinnacleOfLifeFirst = new PinnacleOfLife(pinnacleOfLifeFirstNumber, ageForPinnacleOfLifeFirst);
-        PinnacleOfLife pinnacleOfLifeSecond = new PinnacleOfLife(pinnacleOfLifeSecondNumber, ageForPinnacleOfLifeSecond);
-        PinnacleOfLife pinnacleOfLifeThird = new PinnacleOfLife(pinnacleOfLifeThirdNumber, ageForPinnacleOfLifeThird);
-        PinnacleOfLife pinnacleOfLifeFour = new PinnacleOfLife(pinnacleOfLifeFourNumber, ageForPinnacleOfLifeFour);
-
-        pinnacleOfLifeList.add(pinnacleOfLifeFirst);
-        pinnacleOfLifeList.add(pinnacleOfLifeSecond);
-        pinnacleOfLifeList.add(pinnacleOfLifeThird);
-        pinnacleOfLifeList.add(pinnacleOfLifeFour);
-
-        return pinnacleOfLifeRepository.saveAll(pinnacleOfLifeList);
+        return pinnacleOfLifeListForReport;
     }
 
+    @Override
+    public List<PinnacleOfLifeResponseDTOForReport> getPinnacleOfLifeList(
+            DataNumerologyReport data, Integer lifePathNumber) {
+        Integer newLifePathNumber = checkLifePathNumber(lifePathNumber);
+        List<PinnacleOfLifeResponseDTO> pinnacleOfLifeList = getPinnacleOfLifeListInStatic(data);
+        List<PinnacleOfLifeResponseDTOForReport> pinnacleOfLifeListForReport = createPinnacleOfLifeList(
+                pinnacleOfLifeList, newLifePathNumber);
+        return pinnacleOfLifeListForReport;
+    }
 
+    private Integer checkLifePathNumber(Integer lifePathNumber){
+
+        if (lifePathNumber == NumeroloryConstants.MASTER_NUMBER_33 ||
+            lifePathNumber == NumeroloryConstants.MASTER_NUMBER_22){
+            return NumeroloryUtils.reduceNumber(lifePathNumber);
+        }
+        return lifePathNumber;
+    }
 
 }

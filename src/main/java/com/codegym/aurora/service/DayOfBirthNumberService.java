@@ -1,9 +1,12 @@
 package com.codegym.aurora.service;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.response.DayOfBirthNumberResponseDTO;
 
 public interface DayOfBirthNumberService {
-    DayOfBirthNumberResponseDTO getDayOfBirthNumber(int number);
+    DayOfBirthNumberResponseDTO getDayOfBirthNumber(Integer number);
 
-    int calculateDayOfBirthNumber(int day);
+    Integer calculateDayOfBirthNumber(Integer day);
+
+    DayOfBirthNumberResponseDTO findDayOfBirthNumber(DataNumerologyReport data);
 }

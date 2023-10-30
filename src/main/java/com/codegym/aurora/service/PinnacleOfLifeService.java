@@ -1,20 +1,22 @@
 package com.codegym.aurora.service;
 
-import com.codegym.aurora.entity.PinnacleOfLife;
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.response.PinnacleOfLifeResponseDTO;
+import com.codegym.aurora.payload.response.PinnacleOfLifeResponseDTOForReport;
 
 import java.util.List;
 
 public interface PinnacleOfLifeService {
 
-    PinnacleOfLifeResponseDTO getPinnacleOfLifeResponseDtoInStaticList(int pinnacleOfLifeNumber);
-    int calculatePinnacleOfLifeFirst(int month, int day);
-    int calculatePinnacleOfLifeSecond(int day, int year);
-    int calculatePinnacleOfLifeThird(int pinnacleOfLifeFirst, int pinnacleOfLifeSecond );
-    int calculatePinnacleOfLifeFour(int month, int year);
+    PinnacleOfLifeResponseDTO getPinnacleOfLifeResponseDtoInStaticList(Integer pinnacleOfLifeNumber);
+    Integer calculatePinnacleOfLifeFirst(DataNumerologyReport data);
+    Integer calculatePinnacleOfLifeSecond(DataNumerologyReport data);
+    Integer calculatePinnacleOfLifeThird(Integer pinnacleOfLifeFirst, Integer pinnacleOfLifeSecond );
+    Integer calculatePinnacleOfLifeFour(DataNumerologyReport data);
 
-    int calculateAgeForPinnacleOfLifeFirst(int lifePathNumber);
-    int calculateAgeForOrtherPinnacleOfLife(int age);
-    List<PinnacleOfLife> createPinnacOfLifeEntity(int day, int month, int year, int lifePathNumber);
+    Integer calculateAgeForPinnacleOfLifeFirst(Integer lifePathNumber);
+    List<PinnacleOfLifeResponseDTO> getPinnacleOfLifeListInStatic(DataNumerologyReport data);
+    List<PinnacleOfLifeResponseDTOForReport> createPinnacleOfLifeList(List<PinnacleOfLifeResponseDTO> dtoList, Integer lifePathNumber);
+    List<PinnacleOfLifeResponseDTOForReport> getPinnacleOfLifeList(DataNumerologyReport data, Integer lifePathNumber);
 
 }

@@ -66,6 +66,8 @@ public class Constant {
 
     public static final String PAY_PURCHASE_INVOICE = "Pay purchase invoice";
 
+    public static final String CREATE_FREE_REPORT_SUCCESS = "Create free version for numerology report successfully!";
+
     //Zodiac
     public static final String AQUARIUS = "zodiac/aquarius.json";
     public static final String ARIES = "zodiac/aries.json";

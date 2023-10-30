@@ -1,9 +1,9 @@
 package com.codegym.aurora.service;
 
-import com.codegym.aurora.entity.LifePhase;
+import com.codegym.aurora.entity.DataNumerologyReport;
+import com.codegym.aurora.payload.response.LifePhaseResponseDTO;
 
 public interface LifePhaseService {
-    LifePhase caculateLifephase(int day, int month, int year);
 
-    LifePhase createLifePhase(int youngStateNumber, int matureStateNumber, int oldStateNumber);
+    LifePhaseResponseDTO  createLifePhase(DataNumerologyReport data);
 }
