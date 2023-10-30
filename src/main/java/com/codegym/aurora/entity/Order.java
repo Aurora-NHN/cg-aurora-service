@@ -26,7 +26,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ORDER")
+@Table(name = "ORDERS")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,20 +38,20 @@ public class Order {
     @Column(name = "TOTAL_AMOUNT", nullable = false)
     private long totalAmount;
 
-    @Column(name = "STATUS", nullable = false)
+    @Column(name = "STATUS")
     private String status;
 
     @Column(name = "EXPECTED_DELIVERY", nullable = false)
     private String expectedDelivery;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE})
     private List<OrderDetail> orderDetailList = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "ORDER_ID",referencedColumnName = "ID")
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "USER_ID",referencedColumnName = "ID")
     private User user;
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "order",cascade = CascadeType.PERSIST)
     private Address address ;
 
 }

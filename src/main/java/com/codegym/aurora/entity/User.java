@@ -33,7 +33,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private long id;
+    private Long id;
 
     @Column(name = "USERNAME")
     private String username;
@@ -47,8 +47,8 @@ public class User {
     @Column(name = "COUNT")
     private int count;
 
-    @Column(name = "IS_VIP")
-    private boolean isVip;
+    @Column(name = "TOTAL_COUNT")
+    private int totalCount;
 
     @Column(name = "IS_DELETE")
     private boolean isDelete;
@@ -71,4 +71,7 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Cart carts ;
+
+//    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+//    List<Order> orderList = new ArrayList<>();
 }

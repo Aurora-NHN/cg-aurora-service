@@ -9,5 +9,4 @@ import javax.transaction.Transactional;
 public interface OrderService {
     ResponseDTO createOrderDetail(AddressRequestDTO addressRequestDTO);
     ResponseDTO createOrder();
-
 }

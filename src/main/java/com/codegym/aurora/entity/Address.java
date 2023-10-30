@@ -50,7 +50,7 @@ public class Address {
     @Column(name = "ADDITIONAL_INFORMATION", nullable = false)
     private String additionalInformation;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "ORDER_ID", referencedColumnName = "ID")
     private Order order;
 }

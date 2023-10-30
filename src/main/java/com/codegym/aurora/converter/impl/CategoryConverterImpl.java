@@ -8,6 +8,7 @@ import com.codegym.aurora.payload.request.CategoryRequestDTO;
 import com.codegym.aurora.payload.response.CategoryResponseDTO;
 import com.codegym.aurora.payload.response.CategoryResponseDTOForAdmin;
 import com.codegym.aurora.payload.response.SubCategoryResponseDTO;
+import com.codegym.aurora.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryConverterImpl implements CategoryConverter {
     private final SubCategoryConverter subCategoryConverter;
+    private final ImageService imageService;
 
     @Override
     public List<CategoryResponseDTO> convertCategoryEntityToDTO(List<Category> categoryList) {
@@ -45,6 +47,8 @@ public class CategoryConverterImpl implements CategoryConverter {
     public CategoryResponseDTOForAdmin convertEntityToCategoryResponseDTOForAdmin(Category category) {
         CategoryResponseDTOForAdmin categoryResponseDTOForAdmin = new CategoryResponseDTOForAdmin();
         BeanUtils.copyProperties(category, categoryResponseDTOForAdmin);
+        String thumb = category.getThumb();
+        if (thumb != null) categoryResponseDTOForAdmin.setThumbUrl(imageService.getImageUrl(thumb));
         return categoryResponseDTOForAdmin;
     }
 }

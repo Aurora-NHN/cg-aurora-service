@@ -67,4 +67,18 @@ public class Constant {
     public static final String PAY_PURCHASE_INVOICE = "Pay purchase invoice";
 
     public static final String CREATE_FREE_REPORT_SUCCESS = "Create free version for numerology report successfully!";
+
+    //Zodiac
+    public static final String AQUARIUS = "zodiac/aquarius.json";
+    public static final String ARIES = "zodiac/aries.json";
+    public static final String CANCER = "zodiac/cancer.json";
+    public static final String CAPRICORN = "zodiac/capricorn.json";
+    public static final String GEMINI = "zodiac/gemini.json";
+    public static final String LEO = "zodiac/leo.json";
+    public static final String LIBRA = "zodiac/libra.json";
+    public static final String PISCES = "zodiac/pisces.json";
+    public static final String SAGGITARIUS = "zodiac/saggitarius.json";
+    public static final String SCORPIO = "zodiac/scorpio.json";
+    public static final String TAURUS = "zodiac/taurus.json";
+    public static final String VIRGO = "zodiac/virgo.json";
 }

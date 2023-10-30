@@ -6,6 +6,7 @@ import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.ProductImage;
 import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
+import com.codegym.aurora.payload.response.ProductResponseDTO;
 import com.codegym.aurora.repository.ProductRepository;
 import com.codegym.aurora.service.ImageService;
 import com.codegym.aurora.service.ProductImageService;
@@ -36,30 +37,12 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductImageService productImageService;
 
-    private List<Integer> generateRandomPages(long totalItems, int pageSize) {
-        List<Integer> allPageNumbers = new ArrayList<>();
-        for (int i = 0; i < Math.ceil((double) totalItems / pageSize); i++) {
-            allPageNumbers.add(i);
-        }
-        Collections.shuffle(allPageNumbers);
-        return allPageNumbers;
-    }
-
-    private int getRandomPageNumber(List<Integer> pageNumbers) {
-        Random random = new Random();
-        return pageNumbers.get(random.nextInt(pageNumbers.size()));
-    }
-
     @Override
     public Page<PageProductResponseDTO> getProductsPage(Pageable pageable) {
-        long totalProducts = productRepository.count();
-        List<Integer> randomPages = generateRandomPages(totalProducts, 9);
-        int randomPageNumber = getRandomPageNumber(randomPages);
-        PageRequest randomPageRequest = PageRequest.of(randomPageNumber, 9);
-        Page<Product> randomProductPage = productRepository.findAll(randomPageRequest);
-        Page<PageProductResponseDTO> randomProductPageDTO = productConverter.convertPageEntityToDtoPage(randomProductPage);
-
-        return randomProductPageDTO;
+        pageable = PageRequest.of(pageable.getPageNumber(),9,Sort.by("quantitySold").descending());
+        Page<Product> productPage = productRepository.findAll(pageable);
+        Page<PageProductResponseDTO> pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
+        return pageProductResponseDTOS;
     }
 
     @Override
@@ -68,15 +51,16 @@ public class ProductServiceImpl implements ProductService {
         if (sortOrder != null) {
             if (sortOrder.equalsIgnoreCase("asc")) {
                 pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").ascending());
-                Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord, pageable);
+                Page<Product> productPage = productRepository.findProductsByNameOrProducerContainingIgnoreCase(keyWord, pageable);
                 pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             } else if (sortOrder.equalsIgnoreCase("desc")) {
                 pageable = PageRequest.of(pageable.getPageNumber(), 9, Sort.by("price").descending());
-                Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord, pageable);
+                Page<Product> productPage = productRepository.findProductsByNameOrProducerContainingIgnoreCase(keyWord, pageable);
                 pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             }
         } else {
-            Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(keyWord, pageable);
+            pageable = PageRequest.of(pageable.getPageNumber(),9,Sort.by("quantitySold").descending());
+            Page<Product> productPage = productRepository.findProductsByNameOrProducerContainingIgnoreCase(keyWord, pageable);
             pageSearchProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
         }
         return pageSearchProductResponseDTOS;
@@ -97,6 +81,7 @@ public class ProductServiceImpl implements ProductService {
                 pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
             }
         } else {
+            pageable = PageRequest.of(pageable.getPageNumber(),9,Sort.by("quantitySold").descending());
             Page<Product> productPage = productRepository.findProductsBySubCategoryId(subCategoryId, pageable);
             pageProductResponseDTOS = productConverter.convertPageEntityToDtoPage(productPage);
         }
@@ -141,5 +126,11 @@ public class ProductServiceImpl implements ProductService {
             return false;
         }
         return true;
+    }
+    @Override
+    public List<ProductResponseDTO> getOtherProducts() {
+        List<Product> randomProducts = productRepository.findRandomProducts(4);
+        List<ProductResponseDTO> productResponseDTOS = productConverter.convertProductListEntityToDTO(randomProducts);
+        return productResponseDTOS;
     }
 }

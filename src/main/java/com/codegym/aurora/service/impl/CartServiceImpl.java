@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
     private final UserServiceImpl userService;
@@ -99,6 +98,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+
     @Override
     public ResponseDTO showCart() {
         String userName = userService.getCurrentUsername();
@@ -106,8 +106,10 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartCache.getCart(user.getId());
         List<CartLine> cartLineList = cart.getCartLineList();
         long totalAmount = 0;
-        for (CartLine cartLine : cartLineList) {
-            totalAmount += cartLine.getTotalPrice();
+        if(!cartLineList.isEmpty()){
+            for (CartLine cartLine : cartLineList) {
+                totalAmount += cartLine.getTotalPrice();
+            }
         }
         cart.setTotalAmount(totalAmount);
         CartDTO cartDTO = cartConverter.convertCartEntityToDTO(cart);
@@ -117,7 +119,7 @@ public class CartServiceImpl implements CartService {
                 .data(cartDTO)
                 .build();
     }
-
+    @Transactional
     @Override
     public ResponseDTO removeCartLine(long productId) {
         String userName = userService.getCurrentUsername();
@@ -144,7 +146,7 @@ public class CartServiceImpl implements CartService {
                 .message("delete cart line successfully")
                 .build();
     }
-
+    @Transactional
     @Override
     public ResponseDTO addNewQuantityToCart(Long productId, int quantity) {
         String userName = userService.getCurrentUsername();
@@ -181,6 +183,24 @@ public class CartServiceImpl implements CartService {
                 .status(HttpStatus.OK)
                 .message("save cart successfully")
                 .data(cartDTO)
+                .build();
+    }
+    @Override
+    @Transactional
+    public ResponseDTO resetCart() {
+        String username = userService.getCurrentUsername();
+        User user = userRepository.findByUsername(username);
+        Cart cart = cartRepository.findCartByUser(user);
+        cart.setTotalAmount(0);
+        cartRepository.save(cart);
+        cartLineRepository.deleteCartLineByCart_Id(cart.getId());
+        cartCache.addToCart(user.getId(),cart);
+        CartDTO cartDTO = cartConverter.convertCartEntityToDTO(cart);
+        cartDTO.setCartLineDTOList(new ArrayList<>());
+        return ResponseDTO.builder()
+                .data(cartDTO)
+                .status(HttpStatus.OK)
+                .message("reset cart successfully")
                 .build();
     }
 }

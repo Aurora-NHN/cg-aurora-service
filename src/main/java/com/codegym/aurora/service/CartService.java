@@ -9,4 +9,5 @@ public interface CartService {
     ResponseDTO removeCartLine(long cartLineId);
     ResponseDTO addNewQuantityToCart(Long productId,int quantity);
     ResponseDTO saveCart();
+    ResponseDTO resetCart();
 }
