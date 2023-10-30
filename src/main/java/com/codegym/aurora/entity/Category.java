@@ -35,7 +35,11 @@ public class Category {
     private boolean isDelete;
 
     @Column(name = "IS_ACTIVATED")
-    private boolean isActivated;
+    private boolean active;
+
+    private String description;
+
+    private String thumb;
 
     @OneToMany(mappedBy = "category", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<SubCategory> subCategoryList = new ArrayList<>();

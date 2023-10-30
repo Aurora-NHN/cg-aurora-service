@@ -39,6 +39,8 @@ public class BlogController {
         return blogService.getBlog(keyword);
     }
 
+
+
     @PostMapping
     public ResponseEntity<Object> createNewBlog(@ModelAttribute @Validated BlogCreateRequestDto blogCreateRequestDto,
                                            BindingResult bindingResult) {

@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -100,8 +101,11 @@ public class SecurityConfiguration  {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         httpSecurity.authorizeHttpRequests()
+                .antMatchers("/api/admin/login")
+                .permitAll()
                 .antMatchers("/api/admin/**")
                 .hasRole("ADMIN");
+
 
         httpSecurity.authorizeHttpRequests() // links start with /api/
                 .antMatchers("/api/**", "/api/login","api/register-user", "api/register-admin") // perform segregate authorize

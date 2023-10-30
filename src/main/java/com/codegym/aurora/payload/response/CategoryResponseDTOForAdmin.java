@@ -10,6 +10,7 @@ public class CategoryResponseDTOForAdmin {
     private Long id;
     private String name;
     private boolean isDeleted;
-    private boolean isActivated;
-
+    private boolean active;
+    private String description;
+    private String thumbUrl;
 }
