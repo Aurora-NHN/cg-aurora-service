@@ -36,7 +36,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
     private void updateSubCategoryActivation(SubCategory subCategory, boolean activated) {
         List<Product> productList = subCategory.getProducts();
-        subCategory.setActivated(activated);
+        subCategory.setActive(activated);
 
         if (!productList.isEmpty()) {
             productList.forEach(product -> {
@@ -49,8 +49,8 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
-    public ResponseDTO findByActiveTrue() {
-        List<SubCategory> subCategoryList = subCategoryRepository.findAllByActivatedTrue();
+    public ResponseDTO findAll() {
+        List<SubCategory> subCategoryList = subCategoryRepository.findAll();
         List<SubCategoryResponseDTO> subCategoryResponseDTOList = subCategoryList.stream()
                 .map(subCategoryConverter::convertEntityToSubCategoryResponeDto)
                 .collect(Collectors.toList());
@@ -68,8 +68,8 @@ public class SubCategoryServiceImpl implements SubCategoryService {
                     "A sub category with the same name already exists",
                     null);
         }
-        subCategory.setDelete(false);
-        subCategory.setActivated(true);
+        subCategory.setIsDelete(false);
+        subCategory.setActive(true);
         subCategoryRepository.save(subCategory);
 
         return createResponseDTO(
@@ -98,8 +98,8 @@ public class SubCategoryServiceImpl implements SubCategoryService {
                     null);
         }
         List<Product> productList = subCategory.getProducts();
-        subCategory.setActivated(false);
-        subCategory.setDelete(true);
+        subCategory.setActive(false);
+        subCategory.setIsDelete(true);
         subCategoryRepository.save(subCategory);
 
         if (!productList.isEmpty()) {
@@ -110,36 +110,6 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             productRepository.saveAll(productList);
         }
         return createResponseDTO(HttpStatus.OK, Constant.DELETE_SUCCESS, null);
-    }
-
-    @Override
-    public ResponseDTO activeById(Long subCategoryId) {
-        SubCategory subCategory = subCategoryRepository.findSubCategoryByActivatedFalseAndDeletedFalse(subCategoryId);
-        if (subCategory == null) {
-            return createResponseDTO(
-                    HttpStatus.NOT_FOUND,
-                    "No sub category found with ID = " + subCategoryId,
-                    null);
-        }
-        updateSubCategoryActivation(subCategory, true);
-
-        return createResponseDTO(HttpStatus.OK, Constant.ACTIVE_SUCCESS, null);
-    }
-
-    @Override
-    public ResponseDTO unactiveById(Long subCategoryId) {
-        SubCategory subCategory = subCategoryRepository.
-                findSubCategoryByActivatedTrueAndDeletedFalse(subCategoryId);
-        if (subCategory == null) {
-            return createResponseDTO(
-                    HttpStatus.NOT_FOUND,
-                    "No sub category found with ID = " + subCategoryId,
-                    null);
-        }
-
-        updateSubCategoryActivation(subCategory, false);
-
-        return createResponseDTO(HttpStatus.OK, Constant.UNACTIVE_SUCCESS, null);
     }
 
     @Override

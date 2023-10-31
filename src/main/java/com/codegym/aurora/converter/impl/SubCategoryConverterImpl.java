@@ -34,6 +34,10 @@ public class SubCategoryConverterImpl implements SubCategoryConverter {
     public SubCategoryResponseDTO convertEntityToSubCategoryResponeDto(SubCategory subCategory) {
         SubCategoryResponseDTO subCategoryResponseDTO = new SubCategoryResponseDTO();
         BeanUtils.copyProperties(subCategory, subCategoryResponseDTO);
+        Category category = subCategory.getCategory();
+        subCategoryResponseDTO.setCategoryId(category.getId());
+        subCategoryResponseDTO.setCategoryName(category.getName());
+        subCategoryResponseDTO.setProductTypeCount((long) subCategory.getProducts().size());
         return subCategoryResponseDTO;
     }
 
@@ -43,8 +47,8 @@ public class SubCategoryConverterImpl implements SubCategoryConverter {
         Category category = categoryRepository.findById(subCategoryRequestDTO.getCategoryId()).orElseThrow();
         subCategory.setId(subCategoryRequestDTO.getId());
         subCategory.setName(subCategoryRequestDTO.getName());
-        subCategory.setActivated(subCategory.isActivated());
-        subCategory.setDelete(subCategoryRequestDTO.isDelete());
+        subCategory.setActive(subCategory.getActive());
+        subCategory.setIsDelete(subCategoryRequestDTO.isDelete());
         subCategory.setCategory(category);
         return subCategory;
     }

@@ -20,4 +20,6 @@ public class SubCategoryRequestDtoForCreate {
     private String name;
     @NotNull
     private Long categoryId;
+    private String description;
+    private Boolean active;
 }

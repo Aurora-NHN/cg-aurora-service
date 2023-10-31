@@ -24,14 +24,10 @@ public class SubCategoryControllerForAdmin {
     private final SubCategoryService subCategoryService;
     @RequestMapping()
     public ResponseEntity<ResponseDTO> getSubCategories(){
-        ResponseDTO responseDTO = subCategoryService.findByActiveTrue();
+        ResponseDTO responseDTO = subCategoryService.findAll();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
-    @RequestMapping("{id}/detail")
-    public ResponseEntity<?> getSubCategoryDetail(@PathVariable Long id){
-        ResponseDTO responseDTO = subCategoryService.findSubCategoryByIdDeleteFalse(id);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-    }
+    
     @PostMapping
     public ResponseEntity<?> createSubCategory(
             @Valid @RequestBody SubCategoryRequestDtoForCreate subCategoryRequestDtoForCreate,
@@ -52,19 +48,10 @@ public class SubCategoryControllerForAdmin {
         ResponseDTO responseDTO = subCategoryService.update(subCategoryRequestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> deleteSubCategory(@PathVariable Long id) {
         ResponseDTO responseDTO = subCategoryService.deleteById(id);
-        return new ResponseEntity<>(responseDTO,HttpStatus.OK);
-    }
-    @PostMapping("/{id}/enable-sub-category")
-    public ResponseEntity<?> enableSubCategory(@PathVariable Long id) {
-        ResponseDTO responseDTO = subCategoryService.activeById(id);
-        return new ResponseEntity<>(responseDTO,HttpStatus.OK);
-    }
-    @PostMapping("/{id}/disable-sub-category")
-    public ResponseEntity<?> disableSubCategory(@PathVariable Long id) {
-        ResponseDTO responseDTO = subCategoryService.unactiveById(id);
         return new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
 }

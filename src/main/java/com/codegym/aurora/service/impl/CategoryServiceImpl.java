@@ -33,7 +33,8 @@ public class CategoryServiceImpl implements CategoryService {
     private final ProductRepository productRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final ImageService imageService;
-    public List<CategoryResponseDTO> findListCategoryResponseDTO(){
+
+    public List<CategoryResponseDTO> findListCategoryResponseDTO() {
         List<Category> categoryList = categoryRepository.findAll();
         List<CategoryResponseDTO> categoryResponseDTOList = categoryConverter.convertCategoryEntityToDTO(categoryList);
         return categoryResponseDTOList;
@@ -67,8 +68,8 @@ public class CategoryServiceImpl implements CategoryService {
         category.setDelete(false);
         String thumb = null;
         try {
-            thumb = imageService.save(categoryRequestDTO.getThumb());
-        }catch (IOException e){
+            thumb = imageService.save(categoryRequestDTO.getThumbFile());
+        } catch (IOException e) {
             System.err.println(e);
         }
 
@@ -85,30 +86,39 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseDTO update(CategoryRequestDTO categoryRequestDTO) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        Category category = categoryRepository.save(categoryConverter.convertCategoryRequestToEntity(categoryRequestDTO));
-        responseDTO.setMessage(Constant.UPDATE_SUCCESS);
-        responseDTO.setStatus(HttpStatus.OK);
-        responseDTO.setData(categoryConverter.convertEntityToCategoryResponseDTOForAdmin(category));
-        return responseDTO;
+        Category category = categoryRepository.findById(categoryRequestDTO.getId()).orElse(null);
+        if (category == null) return new ResponseDTO("Update error!", HttpStatus.BAD_REQUEST, "Update error!");
+
+        category.setActive(categoryRequestDTO.isActive());
+        category.setName(categoryRequestDTO.getName());
+        category.setDescription(categoryRequestDTO.getDescription());
+        categoryRepository.save(category);
+
+        return new ResponseDTO(
+                Constant.UPDATE_SUCCESS,
+                HttpStatus.OK,
+                categoryConverter.convertEntityToCategoryResponseDTOForAdmin(category));
     }
 
     @Override
     public ResponseDTO deleteById(Long categoryId) {
         ResponseDTO responseDTO = new ResponseDTO();
-        Category category = categoryRepository.findCategoryByActiveTrue(categoryId);
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category == null)
+            return new ResponseDTO("Category not found!", HttpStatus.BAD_REQUEST, "Category not found!");
+
         List<SubCategory> subCategories = category.getSubCategoryList();
         List<Product> allProducts = getAllProductsBySubCategories(subCategories);
 
         category.setDelete(true);
         category.setActive(false);
 
-        if (!subCategories.isEmpty()){
+        if (!subCategories.isEmpty()) {
             subCategories.forEach(subCategory -> {
-                subCategory.setDelete(true);
-                subCategory.setActivated(false);
+                subCategory.setIsDelete(true);
+                subCategory.setActive(false);
             });
-            if (!allProducts.isEmpty()){
+            if (!allProducts.isEmpty()) {
                 allProducts.forEach(product -> {
                     product.setDelete(true);
                     product.setActivated(false);
@@ -131,9 +141,9 @@ public class CategoryServiceImpl implements CategoryService {
         List<Product> allProducts = getAllProductsBySubCategories(subCategories);
 
         category.setActive(true);
-        if (!subCategories.isEmpty()){
-            subCategories.forEach(subCategory -> subCategory.setActivated(true));
-            if (!allProducts.isEmpty()){
+        if (!subCategories.isEmpty()) {
+            subCategories.forEach(subCategory -> subCategory.setActive(true));
+            if (!allProducts.isEmpty()) {
                 allProducts.forEach(product -> product.setActivated(true));
             }
         }
@@ -152,9 +162,9 @@ public class CategoryServiceImpl implements CategoryService {
         List<SubCategory> subCategories = category.getSubCategoryList();
         List<Product> allProducts = getAllProductsBySubCategories(subCategories);
         category.setActive(false);
-        if (!subCategories.isEmpty()){
-            subCategories.forEach(subCategory -> subCategory.setActivated(false));
-            if (!allProducts.isEmpty()){
+        if (!subCategories.isEmpty()) {
+            subCategories.forEach(subCategory -> subCategory.setActive(false));
+            if (!allProducts.isEmpty()) {
                 allProducts.forEach(product -> product.setActivated(false));
             }
         }
@@ -175,7 +185,8 @@ public class CategoryServiceImpl implements CategoryService {
         responseDTO.setData(categoryConverter.convertEntityToCategoryResponseDTOForAdmin(category));
         return responseDTO;
     }
-    public  List<Product> getAllProductsBySubCategories(List<SubCategory> subCategories){
+
+    public List<Product> getAllProductsBySubCategories(List<SubCategory> subCategories) {
         List<Product> allProducts = new ArrayList<>();
         for (SubCategory subCategory : subCategories) {
             List<Product> products = subCategory.getProducts();
@@ -183,6 +194,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return allProducts;
     }
+
     private boolean isCategoryNameAlreadyExists(String name) {
         Category existingCategory = categoryRepository.findCategoryByName(name);
         return existingCategory != null;

@@ -4,6 +4,7 @@ package com.codegym.aurora.converter.impl;
 import com.codegym.aurora.converter.CategoryConverter;
 import com.codegym.aurora.converter.SubCategoryConverter;
 import com.codegym.aurora.entity.Category;
+import com.codegym.aurora.entity.SubCategory;
 import com.codegym.aurora.payload.request.CategoryRequestDTO;
 import com.codegym.aurora.payload.response.CategoryResponseDTO;
 import com.codegym.aurora.payload.response.CategoryResponseDTOForAdmin;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -49,6 +51,10 @@ public class CategoryConverterImpl implements CategoryConverter {
         BeanUtils.copyProperties(category, categoryResponseDTOForAdmin);
         String thumb = category.getThumb();
         if (thumb != null) categoryResponseDTOForAdmin.setThumbUrl(imageService.getImageUrl(thumb));
+
+        List<SubCategory> subCategories = category.getSubCategoryList();
+        List<String> subCategoriesName = subCategories.stream().map(SubCategory::getName).collect(Collectors.toList());
+        categoryResponseDTOForAdmin.setSubCategories(subCategoriesName);
         return categoryResponseDTOForAdmin;
     }
 }
