@@ -40,7 +40,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
         if (!productList.isEmpty()) {
             productList.forEach(product -> {
-                product.setActivated(activated);
+                product.setIsActivated(activated);
             });
             productRepository.saveAll(productList);
         }
@@ -104,8 +104,8 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
         if (!productList.isEmpty()) {
             productList.forEach(product -> {
-                product.setActivated(false);
-                product.setDelete(true);
+                product.setIsActivated(false);
+                product.setIsDelete(true);
             });
             productRepository.saveAll(productList);
         }

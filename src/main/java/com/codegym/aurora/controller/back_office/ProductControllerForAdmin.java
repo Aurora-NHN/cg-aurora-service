@@ -29,7 +29,7 @@ public class ProductControllerForAdmin {
 
     @GetMapping
     public ResponseEntity<Page<ProductInAdminResponseDTO>> getProductsPage(
-            @PageableDefault(size = 5) Pageable pageable){
+            @PageableDefault(size = 10) Pageable pageable){
 
         Page<ProductInAdminResponseDTO> productsPage= productService.getProductsPageInAdmin(pageable);
         return new ResponseEntity<>(productsPage, HttpStatus.OK);

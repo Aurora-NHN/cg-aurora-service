@@ -110,8 +110,8 @@ public class CategoryServiceImpl implements CategoryService {
             });
             if (!allProducts.isEmpty()){
                 allProducts.forEach(product -> {
-                    product.setDelete(true);
-                    product.setActivated(false);
+                    product.setIsDelete(true);
+                    product.setIsActivated(false);
                 });
             }
         }
@@ -134,7 +134,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (!subCategories.isEmpty()){
             subCategories.forEach(subCategory -> subCategory.setActivated(true));
             if (!allProducts.isEmpty()){
-                allProducts.forEach(product -> product.setActivated(true));
+                allProducts.forEach(product -> product.setIsActivated(true));
             }
         }
         subCategoryRepository.saveAll(subCategories);
@@ -155,7 +155,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (!subCategories.isEmpty()){
             subCategories.forEach(subCategory -> subCategory.setActivated(false));
             if (!allProducts.isEmpty()){
-                allProducts.forEach(product -> product.setActivated(false));
+                allProducts.forEach(product -> product.setIsActivated(false));
             }
         }
         subCategoryRepository.saveAll(subCategories);
