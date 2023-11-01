@@ -1,9 +1,12 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.MissionNumberList;
+import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.MissionNumberResponseDTO;
 import com.codegym.aurora.service.MissionNumberService;
 import com.codegym.aurora.util.NumeroloryConstants;
+import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
@@ -50,7 +53,8 @@ public class MissionNumberServiceimpl implements MissionNumberService {
     }
 
     @Override
-    public int calculateMissionNumber(String fullName) {
+    public MissionNumberResponseDTO findMissionNumber(NumerologyReportRequestDTO requestDTO) {
+        String fullName = NumeroloryUtils.removeAccent(requestDTO.getFullName());
         int missionNumber  = 0;
         String upperCaseName = fullName.toUpperCase();
         for (char letter : upperCaseName.toCharArray()) {
@@ -58,14 +62,38 @@ public class MissionNumberServiceimpl implements MissionNumberService {
                 missionNumber += alphabetMap.get(letter);
             }
         }
-        if (missionNumber == 11 || missionNumber == 22){
-            return missionNumber;
+        if (missionNumber == NumeroloryConstants.MASTER_NUMBER_11 ||
+                missionNumber == NumeroloryConstants.MASTER_NUMBER_22){
+            return getMissionNumberResponseDTO(missionNumber);
         }
+
         while (missionNumber > 9) {
             missionNumber = reduceToSingleDigit(missionNumber);
         }
-        return missionNumber;
+        return getMissionNumberResponseDTO(missionNumber);
     }
+
+    @Override
+    public MissionNumberResponseDTO findMissionNumber(DataNumerologyReport data) {
+        String fullName = NumeroloryUtils.removeAccent(data.getFullName());
+        int missionNumber  = 0;
+        String upperCaseName = fullName.toUpperCase();
+        for (char letter : upperCaseName.toCharArray()) {
+            if (alphabetMap.containsKey(letter)) {
+                missionNumber += alphabetMap.get(letter);
+            }
+        }
+        if (missionNumber == NumeroloryConstants.MASTER_NUMBER_11 ||
+                missionNumber == NumeroloryConstants.MASTER_NUMBER_22){
+            return getMissionNumberResponseDTO(missionNumber);
+        }
+
+        while (missionNumber > 9) {
+            missionNumber = reduceToSingleDigit(missionNumber);
+        }
+        return getMissionNumberResponseDTO(missionNumber);
+    }
+
     private int reduceToSingleDigit(int number) {
         if (number <= 9) {
             return number;

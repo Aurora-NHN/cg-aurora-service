@@ -22,6 +22,6 @@ public class CategoryRequestDTO {
     @Size(max = 255)
     private String name;
     private String description;
-    private MultipartFile thumb;
+    private MultipartFile thumbFile;
     private boolean active;
 }

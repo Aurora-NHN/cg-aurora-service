@@ -1,14 +1,9 @@
 package com.codegym.aurora.service.impl;
 
-import com.codegym.aurora.converter.PersonalMonthConverter;
-import com.codegym.aurora.entity.PersonalMonth;
-import com.codegym.aurora.entity.PersonalYear;
 import com.codegym.aurora.payload.from_file.PersonalYearList;
 import com.codegym.aurora.payload.response.PersonalMonthResponseDTO;
 import com.codegym.aurora.payload.response.PersonalYearResponseDTO;
 import com.codegym.aurora.payload.response.PersonalYearResponseDtoForReport;
-import com.codegym.aurora.repository.PersonalMonthRepository;
-import com.codegym.aurora.repository.PersonalYearRepository;
 import com.codegym.aurora.service.PersonalMonthService;
 import com.codegym.aurora.service.PersonalYearService;
 import com.codegym.aurora.util.NumeroloryUtils;
@@ -28,10 +23,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class PersonalYearServiceImpl implements PersonalYearService {
-    private final PersonalYearRepository personalYearRepository;
     private final PersonalMonthService personalMonthService;
-    private final PersonalMonthConverter personalMonthConverter;
-    private final PersonalMonthRepository personalMonthRepository;
 
     private static List<PersonalYearResponseDTO> staticPersonalYearList = new ArrayList<>();
 
@@ -52,7 +44,7 @@ public class PersonalYearServiceImpl implements PersonalYearService {
         }
     }
     @Override
-    public PersonalYearResponseDTO getPersonalYearItem(int number) {
+    public PersonalYearResponseDTO getPersonalYearItem(Integer number) {
         PersonalYearResponseDTO result = staticPersonalYearList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
@@ -61,66 +53,28 @@ public class PersonalYearServiceImpl implements PersonalYearService {
     }
 
     @Override
-    public int calculatePersonalYearFirst(int attitudeNumber) {
-        int currentYear = NumeroloryUtils.reduceNumber(getCurrentYear());
-        int personalYear = currentYear + attitudeNumber;
+    public Integer calculatePersonalYear(Integer attitudeNumber, Integer year) {
+        Integer personalYear = year + attitudeNumber;
         return NumeroloryUtils.reduceNumber(personalYear);
     }
-
     @Override
-    public int calculatePersonalYearSecond(int attitudeNumber) {
-        int nextYear = NumeroloryUtils.reduceNumber(getCurrentYear()  + 1);
-        int personalYearSecond = nextYear + attitudeNumber;
-        return NumeroloryUtils.reduceNumber(personalYearSecond);
-    }
+    public List<PersonalYearResponseDtoForReport> createPersonalYearList(Integer attitudeNumber) {
+        List<PersonalYearResponseDtoForReport> personalYearList = new ArrayList<>();
 
-    @Override
-    public int calculatePersonalYearThird(int attitudeNumber) {
-        int nextTwoYear = NumeroloryUtils.reduceNumber(getCurrentYear() + 2);
-        int personalYearThird = nextTwoYear + attitudeNumber;
-        return NumeroloryUtils.reduceNumber(personalYearThird);
-    }
+        for (int index = 0; index < 3; index++){
+            Integer currentYear = NumeroloryUtils.reduceNumber(getCurrentYear() + index);
+            Integer personalYearNumber = calculatePersonalYear(attitudeNumber, currentYear);
 
-    @Override
-    public List<PersonalYear> createPersonalYearEntity(int attitudeNumber) {
-        int currentYear = getCurrentYear();
-        int reducedCurrentYear = NumeroloryUtils.reduceNumber(currentYear);
-        List<PersonalYear> personalYearList = new ArrayList<>();
-        List<PersonalMonth> personalMonthList = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            int personalYear = reducedCurrentYear + attitudeNumber + i;
+            PersonalYearResponseDTO personalYear = getPersonalYearItem(personalYearNumber);
+            PersonalYearResponseDtoForReport personalYearForReport = new PersonalYearResponseDtoForReport();
+            BeanUtils.copyProperties(personalYear, personalYearForReport);
 
-            if (personalYear == 11 || personalYear == 22) {
-                personalMonthList = personalMonthService
-                        .createPersonalMonthEntityByPersonalYear(personalYear);
-                personalYearList.add(new PersonalYear((currentYear + i),personalYear, personalMonthList));
-
-            } else {
-                int reduceNumber = NumeroloryUtils.reduceNumber(personalYear);
-                personalMonthList = personalMonthService
-                        .createPersonalMonthEntityByPersonalYear(reduceNumber);
-                personalYearList.add(new PersonalYear((currentYear + i),reduceNumber, personalMonthList));
-            }
+            List<PersonalMonthResponseDTO> personalMonthList = personalMonthService
+                    .createPersonalMonth(personalYearNumber);
+            personalYearForReport.setPersonalMonthResponseDTOList(personalMonthList);
+            personalYearList.add(personalYearForReport);
         }
-
         return personalYearList;
-    }
-
-    @Override
-    public List<PersonalYearResponseDtoForReport> createPersonalYearResponseDtoForReport(List<PersonalYear> personalYearList) {
-        List<PersonalYearResponseDtoForReport> personalYearResponseDtoForReportList = new ArrayList<>();
-        for (PersonalYear personalYear: personalYearList){
-
-            List<PersonalMonthResponseDTO> personalMonthResponseDTOList = personalMonthConverter
-                    .converEntityToResponeDtoList(personalYear.getPersonalMonthList());
-            PersonalYearResponseDtoForReport personalYearResponseDto = new PersonalYearResponseDtoForReport();
-            PersonalYearResponseDTO getResponseDtoDataInStatic = getPersonalYearItem(personalYear.getPersonalYearNumber());
-            BeanUtils.copyProperties(getResponseDtoDataInStatic, personalYearResponseDto);
-            personalYearResponseDto.setPersonalMonthResponseDTOList(personalMonthResponseDTOList);
-            personalYearResponseDtoForReportList.add(personalYearResponseDto);
-
-        }
-        return personalYearResponseDtoForReportList;
     }
 
     private int getCurrentYear(){

@@ -4,10 +4,13 @@ import com.codegym.aurora.payload.request.SubCategoryRequestDtoForCreate;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.service.SubCategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,16 +25,12 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class SubCategoryControllerForAdmin {
     private final SubCategoryService subCategoryService;
-    @RequestMapping()
-    public ResponseEntity<ResponseDTO> getSubCategories(){
-        ResponseDTO responseDTO = subCategoryService.findByActiveTrue();
+    @GetMapping
+    public ResponseEntity<ResponseDTO> getSubCategories(@PageableDefault Pageable pageable){
+        ResponseDTO responseDTO = subCategoryService.findAll(pageable);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
-    @RequestMapping("{id}/detail")
-    public ResponseEntity<?> getSubCategoryDetail(@PathVariable Long id){
-        ResponseDTO responseDTO = subCategoryService.findSubCategoryByIdDeleteFalse(id);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-    }
+    
     @PostMapping
     public ResponseEntity<?> createSubCategory(
             @Valid @RequestBody SubCategoryRequestDtoForCreate subCategoryRequestDtoForCreate,
@@ -52,19 +51,10 @@ public class SubCategoryControllerForAdmin {
         ResponseDTO responseDTO = subCategoryService.update(subCategoryRequestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> deleteSubCategory(@PathVariable Long id) {
         ResponseDTO responseDTO = subCategoryService.deleteById(id);
-        return new ResponseEntity<>(responseDTO,HttpStatus.OK);
-    }
-    @PostMapping("/{id}/enable-sub-category")
-    public ResponseEntity<?> enableSubCategory(@PathVariable Long id) {
-        ResponseDTO responseDTO = subCategoryService.activeById(id);
-        return new ResponseEntity<>(responseDTO,HttpStatus.OK);
-    }
-    @PostMapping("/{id}/disable-sub-category")
-    public ResponseEntity<?> disableSubCategory(@PathVariable Long id) {
-        ResponseDTO responseDTO = subCategoryService.unactiveById(id);
         return new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
 }

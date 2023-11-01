@@ -1,8 +1,11 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.LifePathNumber;
+import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.LifePathResponseDTO;
 import com.codegym.aurora.service.LifePathNumberService;
+import com.codegym.aurora.util.NumeroloryConstants;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +43,7 @@ public class LifePathNumberServiceImpl implements LifePathNumberService {
     }
 
     @Override
-    public LifePathResponseDTO getLifePathNumber(int number) {
+    public LifePathResponseDTO getLifePathNumber(Integer number) {
         LifePathResponseDTO result = staticLifePathNumberList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
@@ -48,24 +51,45 @@ public class LifePathNumberServiceImpl implements LifePathNumberService {
         return result;
     }
 
-
     @Override
-    public int calculateLifePathNumber(int day, int month, int year) {
-        int calculatorLifePathNumber = calculateDayMonthYearSum(day, month, year);
-        if (calculatorLifePathNumber == 11 || calculatorLifePathNumber == 22 || calculatorLifePathNumber == 33) {
-            return getLifePathNumber(calculatorLifePathNumber).getNumber();
+    public LifePathResponseDTO findLifePathNumber(NumerologyReportRequestDTO requestDTO) {
+        Integer day = requestDTO.getDayOfBirth();
+        Integer year = requestDTO.getYearOfBirth();
+        Integer month = requestDTO.getMonthOfBirth();
+        Integer calculatorLifePathNumber = calculateDayMonthYearSum(day, month, year);
+        if (calculatorLifePathNumber == NumeroloryConstants.MASTER_NUMBER_11 ||
+                calculatorLifePathNumber == NumeroloryConstants.MASTER_NUMBER_22 ||
+                calculatorLifePathNumber == NumeroloryConstants.MASTER_NUMBER_33) {
+            return getLifePathNumber(calculatorLifePathNumber);
         }
         int reducedNumber = calculateReducedNumber(calculatorLifePathNumber);
-        return getLifePathNumber(reducedNumber).getNumber();
+        return getLifePathNumber(reducedNumber);
     }
-    private int calculateDayMonthYearSum(int day, int month, int year) {
-        int daySum = NumeroloryUtils.calculateDigitSum(day);
-        int monthSum = NumeroloryUtils.calculateDigitSum(month);
-        int yearSum = NumeroloryUtils.calculateDigitSum(year);
+
+    @Override
+    public LifePathResponseDTO findLifePathNumber(DataNumerologyReport data) {
+
+        Integer day = data.getDayOfBirth();
+        Integer year = data.getYearOfBirth();
+        Integer month = data.getMonthOfBirth();
+        Integer calculatorLifePathNumber = calculateDayMonthYearSum(day, month, year);
+        if (calculatorLifePathNumber == NumeroloryConstants.MASTER_NUMBER_11 ||
+                calculatorLifePathNumber == NumeroloryConstants.MASTER_NUMBER_22 ||
+                calculatorLifePathNumber == NumeroloryConstants.MASTER_NUMBER_33) {
+            return getLifePathNumber(calculatorLifePathNumber);
+        }
+        int reducedNumber = calculateReducedNumber(calculatorLifePathNumber);
+        return getLifePathNumber(reducedNumber);
+    }
+
+    private Integer calculateDayMonthYearSum(Integer day, Integer month, Integer year) {
+        Integer daySum = NumeroloryUtils.calculateDigitSum(day);
+        Integer monthSum = NumeroloryUtils.calculateDigitSum(month);
+        Integer yearSum = NumeroloryUtils.calculateDigitSum(year);
         return daySum + monthSum + yearSum;
     }
 
-    private int calculateReducedNumber(int number) {
+    private int calculateReducedNumber(Integer number) {
         while (number > 9) {
             number = NumeroloryUtils.calculateDigitSum(number);
         }

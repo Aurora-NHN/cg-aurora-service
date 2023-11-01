@@ -1,9 +1,11 @@
 package com.codegym.aurora.service;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
+import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.MatureStateNumberResponseDTO;
 
 public interface MatureStateNumberService {
-   MatureStateNumberResponseDTO getMatureStateNumber(int number);
+   MatureStateNumberResponseDTO getMatureStateNumber(Integer number);
 
-   int calculateMatureStateNumber(int day);
+   MatureStateNumberResponseDTO findMatureStateNumer(DataNumerologyReport data);
 }

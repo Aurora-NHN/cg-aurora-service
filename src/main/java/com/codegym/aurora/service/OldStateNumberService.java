@@ -1,8 +1,10 @@
 package com.codegym.aurora.service;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.response.OldStateNumberResponseDTO;
 
 public interface OldStateNumberService {
-    OldStateNumberResponseDTO getOldStateNumber(int number);
-    int calculateOldStateNumber(int year);
+    OldStateNumberResponseDTO getOldStateNumber(Integer number);
+
+    OldStateNumberResponseDTO findOldStateNumber(DataNumerologyReport data);
 }

@@ -3,12 +3,13 @@ package com.codegym.aurora.payload.response;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Column;
+import java.sql.Date;
 import java.util.List;
+
 @Data
 @RequiredArgsConstructor
-public class ProductResponseDTO {
 
+public class ProductInAdminResponseDTO {
     private Long id;
 
     private String name;
@@ -31,11 +32,15 @@ public class ProductResponseDTO {
 
     private String producer;
 
+    private Date createDay;
+
+    private Integer height;
+
     private boolean isDelete;
 
     private boolean isActivated;
 
-    private List<ProductImageResponseDTO> productImageUrlList;
+    private List<String> productImageUrlList;
 
-
+    private SubCategoryResponseDTO subCategory;
 }

@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PinnacleOfLifeResponseDTOForReport {
 
-    private int number;
+    private Integer number;
     private String name;
     private String title;
     private String description;
-    private  int age;
+    private Integer age;
 }

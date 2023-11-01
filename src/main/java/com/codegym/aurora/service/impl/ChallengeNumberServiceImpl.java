@@ -1,9 +1,8 @@
 package com.codegym.aurora.service.impl;
 
-import com.codegym.aurora.entity.ChallengeNumber;
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.ChallengeNumberList;
 import com.codegym.aurora.payload.response.ChallengeNumberResponseDTO;
-import com.codegym.aurora.repository.ChallengeNumberRepository;
 import com.codegym.aurora.service.ChallengeNumberService;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +19,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class ChallengeNumberServiceImpl implements ChallengeNumberService {
-    private final ChallengeNumberRepository challengeNumberRepository;
+
     private static List<ChallengeNumberResponseDTO> staticChallengeNumberList = new ArrayList<>();
 
     static {
@@ -40,7 +39,7 @@ public class ChallengeNumberServiceImpl implements ChallengeNumberService {
         }
     }
     @Override
-    public ChallengeNumberResponseDTO getChallengeNumberItem(int number) {
+    public ChallengeNumberResponseDTO getChallengeNumberItem(Integer number) {
         ChallengeNumberResponseDTO result = staticChallengeNumberList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
@@ -48,49 +47,52 @@ public class ChallengeNumberServiceImpl implements ChallengeNumberService {
         return result;
     }
 
+    // các hàm viết mới
     @Override
-    public int calculateChallengeNumberFirst(int day, int month) {
-        int daySum = NumeroloryUtils.calculateDigitSum(day);
-        int monthSum = NumeroloryUtils.calculateDigitSum(month);
-        return calculateResult(daySum, monthSum);
+    public Integer calculateChallengeFirst(DataNumerologyReport data) {
+        Integer dayReduce = NumeroloryUtils.calculateDigitSum(data.getDayOfBirth());
+        Integer monthSum = NumeroloryUtils.calculateDigitSum(data.getMonthOfBirth());
+        return calculateResult(dayReduce, monthSum);
+
     }
 
     @Override
-    public int calculateChallengeNumberSecond(int day, int year) {
-        int dayReduce = NumeroloryUtils.calculateDigitSum(day);
-        int yearReduce = NumeroloryUtils.reduceNumber(year);
+    public Integer calculateChallengeSecond(DataNumerologyReport data) {
+        Integer dayReduce = NumeroloryUtils.calculateDigitSum(data.getDayOfBirth());
+        Integer yearReduce = NumeroloryUtils.reduceNumber(data.getYearOfBirth());
         return calculateResult(dayReduce, yearReduce);
     }
 
     @Override
-    public int calculateChallengeNumberThird(int challengeFirst, int challengeSecond) {
+    public Integer calculateChallengeThird(Integer challengeFirst, Integer challengeSecond) {
         return calculateResult(challengeFirst, challengeSecond);
     }
 
     @Override
-    public int calculateChallengeNumberFour(int month, int year) {
-        int monthReduce = NumeroloryUtils.calculateDigitSum(month);
-        int yearReduce = NumeroloryUtils.reduceNumber(year);
+    public Integer calculateChallengeFour(DataNumerologyReport data) {
+        Integer monthReduce = NumeroloryUtils.calculateDigitSum(data.getMonthOfBirth());
+        Integer yearReduce = NumeroloryUtils.reduceNumber(data.getYearOfBirth());
         return calculateResult(monthReduce, yearReduce);
     }
 
     @Override
-    public ChallengeNumber createChallengeNumberEntity(int day, int month, int year) {
-        int challengeNumberFirst = calculateChallengeNumberFirst(day, month);
-        int challengeNumberSecond = calculateChallengeNumberSecond(day, year);
-        int challengeNumberThird = calculateChallengeNumberThird(challengeNumberFirst, challengeNumberSecond);
-        int challengeNumberFour = calculateChallengeNumberFour(month, year);
-        ChallengeNumber challengeNumber = ChallengeNumber.builder()
-                .challengeNumberFirst(challengeNumberFirst)
-                .challengeNumberSecond(challengeNumberSecond)
-                .challengeNumberThird(challengeNumberThird)
-                .challengeNumberFour(challengeNumberFour)
-                .build();
-        return challengeNumberRepository.save(challengeNumber);
+    public List<ChallengeNumberResponseDTO> createChallengeNumerList(DataNumerologyReport data) {
+        List<ChallengeNumberResponseDTO> challengeNumberList = new ArrayList<>();
+        Integer firstChallenge = calculateChallengeFirst(data);
+        Integer secondChallenge = calculateChallengeSecond(data);
+        Integer thirdChallenge = calculateChallengeThird(firstChallenge, secondChallenge);
+        Integer fourChallenge = calculateChallengeFour(data);
+
+        challengeNumberList.add(getChallengeNumberItem(firstChallenge));
+        challengeNumberList.add(getChallengeNumberItem(secondChallenge));
+        challengeNumberList.add(getChallengeNumberItem(thirdChallenge));
+        challengeNumberList.add(getChallengeNumberItem(fourChallenge));
+        return challengeNumberList;
+
     }
 
-    private  int calculateResult(int numberFirst, int numberSecond){
-        int result = numberFirst - numberSecond;
+    private  Integer calculateResult(Integer numberFirst, Integer numberSecond){
+        Integer result = numberFirst - numberSecond;
         if (result < 0){
             result = -result;
         }
