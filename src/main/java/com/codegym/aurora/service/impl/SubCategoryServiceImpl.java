@@ -7,24 +7,30 @@ import com.codegym.aurora.payload.request.SubCategoryRequestDTO;
 import com.codegym.aurora.payload.request.SubCategoryRequestDtoForCreate;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.payload.response.SubCategoryResponseDTO;
-import com.codegym.aurora.repository.CategoryRepository;
 import com.codegym.aurora.repository.ProductRepository;
 import com.codegym.aurora.repository.SubCategoryRepository;
+import com.codegym.aurora.service.ImageService;
 import com.codegym.aurora.service.SubCategoryService;
 import com.codegym.aurora.util.Constant;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class SubCategoryServiceImpl implements SubCategoryService {
     private final SubCategoryRepository subCategoryRepository;
     private final SubCategoryConverter subCategoryConverter;
-    private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+    private final ImageService imageService;
 
     private ResponseDTO createResponseDTO(HttpStatus status, String message, Object data) {
         ResponseDTO responseDTO = new ResponseDTO();
@@ -49,12 +55,18 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
-    public ResponseDTO findAll() {
-        List<SubCategory> subCategoryList = subCategoryRepository.findAll();
+    public ResponseDTO findAll(Pageable pageable) {
+        Page<SubCategory> subCategoryList = subCategoryRepository.findAllByIsDeleteIsFalse(pageable);
         List<SubCategoryResponseDTO> subCategoryResponseDTOList = subCategoryList.stream()
                 .map(subCategoryConverter::convertEntityToSubCategoryResponeDto)
                 .collect(Collectors.toList());
-        return createResponseDTO(HttpStatus.OK, Constant.GET_CATEGORIES_ACTIVE_SUCCESS, subCategoryResponseDTOList);
+
+        Page<SubCategoryResponseDTO> responseDTOPage = new PageImpl<>(
+                subCategoryResponseDTOList,
+                subCategoryList.getPageable(),
+                subCategoryList.getTotalElements());
+
+        return createResponseDTO(HttpStatus.OK, Constant.GET_CATEGORIES_ACTIVE_SUCCESS, responseDTOPage);
     }
 
     @Override
@@ -68,8 +80,18 @@ public class SubCategoryServiceImpl implements SubCategoryService {
                     "A sub category with the same name already exists",
                     null);
         }
+
+//        Thumb file for subCategory
+//        MultipartFile thumbFile = subCategoryRequestDtoForCreate.getThumbFile();
+//        if (thumbFile != null){
+//            try {
+//                String thumb = imageService.save(thumbFile);
+//            } catch (IOException e) {
+//                return new ResponseDTO("Upload thumb error!",HttpStatus.SERVICE_UNAVAILABLE, "Upload thumb error!")
+//            }
+//        }
+
         subCategory.setIsDelete(false);
-        subCategory.setActive(true);
         subCategoryRepository.save(subCategory);
 
         return createResponseDTO(

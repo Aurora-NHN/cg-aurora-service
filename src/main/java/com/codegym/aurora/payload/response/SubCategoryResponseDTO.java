@@ -17,5 +17,5 @@ public class SubCategoryResponseDTO {
     private String thumbUrl;
     private String categoryName;
     private Long categoryId;
-    private Long productTypeCount;
+    private Integer productTypeCount;
 }

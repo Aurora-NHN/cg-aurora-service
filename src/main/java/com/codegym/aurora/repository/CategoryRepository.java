@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category,Long> {
-    List<Category> findAll();
+    List<Category> findAllByIsDeleteIsFalse();
+    List<Category> findAllByIsDeleteIsFalseAndActiveIsTrue();
     @Query("SELECT c FROM Category c WHERE c.active = true")
     Optional<List<Category>> findAllByActiveTrue();
 

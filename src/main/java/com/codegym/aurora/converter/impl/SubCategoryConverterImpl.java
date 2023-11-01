@@ -3,6 +3,7 @@ package com.codegym.aurora.converter.impl;
 
 import com.codegym.aurora.converter.SubCategoryConverter;
 import com.codegym.aurora.entity.Category;
+import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.SubCategory;
 import com.codegym.aurora.payload.request.SubCategoryRequestDTO;
 import com.codegym.aurora.payload.request.SubCategoryRequestDtoForCreate;
@@ -37,7 +38,8 @@ public class SubCategoryConverterImpl implements SubCategoryConverter {
         Category category = subCategory.getCategory();
         subCategoryResponseDTO.setCategoryId(category.getId());
         subCategoryResponseDTO.setCategoryName(category.getName());
-        subCategoryResponseDTO.setProductTypeCount((long) subCategory.getProducts().size());
+        List<Product> products = subCategory.getProducts();
+        subCategoryResponseDTO.setProductTypeCount( products == null? 0: products.size());
         return subCategoryResponseDTO;
     }
 
@@ -57,7 +59,7 @@ public class SubCategoryConverterImpl implements SubCategoryConverter {
     public SubCategory convertSubCategoryRequestDtoForCreateToEntity(SubCategoryRequestDtoForCreate subCategoryRequestDtoForCreate) {
         SubCategory subCategory = new SubCategory();
         Category category = categoryRepository.findById(subCategoryRequestDtoForCreate.getCategoryId()).orElseThrow();
-        subCategory.setName(subCategoryRequestDtoForCreate.getName());
+        BeanUtils.copyProperties(subCategoryRequestDtoForCreate, subCategory);
         subCategory.setCategory(category);
         return subCategory;
     }

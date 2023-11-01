@@ -1,6 +1,8 @@
 package com.codegym.aurora.repository;
 
 import com.codegym.aurora.entity.SubCategory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -8,6 +10,7 @@ import java.util.List;
 
 public interface SubCategoryRepository extends JpaRepository<SubCategory,Long> {
     List<SubCategory> findSubCategoriesByCategoryId(long id);
+    Page<SubCategory> findAllByIsDeleteIsFalse(Pageable pageable);
     @Query("SELECT sc FROM SubCategory sc WHERE sc.active = true")
     List<SubCategory> findAllByActivatedTrue();
 
