@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,16 +33,16 @@ public class Category {
     private String name;
 
     @Column(name = "IS_DELETE")
-    private boolean isDelete;
+    private Boolean isDelete;
 
     @Column(name = "IS_ACTIVATED")
-    private boolean active;
+    private Boolean active;
 
     private String description;
 
     private String thumb;
 
-    @OneToMany(mappedBy = "category", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<SubCategory> subCategoryList = new ArrayList<>();
 
 }

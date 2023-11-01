@@ -43,9 +43,8 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     static final JsonFactory JSON_FACTORY = new GsonFactory();
-
+    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -81,7 +80,7 @@ public class UserServiceImpl implements UserService {
         loginResponseDTO.setUserResponseDTO(userResponseDTO);
         tokenCache.addToken(loginRequestDTO.getUsername(), token);
         Cart cart = cartRepository.findCartByUser(userCheck);
-        cartCache.addToCart(userCheck.getId(),cart);
+        cartCache.addToCart(userCheck.getId(), cart);
         responseDTO.setMessage(Constant.LOGIN_SUCCESS);
         responseDTO.setStatus(HttpStatus.OK);
         responseDTO.setData(loginResponseDTO);
@@ -98,11 +97,11 @@ public class UserServiceImpl implements UserService {
             return responseDTO;
         }
         String role = userCheck.getRole();
-        if (!role.equals("ROLE_ADMIN")){
+        if (!role.equals("ROLE_ADMIN")) {
             responseDTO.setMessage(Constant.UNAUTHORIZED);
             responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
             return responseDTO;
-        }else if (!passwordEncoder.matches(loginRequestDTO.getPassword(), userCheck.getPassword())) {
+        } else if (!passwordEncoder.matches(loginRequestDTO.getPassword(), userCheck.getPassword())) {
             responseDTO.setMessage(Constant.WRONG_PASSWORD);
             responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
             return responseDTO;
@@ -136,15 +135,25 @@ public class UserServiceImpl implements UserService {
         try {
             String username = getCurrentUsername();
             User user = userRepository.findByUsername(username);
-            UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user,user.getUserDetail());
+            UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user, user.getUserDetail());
             responseDTO.setMessage(Constant.GET_USER_INFO_SUCCESS);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setData(userResponseDTO);
-        } catch (Exception e){
+        } catch (Exception e) {
             responseDTO.setMessage(Constant.GET_USER_INFO_FAIL);
             responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
         }
         return responseDTO;
+    }
+
+    private void setUserInfo(UserInfoRequestDTO userInfoRequestDTO) {
+        User user = userRepository.findByUsername(getCurrentUsername());
+        UserDetail userDetail = user.getUserDetail();
+        userDetail.setGender(userInfoRequestDTO.getGender());
+        userDetail.setPhoneNumber(userInfoRequestDTO.getPhoneNumber());
+        userDetail.setFullName(userInfoRequestDTO.getFullName());
+        userRepository.save(user);
+        userDetailRepository.save(userDetail);
     }
 
     @Override
@@ -221,7 +230,7 @@ public class UserServiceImpl implements UserService {
     public boolean checkOldPassword(String password) {
         String username = getCurrentUsername();
         User user = userRepository.findByUsername(username);
-        if(user == null){
+        if (user == null) {
             return false;
         }
         return passwordEncoder.matches(password, user.getPassword());
@@ -251,7 +260,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(getCurrentUsername());
         UserDetail userDetail = user.getUserDetail();
         String email = userInfoRequestDTO.getEmail();
-        if(!userDetail.getEmail().equals(email) && !checkValidEmail(email)){
+        if (!userDetail.getEmail().equals(email) && !checkValidEmail(email)) {
             userDetail.setEmail(email);
             setUserInfo(userInfoRequestDTO);
             responseDTO.setStatus(HttpStatus.OK);
@@ -268,16 +277,6 @@ public class UserServiceImpl implements UserService {
         return responseDTO;
     }
 
-    private void setUserInfo(UserInfoRequestDTO userInfoRequestDTO) {
-        User user = userRepository.findByUsername(getCurrentUsername());
-        UserDetail userDetail = user.getUserDetail();
-        userDetail.setGender(userInfoRequestDTO.getGender());
-        userDetail.setPhoneNumber(userInfoRequestDTO.getPhoneNumber());
-        userDetail.setFullName(userInfoRequestDTO.getFullName());
-        userRepository.save(user);
-        userDetailRepository.save(userDetail);
-    }
-
     @Override
     public String getCurrentUsername() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
@@ -291,7 +290,7 @@ public class UserServiceImpl implements UserService {
         GoogleIdToken idToken;
         try {
             idToken = verifier.verify(credential);
-        }catch (Exception exception){
+        } catch (Exception exception) {
             return new ResponseDTO("Authentication error!", HttpStatus.SERVICE_UNAVAILABLE, null);
         }
 
@@ -305,31 +304,39 @@ public class UserServiceImpl implements UserService {
 
         ResponseDTO responseDTO = new ResponseDTO();
         User user = userRepository.findByUserDetailEmail(email);
-        if (user == null){
-            UserDetail userDetail = UserDetail.builder()
-                    .fullName(name)
-                    .email(email)
-                    .build();
-            User newUser = User.builder()
-                    .username("user" + userId)
-                    .role("ROLE_".concat(ERole.USER.toString()))
-                    .userDetail(userDetail)
-                    .build();
-            userDetail.setUser(newUser);
-            userRepository.save(newUser);
-            String token = jwtTokenProvider.generateToken(newUser.getUsername());
+        String token;
+        if (user == null) {
+            User newUser = saveGoogleUser(email, userId, name);
+            token = jwtTokenProvider.generateToken(newUser.getUsername());
             tokenCache.addToken(newUser.getUsername(), token);
-            responseDTO.setMessage(Constant.LOGIN_SUCCESS);
-            responseDTO.setStatus(HttpStatus.OK);
-            responseDTO.setData(token);
-        }else {
-            String token = jwtTokenProvider.generateToken(user.getUsername());
+        } else {
+            token = jwtTokenProvider.generateToken(user.getUsername());
             tokenCache.addToken(user.getUsername(), token);
-            responseDTO.setMessage(Constant.LOGIN_SUCCESS);
-            responseDTO.setStatus(HttpStatus.OK);
-            responseDTO.setData(token);
         }
+        Cart cart = user.getCarts();
+        cartCache.addToCart(user.getId(), cart);
+        responseDTO.setMessage(Constant.LOGIN_SUCCESS);
+        responseDTO.setStatus(HttpStatus.OK);
+        responseDTO.setData(token);
         return responseDTO;
+    }
+
+    private User saveGoogleUser(String email, String userId, String name) {
+        UserDetail userDetail = UserDetail.builder()
+                .fullName(name)
+                .email(email)
+                .build();
+        User newUser = User.builder()
+                .username("user" + userId)
+                .role("ROLE_".concat(ERole.USER.toString()))
+                .userDetail(userDetail)
+                .build();
+        userDetail.setUser(newUser);
+        Cart cart = new Cart();
+        cart.setUser(newUser);
+        newUser.setCarts(cart);
+        userRepository.save(newUser);
+        return newUser;
     }
 
     @Override
@@ -347,7 +354,7 @@ public class UserServiceImpl implements UserService {
     public List<UserAdminResponseDTO> getAll() {
         List<UserAdminResponseDTO> list = new ArrayList<>();
         List<User> users = userRepository.findAll();
-        for (User user: users){
+        for (User user : users) {
             UserAdminResponseDTO userAdminResponseDTO = new UserAdminResponseDTO();
             userAdminResponseDTO.setActivated(user.isActivated());
             userAdminResponseDTO.setDelete(user.isDelete());

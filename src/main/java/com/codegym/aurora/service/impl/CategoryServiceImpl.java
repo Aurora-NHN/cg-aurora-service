@@ -17,15 +17,14 @@ import com.codegym.aurora.util.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
@@ -33,16 +32,20 @@ public class CategoryServiceImpl implements CategoryService {
     private final ProductRepository productRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final ImageService imageService;
-    public List<CategoryResponseDTO> findListCategoryResponseDTO(){
-        List<Category> categoryList = categoryRepository.findAll();
+
+    @Transactional
+    @Override
+    public List<CategoryResponseDTO> findListCategoryResponseDTO() {
+        List<Category> categoryList = categoryRepository.findAllByIsDeleteIsFalseAndActiveIsTrue();
         List<CategoryResponseDTO> categoryResponseDTOList = categoryConverter.convertCategoryEntityToDTO(categoryList);
         return categoryResponseDTOList;
     }
 
+    @Transactional
     @Override
     public ResponseDTO findAll() {
         ResponseDTO responseDTO = new ResponseDTO();
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAllByIsDeleteIsFalse();
         List<CategoryResponseDTOForAdmin> categoryResponseDTOForAdminList = categories.stream()
                 .map(categoryConverter::convertEntityToCategoryResponseDTOForAdmin)
                 .collect(Collectors.toList());
@@ -52,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
         return responseDTO;
     }
 
+    @Transactional
     @Override
     public ResponseDTO create(CategoryRequestDTO categoryRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
@@ -64,11 +68,13 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = categoryConverter.convertCategoryRequestToEntity(categoryRequestDTO);
         category.setActive(true);
-        category.setDelete(false);
+        category.setIsDelete(false);
         String thumb = null;
         try {
-            thumb = imageService.save(categoryRequestDTO.getThumb());
-        }catch (IOException e){
+            if (categoryRequestDTO.getThumbFile() != null) {
+                thumb = imageService.save(categoryRequestDTO.getThumbFile());
+            }
+        } catch (IOException e) {
             System.err.println(e);
         }
 
@@ -83,89 +89,47 @@ public class CategoryServiceImpl implements CategoryService {
         return responseDTO;
     }
 
+    @Transactional
     @Override
     public ResponseDTO update(CategoryRequestDTO categoryRequestDTO) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        Category category = categoryRepository.save(categoryConverter.convertCategoryRequestToEntity(categoryRequestDTO));
-        responseDTO.setMessage(Constant.UPDATE_SUCCESS);
-        responseDTO.setStatus(HttpStatus.OK);
-        responseDTO.setData(categoryConverter.convertEntityToCategoryResponseDTOForAdmin(category));
-        return responseDTO;
+        Category category = categoryRepository.findById(categoryRequestDTO.getId()).orElse(null);
+        if (category == null) return new ResponseDTO("Update error!", HttpStatus.BAD_REQUEST, "Update error!");
+
+        category.setActive(categoryRequestDTO.isActive());
+        category.setName(categoryRequestDTO.getName());
+        category.setDescription(categoryRequestDTO.getDescription());
+        categoryRepository.save(category);
+
+        return new ResponseDTO(
+                Constant.UPDATE_SUCCESS,
+                HttpStatus.OK,
+                categoryConverter.convertEntityToCategoryResponseDTOForAdmin(category));
     }
 
+
     @Override
+    @Transactional
     public ResponseDTO deleteById(Long categoryId) {
         ResponseDTO responseDTO = new ResponseDTO();
-        Category category = categoryRepository.findCategoryByActiveTrue(categoryId);
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category == null)
+            return new ResponseDTO("Category not found!", HttpStatus.BAD_REQUEST, "Category not found!");
+
         List<SubCategory> subCategories = category.getSubCategoryList();
-        List<Product> allProducts = getAllProductsBySubCategories(subCategories);
 
-        category.setDelete(true);
-        category.setActive(false);
+        subCategories.forEach(subCategory -> {
+            subCategory.setIsDelete(true);
+            subCategory.getProducts().forEach(product -> product.setIsDelete(true));
+        });
 
-        if (!subCategories.isEmpty()){
-            subCategories.forEach(subCategory -> {
-                subCategory.setDelete(true);
-                subCategory.setActivated(false);
-            });
-            if (!allProducts.isEmpty()){
-                allProducts.forEach(product -> {
-                    product.setIsDelete(true);
-                    product.setIsActivated(false);
-                });
-            }
-        }
-        subCategoryRepository.saveAll(subCategories);
-        productRepository.saveAll(allProducts);
+        category.setIsDelete(true);
         categoryRepository.save(category);
         responseDTO.setMessage(Constant.DELETE_SUCCESS);
         responseDTO.setStatus(HttpStatus.OK);
         return responseDTO;
     }
 
-    @Override
-    public ResponseDTO activeById(Long categoryId) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        Category category = categoryRepository.findCategoryByActiveFalseAndDeletedFalse(categoryId);
-        List<SubCategory> subCategories = category.getSubCategoryList();
-        List<Product> allProducts = getAllProductsBySubCategories(subCategories);
-
-        category.setActive(true);
-        if (!subCategories.isEmpty()){
-            subCategories.forEach(subCategory -> subCategory.setActivated(true));
-            if (!allProducts.isEmpty()){
-                allProducts.forEach(product -> product.setIsActivated(true));
-            }
-        }
-        subCategoryRepository.saveAll(subCategories);
-        productRepository.saveAll(allProducts);
-        categoryRepository.save(category);
-        responseDTO.setMessage(Constant.ACTIVE_SUCCESS);
-        responseDTO.setStatus(HttpStatus.OK);
-        return responseDTO;
-    }
-
-    @Override
-    public ResponseDTO unactiveById(Long categoryId) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        Category category = categoryRepository.findCategoryByActiveTrueAndDeletedFalse(categoryId);
-        List<SubCategory> subCategories = category.getSubCategoryList();
-        List<Product> allProducts = getAllProductsBySubCategories(subCategories);
-        category.setActive(false);
-        if (!subCategories.isEmpty()){
-            subCategories.forEach(subCategory -> subCategory.setActivated(false));
-            if (!allProducts.isEmpty()){
-                allProducts.forEach(product -> product.setIsActivated(false));
-            }
-        }
-        subCategoryRepository.saveAll(subCategories);
-        productRepository.saveAll(allProducts);
-        categoryRepository.save(category);
-        responseDTO.setMessage(Constant.UNACTIVE_SUCCESS);
-        responseDTO.setStatus(HttpStatus.OK);
-        return responseDTO;
-    }
-
+    @Transactional
     @Override
     public ResponseDTO findCategoryByIdAndDeteteFalse(Long categoryId) {
         ResponseDTO responseDTO = new ResponseDTO();
@@ -175,7 +139,9 @@ public class CategoryServiceImpl implements CategoryService {
         responseDTO.setData(categoryConverter.convertEntityToCategoryResponseDTOForAdmin(category));
         return responseDTO;
     }
-    public  List<Product> getAllProductsBySubCategories(List<SubCategory> subCategories){
+
+    @Transactional
+    public List<Product> getAllProductsBySubCategories(List<SubCategory> subCategories) {
         List<Product> allProducts = new ArrayList<>();
         for (SubCategory subCategory : subCategories) {
             List<Product> products = subCategory.getProducts();
@@ -183,6 +149,8 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return allProducts;
     }
+
+
     private boolean isCategoryNameAlreadyExists(String name) {
         Category existingCategory = categoryRepository.findCategoryByName(name);
         return existingCategory != null;
