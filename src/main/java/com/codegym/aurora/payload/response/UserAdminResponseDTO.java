@@ -11,23 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserAdminResponseDTO {
 
-    private Long id;
-
     private String username;
-
-    private String fullName;
 
     private Integer count;
 
+    private String role;
+
     private Integer totalCount;
-
-    private String gender;
-
-    private String phoneNumber;
-
-    private String email;
-
-    private boolean isDelete;
 
     private boolean isActivated;
 }
