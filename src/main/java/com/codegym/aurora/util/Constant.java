@@ -26,7 +26,9 @@ public class Constant {
 
     public static final String EDIT_INFO_SUCCESS = "Edit info successfully!!!";
 
-    public static final String EDIT_INFO_FAIL = "Edit info failure!";
+    public static final String UPDATE_ROLE_SUCCESS = "Update role success!";
+
+    public static final String UPDATE_ROLE_FAIL = "Update role fail!";
 
     public static final String GET_USER_INFO_SUCCESS = "Get info successfully!!!";
 

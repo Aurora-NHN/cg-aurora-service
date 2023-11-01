@@ -3,10 +3,10 @@ package com.codegym.aurora.controller.store_front;
 import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.service.NumerologyReportService;
-import com.codegym.aurora.util.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +35,7 @@ public class NumerologyController {
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
     @GetMapping("/history")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDTO> getAllNumerologyReportForUser(){
         ResponseDTO responseDTO = numerologyReportService.findAllNumerologyReporForUser();
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());

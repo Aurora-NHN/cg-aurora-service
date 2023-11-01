@@ -6,7 +6,6 @@ import com.codegym.aurora.entity.UserDetail;
 import com.codegym.aurora.payload.response.UserResponseDTO;
 import com.codegym.aurora.payload.response.UserResponseDtoForNumerologyReport;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +23,7 @@ public class UserConverterImpl implements UserConverter {
                 .totalCount(user.getTotalCount())
                 .phoneNumber(userDetail.getPhoneNumber())
                 .username(user.getUsername())
+                .role(user.getRole())
                 .build();
     }
 

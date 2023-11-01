@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -51,7 +53,7 @@ public class User {
     @Column(name = "IS_DELETE")
     private boolean isDelete;
 
-    @Column(name = "IS_ACTIVATED")
+    @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
     private boolean isActivated;
 
     @OneToOne(mappedBy = "user")
