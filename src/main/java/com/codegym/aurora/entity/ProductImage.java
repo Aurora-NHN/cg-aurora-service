@@ -28,6 +28,9 @@ public class ProductImage {
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
 
+    @Column(name = "image_name")
+    private String imageName;
+
     @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
     private boolean isDelete;
 
