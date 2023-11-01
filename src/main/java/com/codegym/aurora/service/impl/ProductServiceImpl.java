@@ -4,10 +4,15 @@ package com.codegym.aurora.service.impl;
 import com.codegym.aurora.converter.ProductConverter;
 import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.ProductImage;
+import com.codegym.aurora.entity.SubCategory;
+import com.codegym.aurora.payload.request.ProductCreateRequestDto;
 import com.codegym.aurora.payload.request.ProductRequestDTO;
 import com.codegym.aurora.payload.response.PageProductResponseDTO;
+import com.codegym.aurora.payload.response.ProductCreateResponseDTO;
+import com.codegym.aurora.payload.response.ProductInAdminResponseDTO;
 import com.codegym.aurora.payload.response.ProductResponseDTO;
 import com.codegym.aurora.repository.ProductRepository;
+import com.codegym.aurora.repository.SubCategoryRepository;
 import com.codegym.aurora.service.ImageService;
 import com.codegym.aurora.service.ProductImageService;
 import com.codegym.aurora.service.ProductService;
@@ -16,14 +21,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @Transactional
@@ -36,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
     private final ImageService imageService;
 
     private final ProductImageService productImageService;
+    private final SubCategoryRepository subCategoryRepository;
 
     @Override
     public Page<PageProductResponseDTO> getProductsPage(Pageable pageable) {
@@ -127,10 +134,92 @@ public class ProductServiceImpl implements ProductService {
         }
         return true;
     }
+
+    @Override
+    public ResponseEntity<Object> createProduct(ProductCreateRequestDto productRequestDTO) {
+
+        List<MultipartFile> productImageFileList = productRequestDTO.getProductImageList();
+        try{
+            if (productImageFileList.isEmpty()){
+                return new ResponseEntity<>("Product image is null!", HttpStatus.BAD_REQUEST);
+            }
+
+            SubCategory subCategory = subCategoryRepository
+                    .findById(productRequestDTO.getSubCategoryId()).orElse(null);
+            if (subCategory == null){
+                return new ResponseEntity<>("Add product failed, beacause subCategory is null!", HttpStatus.BAD_REQUEST);
+
+            }
+            Product product = new Product();
+            List<String> productUrlList = imageService.save(productRequestDTO.getProductImageList());
+            String productImageUlr = imageService.save(productImageFileList.get(0));
+            List<ProductImage> productImageList = productImageService.saveListImage(productUrlList,product);
+
+            product.setName(productRequestDTO.getName());
+            product.setPrice(productRequestDTO.getPrice());
+            product.setWeight(productRequestDTO.getWeight());
+            product.setQuantity(productRequestDTO.getQuantity());
+            product.setDescription(productRequestDTO.getDescription());
+            product.setImageUrl(productImageUlr);
+            product.setAuthor(productRequestDTO.getAuthor());
+            product.setInclude(productRequestDTO.getInclude());
+            product.setProducer(productRequestDTO.getProducer());
+            product.setCreateDay(LocalDate.now());
+            product.setHeight(productRequestDTO.getHeight());
+            product.setImageName(productImageUlr);
+            product.setActivated(true);
+            product.setDelete(false);
+            product.setSubCategory(subCategory);
+            product.setProductImageUrlList(productImageList);
+            productRepository.save(product);
+
+            ProductCreateResponseDTO productResponseDTO = productConverter
+                    .convertEntityToCreateResponse(product);
+            productResponseDTO.setProductImageUrlList(imageService.getImageUrls(productUrlList));
+            productResponseDTO.setMainImageUrl(imageService.getImageUrl(productImageUlr));
+            return new ResponseEntity<>(productResponseDTO, HttpStatus.OK);
+        }catch (Exception e){
+
+            e.printStackTrace();
+            return new ResponseEntity<>("Create product failed!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<Object> updateProduct(ProductCreateRequestDto productRequestDTO) {
+
+        return null;
+    }
+
     @Override
     public List<ProductResponseDTO> getOtherProducts() {
         List<Product> randomProducts = productRepository.findRandomProducts(4);
         List<ProductResponseDTO> productResponseDTOS = productConverter.convertProductListEntityToDTO(randomProducts);
         return productResponseDTOS;
     }
+
+    @Override
+    public Page<ProductInAdminResponseDTO> getProductsPageInAdmin(Pageable pageable) {
+        pageable = PageRequest.of(
+                pageable.getPageNumber(),
+                10,
+                Sort.by(Sort.Direction.ASC, "name"));
+        Page<Product> productPage = productRepository.findAllProduct(pageable);
+        Page<ProductInAdminResponseDTO> productInAdminResponseDTOPage = productConverter.convert(productPage);
+        return productInAdminResponseDTOPage;
+    }
+
+    @Override
+    public ResponseEntity<Object> deleteByProductId(Long id) {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product == null){
+            return new ResponseEntity<>("Product not found!", HttpStatus.BAD_REQUEST);
+        }
+
+        //Chưa viết xong
+
+        return null;
+    }
+
 }
