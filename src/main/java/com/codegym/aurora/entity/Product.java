@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +52,13 @@ public class Product {
     private String producer;
 
     @Column(name = "create_day")
-    private Date createDay;
+    private LocalDate createDay;
+
+    @Column(name = "height")
+    private Integer height;
+
+    @Column(name = "image_name")
+    private String imageName;
 
     @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
     private boolean isDelete;

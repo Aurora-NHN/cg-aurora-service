@@ -1,15 +1,17 @@
 package com.codegym.aurora.payload.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@RequiredArgsConstructor
-
-public class ProductInAdminResponseDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProductCreateResponseDTO {
     private Long id;
 
     private String name;
@@ -22,9 +24,9 @@ public class ProductInAdminResponseDTO {
 
     private String description;
 
-    private int quantitySold;
+    private Integer height;
 
-    private String imageUrl;
+    private int quantitySold;
 
     private String author;
 
@@ -32,15 +34,17 @@ public class ProductInAdminResponseDTO {
 
     private String producer;
 
-    private Date createDay;
-
-    private Integer height;
+    private LocalDate createDay;
 
     private boolean isDelete;
 
     private boolean isActivated;
 
+    private String imageUrl;
+
+    private String mainImageUrl;
+
     private List<String> productImageUrlList;
 
-    private SubCategoryResponseDTO subCategory;
+    private SubCategoryResponseDTO subCategoryResponseDTO;
 }

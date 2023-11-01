@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ProductImageService {
     List<ProductImage> saveListImage(List<String> stringList, Product product);
+    List<String> getProductUrls(List<ProductImage> productImageList);
 }
