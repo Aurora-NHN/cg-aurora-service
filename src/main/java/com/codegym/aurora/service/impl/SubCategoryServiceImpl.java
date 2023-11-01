@@ -142,6 +142,23 @@ public class SubCategoryServiceImpl implements SubCategoryService {
                 subCategoryConverter.convertEntityToSubCategoryResponeDto(subCategory));
     }
 
+    @Override
+    public ResponseDTO findAllByActiveTrue() {
+        List<SubCategory> subCategoryList = subCategoryRepository.findAllByActiveIsTrue();
+        if (subCategoryList == null) {
+            return createResponseDTO(
+                    HttpStatus.NOT_FOUND,
+                    "No sub category found in database",
+                    null);
+        }
+        List<SubCategoryResponseDTO> subCategoryResponseDTOList = subCategoryConverter
+                .convertToListSubCategoryDTO(subCategoryList);
+        return  createResponseDTO(
+                HttpStatus.OK,
+                Constant.GET_CATEGORIES_ACTIVE_SUCCESS,
+                subCategoryResponseDTOList );
+    }
+
     private boolean isSubCategoryNameAlreadyExists(String name) {
         SubCategory existingSubCategory = subCategoryRepository.findSubCategoryByNameAndActivatedTrue(name);
         return existingSubCategory != null;

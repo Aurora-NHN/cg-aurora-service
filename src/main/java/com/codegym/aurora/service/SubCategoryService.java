@@ -12,4 +12,6 @@ public interface SubCategoryService {
     ResponseDTO update(SubCategoryRequestDTO subCategoryRequestDTO);
     ResponseDTO deleteById(Long subCategoryId);
     ResponseDTO findSubCategoryByIdDeleteFalse(Long subCategoryId);
+
+    ResponseDTO findAllByActiveTrue();
 }
