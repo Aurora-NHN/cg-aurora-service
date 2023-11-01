@@ -151,16 +151,6 @@ public class UserServiceImpl implements UserService {
         return responseDTO;
     }
 
-    private void setUserInfo(UserInfoRequestDTO userInfoRequestDTO) {
-        User user = userRepository.findByUsername(getCurrentUsername());
-        UserDetail userDetail = user.getUserDetail();
-        userDetail.setGender(userInfoRequestDTO.getGender());
-        userDetail.setPhoneNumber(userInfoRequestDTO.getPhoneNumber());
-        userDetail.setFullName(userInfoRequestDTO.getFullName());
-        userRepository.save(user);
-        userDetailRepository.save(userDetail);
-    }
-
     @Override
     public ResponseDTO register(RegisterRequestDTO registerRequest) {
         ResponseDTO responseDTO = new ResponseDTO();
