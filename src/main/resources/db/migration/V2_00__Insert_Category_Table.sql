@@ -1,30 +1,32 @@
-INSERT INTO `aurora_shop`.`category` (`NAME`) VALUES ( 'Vòng Tay Phong Thủy');
-INSERT INTO `aurora_shop`.`category` (`NAME`) VALUES ('Ngọc Bích Nephrite' );
-INSERT INTO `aurora_shop`.`category` (`NAME`) VALUES ('Nhẫn Phong Thủy' );
-INSERT INTO `aurora_shop`.`category` (`NAME`) VALUES ('Dây Chuyền Phong Thủy' );
-INSERT INTO `aurora_shop`.`category` (`NAME`) VALUES ('Vật Phẩm Phong Thủy');
-INSERT INTO `aurora_shop`.`category` (`NAME`) VALUES ('Hoa Tai Phong Thủy' );
-INSERT INTO `aurora_shop`.`category` (`NAME`) VALUES ('Tarot' );
+INSERT INTO `aurora_shop`.`CATEGORY` (`NAME`)
+VALUES ('Vòng Tay Phong Thủy'),
+       ('Ngọc Bích Nephrite'),
+       ('Nhẫn Phong Thủy'),
+       ('Dây Chuyền Phong Thủy'),
+       ('Vật Phẩm Phong Thủy'),
+       ('Hoa Tai Phong Thủy'),
+       ('Tarot');
 
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Vòng tay đá Mặt Trăng', '1');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Vòng Tay Tết Dây Dù', '1');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Vòng tay đá Thạch Anh', '1');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Vòng tay mix Charm bạc', '1');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Mặt đá Nephrite', '2');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Vòng tay Nephrite', '2');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Nhẫn Tỳ Hưu', '3');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Nhẫn Hồ Ly', '3');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Nhẫn Ngọc Trai', '3');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Mặt dây hồ ly', '4');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Mặt dây phật Di Lặc', '4');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Tượng phật Di Lặc', '5');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Cây Tài Lộc', '5');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Tỳ hưu', '5');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Bài TAROT', '7');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Bài ORACLE', '7');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Bài LENORMAND', '7');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Sách Tham Khảo', '7');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Con Lắc', '7');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Đá Runes', '7');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Đá Thanh Tẩy', '7');
-INSERT INTO `aurora_shop`.`sub_category` (`NAME`, `CATEGORY_ID`) VALUES ('Khăn Trải', '7');
+INSERT INTO `aurora_shop`.`SUB_CATEGORY` (`NAME`, `CATEGORY_ID`)
+VALUES ('Vòng tay đá Mặt Trăng', '1'),
+       ('Vòng Tay Tết Dây Dù', '1'),
+       ('Vòng tay đá Thạch Anh', '1'),
+       ('Vòng tay mix Charm bạc', '1'),
+       ('Mặt đá Nephrite', '2'),
+       ('Vòng tay Nephrite', '2'),
+       ('Nhẫn Tỳ Hưu', '3'),
+       ('Nhẫn Hồ Ly', '3'),
+       ('Nhẫn Ngọc Trai', '3'),
+       ('Mặt dây hồ ly', '4'),
+       ('Mặt dây phật Di Lặc', '4'),
+       ('Tượng phật Di Lặc', '5'),
+       ('Cây Tài Lộc', '5'),
+       ('Tỳ hưu', '5'),
+       ('Bài TAROT', '7'),
+       ('Bài ORACLE', '7'),
+       ('Bài LENORMAND', '7'),
+       ('Sách Tham Khảo', '7'),
+       ('Con Lắc', '7'),
+       ('Đá Runes', '7'),
+       ('Đá Thanh Tẩy', '7'),
+       ('Khăn Trải', '7');

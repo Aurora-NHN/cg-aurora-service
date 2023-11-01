@@ -35,10 +35,10 @@ public class SubCategory {
     private String name;
 
     @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
-    private boolean isDelete;
+    private Boolean isDelete;
 
     @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
-    private boolean isActivated;
+    private Boolean active;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "CATEGORY_ID",referencedColumnName = "ID")

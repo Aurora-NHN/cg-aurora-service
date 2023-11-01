@@ -1,4 +1,4 @@
 use aurora_shop;
-alter table category
+alter table CATEGORY
 add column thumb varchar(50),
     add column description text;
