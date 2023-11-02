@@ -167,8 +167,8 @@ public class ProductServiceImpl implements ProductService {
             product.setCreateDay(LocalDate.now());
             product.setHeight(productRequestDTO.getHeight());
             product.setImageName(productImageUlr);
-            product.setActivated(true);
-            product.setDelete(false);
+            product.setIsActivated(true);
+            product.setIsDelete(false);
             product.setSubCategory(subCategory);
             product.setProductImageUrlList(productImageList);
             productRepository.save(product);
@@ -201,25 +201,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductInAdminResponseDTO> getProductsPageInAdmin(Pageable pageable) {
-        pageable = PageRequest.of(
-                pageable.getPageNumber(),
-                10,
-                Sort.by(Sort.Direction.ASC, "name"));
-        Page<Product> productPage = productRepository.findAllProduct(pageable);
+        Page<Product> productPage = productRepository.findAllByIsDeleteIsFalse(pageable);
         Page<ProductInAdminResponseDTO> productInAdminResponseDTOPage = productConverter.convert(productPage);
         return productInAdminResponseDTOPage;
-    }
-
-    @Override
-    public ResponseEntity<Object> deleteByProductId(Long id) {
-        Product product = productRepository.findById(id).orElse(null);
-        if (product == null){
-            return new ResponseEntity<>("Product not found!", HttpStatus.BAD_REQUEST);
-        }
-
-        //Chưa viết xong
-
-        return null;
     }
 
 }

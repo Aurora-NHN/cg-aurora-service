@@ -30,6 +30,12 @@ public class SubCategoryControllerForAdmin {
         ResponseDTO responseDTO = subCategoryService.findAll(pageable);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/all")
+    public  ResponseEntity<ResponseDTO> getAllSubCategories(){
+        ResponseDTO responseDTO = subCategoryService.findAllByActiveTrue();
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
+    }
     
     @PostMapping
     public ResponseEntity<?> createSubCategory(
@@ -57,4 +63,6 @@ public class SubCategoryControllerForAdmin {
         ResponseDTO responseDTO = subCategoryService.deleteById(id);
         return new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
+
+
 }

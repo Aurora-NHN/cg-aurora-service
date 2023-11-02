@@ -24,4 +24,6 @@ public interface SubCategoryRepository extends JpaRepository<SubCategory,Long> {
     SubCategory findSubCategoryByIdAndDeletedFalse(Long id);
     @Query("SELECT sc FROM SubCategory sc WHERE sc.name = :name and sc.active = true ")
     SubCategory findSubCategoryByNameAndActivatedTrue(String name);
+
+    List<SubCategory> findAllByActiveIsTrue();
 }

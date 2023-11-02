@@ -121,7 +121,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         subCategories.forEach(subCategory -> {
             subCategory.setIsDelete(true);
-            subCategory.getProducts().forEach(product -> product.setDelete(true));
+            subCategory.getProducts().forEach(product -> product.setIsDelete(true));
         });
 
         category.setIsDelete(true);

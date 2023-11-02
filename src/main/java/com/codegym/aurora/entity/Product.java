@@ -61,10 +61,10 @@ public class Product {
     private String imageName;
 
     @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
-    private boolean isDelete;
+    private Boolean isDelete;
 
     @Column(name = "IS_ACTIVATED", columnDefinition = "boolean default true")
-    private boolean isActivated;
+    private Boolean isActivated;
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<ProductImage> productImageUrlList = new ArrayList<>();

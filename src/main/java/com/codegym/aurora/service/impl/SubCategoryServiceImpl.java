@@ -46,7 +46,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
         if (!productList.isEmpty()) {
             productList.forEach(product -> {
-                product.setActivated(activated);
+                product.setIsActivated(activated);
             });
             productRepository.saveAll(productList);
         }
@@ -126,8 +126,8 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
         if (!productList.isEmpty()) {
             productList.forEach(product -> {
-                product.setActivated(false);
-                product.setDelete(true);
+                product.setIsActivated(false);
+                product.setIsDelete(true);
             });
             productRepository.saveAll(productList);
         }
@@ -140,6 +140,23 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         return createResponseDTO(HttpStatus.OK,
                 Constant.GET_SUB_CATEGORIE_BY_ID_SUCCESS,
                 subCategoryConverter.convertEntityToSubCategoryResponeDto(subCategory));
+    }
+
+    @Override
+    public ResponseDTO findAllByActiveTrue() {
+        List<SubCategory> subCategoryList = subCategoryRepository.findAllByActiveIsTrue();
+        if (subCategoryList == null) {
+            return createResponseDTO(
+                    HttpStatus.NOT_FOUND,
+                    "No sub category found in database",
+                    null);
+        }
+        List<SubCategoryResponseDTO> subCategoryResponseDTOList = subCategoryConverter
+                .convertToListSubCategoryDTO(subCategoryList);
+        return  createResponseDTO(
+                HttpStatus.OK,
+                Constant.GET_CATEGORIES_ACTIVE_SUCCESS,
+                subCategoryResponseDTOList );
     }
 
     private boolean isSubCategoryNameAlreadyExists(String name) {
