@@ -43,5 +43,4 @@ public class OrderDetail {
     @JoinColumn(name = "ORDER_ID", referencedColumnName = "ID")
     private Order order;
 
-
 }

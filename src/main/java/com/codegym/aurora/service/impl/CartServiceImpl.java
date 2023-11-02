@@ -14,15 +14,15 @@ import com.codegym.aurora.repository.ProductRepository;
 import com.codegym.aurora.repository.UserRepository;
 import com.codegym.aurora.service.CartService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
     private final UserServiceImpl userService;
@@ -98,7 +98,6 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-
     @Override
     public ResponseDTO showCart() {
         String userName = userService.getCurrentUsername();
@@ -106,7 +105,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartCache.getCart(user.getId());
         List<CartLine> cartLineList = cart.getCartLineList();
         long totalAmount = 0;
-        if(!cartLineList.isEmpty()){
+        if (!cartLineList.isEmpty()) {
             for (CartLine cartLine : cartLineList) {
                 totalAmount += cartLine.getTotalPrice();
             }
@@ -119,9 +118,10 @@ public class CartServiceImpl implements CartService {
                 .data(cartDTO)
                 .build();
     }
-    @Transactional
+
+
     @Override
-    public ResponseDTO removeCartLine(long productId) {
+    public ResponseDTO removeCartLine(long cartLineId) {
         String userName = userService.getCurrentUsername();
         User user = userRepository.findByUsername(userName);
         Cart cart = cartCache.getCart(user.getId());
@@ -129,8 +129,8 @@ public class CartServiceImpl implements CartService {
         List<CartLine> newCartLineList = new ArrayList<>();
         long newToTalAmount = 0;
         for (CartLine cartLine : cartLineList) {
-            if (cartLine.getProduct().getId() == productId) {
-                cartLineRepository.deleteCartLineByProductId(productId);
+            if (cartLine.getId() == cartLineId) {
+                cartLineRepository.deleteById(cartLineId);
             } else {
                 newCartLineList.add(cartLine);
                 newToTalAmount += cartLine.getTotalPrice();
@@ -146,6 +146,7 @@ public class CartServiceImpl implements CartService {
                 .message("delete cart line successfully")
                 .build();
     }
+
     @Transactional
     @Override
     public ResponseDTO addNewQuantityToCart(Long productId, int quantity) {
@@ -185,6 +186,7 @@ public class CartServiceImpl implements CartService {
                 .data(cartDTO)
                 .build();
     }
+
     @Override
     @Transactional
     public ResponseDTO resetCart() {
@@ -192,9 +194,10 @@ public class CartServiceImpl implements CartService {
         User user = userRepository.findByUsername(username);
         Cart cart = cartRepository.findCartByUser(user);
         cart.setTotalAmount(0);
-        cartRepository.save(cart);
         cartLineRepository.deleteCartLineByCart_Id(cart.getId());
-        cartCache.addToCart(user.getId(),cart);
+        cartRepository.save(cart);
+        cart.setCartLineList(new ArrayList<>());
+        cartCache.addToCart(user.getId(), cart);
         CartDTO cartDTO = cartConverter.convertCartEntityToDTO(cart);
         cartDTO.setCartLineDTOList(new ArrayList<>());
         return ResponseDTO.builder()
