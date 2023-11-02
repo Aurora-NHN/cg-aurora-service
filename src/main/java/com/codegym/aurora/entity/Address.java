@@ -32,11 +32,20 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "FULL_NAME", nullable = false)
+    private String fullName;
+
     @Column(name = "CONSIGNEE_NAME", nullable = false)
     private String consigneeName;
 
     @Column(name = "CITY", nullable = false)
     private String city;
+
+    @Column(name = "district", nullable = false)
+    private String district;
+
+    @Column(name = "ward", nullable = false)
+    private String ward;
 
     @Column(name = "PHONE_NUMBER", nullable = false)
     private String phoneNumber;

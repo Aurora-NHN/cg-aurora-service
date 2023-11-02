@@ -35,7 +35,7 @@ public class CartLine {
     @JoinColumn(name = "PRODUCT_ID",referencedColumnName = "ID")
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "CART_ID", referencedColumnName = "ID")
     private Cart cart;
 }
