@@ -206,16 +206,4 @@ public class ProductServiceImpl implements ProductService {
         return productInAdminResponseDTOPage;
     }
 
-    @Override
-    public ResponseEntity<Object> deleteByProductId(Long id) {
-        Product product = productRepository.findById(id).orElse(null);
-        if (product == null){
-            return new ResponseEntity<>("Product not found!", HttpStatus.BAD_REQUEST);
-        }
-
-        //Chưa viết xong
-
-        return null;
-    }
-
 }

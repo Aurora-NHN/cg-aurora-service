@@ -34,7 +34,7 @@ public class SubCategoryControllerForAdmin {
     @GetMapping("/all")
     public  ResponseEntity<ResponseDTO> getAllSubCategories(){
         ResponseDTO responseDTO = subCategoryService.findAllByActiveTrue();
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
     
     @PostMapping

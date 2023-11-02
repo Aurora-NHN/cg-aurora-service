@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -101,30 +100,18 @@ public class SecurityConfiguration  {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         httpSecurity.authorizeHttpRequests()
-                .antMatchers("/api/admin/login")
-                .permitAll()
-                .antMatchers("/api/admin/**")
-                .hasRole("ADMIN");
-
-
-        httpSecurity.authorizeHttpRequests() // links start with /api/
-                .antMatchers("/api/**", "/api/login","api/register-user", "api/register-admin") // perform segregate authorize
+                .antMatchers( "/api/login", "/api/logout","api/register-user")
                 .permitAll();
 
-//        // Pages require login with role: ROLE_ADMIN.
-//        // If not login at admin role yet, redirect to /login
-//        httpSecurity.authorizeHttpRequests()
-//                .antMatchers("/api/user/**", "/api/auth/**", "/api/sellers/**", "/api/orders/**","/api/cart-lines/**")
-//                .hasAnyRole("ADMIN", "USER");
-//
-//        // Pages require login with role: ROLE_CUSTOMER
-//        // If not login at user role yet, redirect to /login
+        httpSecurity.authorizeHttpRequests()
+                .antMatchers("/api/users/**","/api/vnpay/**","/api/order/**", "/api/cart/**" )
+                .hasRole("USER");
 
-//
-//        // When user login with ROLE_CUSTOMER, but try to
-//        // access pages require ROLE_ADMIN, redirect to /error-403
-//        httpSecurity.authorizeHttpRequests().and().exceptionHandling()
-//                .accessDeniedPage("/api/access-denied");
+        httpSecurity.authorizeHttpRequests()
+                .antMatchers("/api/admin/login")
+                .permitAll()
+                .antMatchers("/api/**")
+                .hasRole("ADMIN");
 
         // Configure remember me (save token in database)
         httpSecurity.authorizeHttpRequests()

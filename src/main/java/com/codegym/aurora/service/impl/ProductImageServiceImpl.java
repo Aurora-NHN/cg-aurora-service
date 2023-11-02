@@ -33,8 +33,13 @@ public class ProductImageServiceImpl implements ProductImageService {
     public List<String> getProductUrls(List<ProductImage> productImageList) {
         List<String> productNameImages = new ArrayList<>();
         for (ProductImage item: productImageList){
-            String productName = item.getImageName();
+            if(item.getImageName() == null){
+                productNameImages.add(item.getImageUrl());
+            }else {
+                String productName = imageService.getImageUrl(item.getImageName());
+                productNameImages.add(productName);
+            }
         }
-        return imageService.getImageUrls(productNameImages);
+        return productNameImages;
     }
 }

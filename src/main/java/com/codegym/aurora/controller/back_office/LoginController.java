@@ -28,13 +28,7 @@ public class LoginController {
 
     @PostMapping(value = "/register-user")
     public ResponseEntity<ResponseDTO> registerUser(@RequestBody RegisterRequestDTO registerRequestDTO) {
-        ResponseDTO responseDto = userService.registerUser(registerRequestDTO);
-        return new ResponseEntity<>(responseDto, responseDto.getStatus());
-    }
-
-    @PostMapping(value = "/register-admin")
-    public ResponseEntity<ResponseDTO> registerAdmin(@RequestBody RegisterRequestDTO registerRequestDTO) {
-        ResponseDTO responseDto = userService.registerAdmin(registerRequestDTO);
+        ResponseDTO responseDto = userService.register(registerRequestDTO);
         return new ResponseEntity<>(responseDto, responseDto.getStatus());
     }
 

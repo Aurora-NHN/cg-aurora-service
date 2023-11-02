@@ -6,6 +6,9 @@ import com.codegym.aurora.payload.request.RegisterRequestDTO;
 import com.codegym.aurora.payload.request.UserInfoRequestDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
 import com.codegym.aurora.payload.response.UserAdminResponseDTO;
+import com.codegym.aurora.payload.response.UserResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -19,11 +22,11 @@ public interface UserService {
 
     ResponseDTO getUserInfo();
 
-    ResponseDTO registerUser(RegisterRequestDTO registerRequest);
+    ResponseDTO register(RegisterRequestDTO registerRequest);
 
-    ResponseDTO registerAdmin(RegisterRequestDTO registerRequest);
+    ResponseDTO setRoleAdmin(String username);
 
-    ResponseDTO register(RegisterRequestDTO registerRequest, String role);
+    ResponseDTO setRoleUser(String username);
 
     void updateUserPassword(String email, String tempPassword);
 
@@ -41,5 +44,7 @@ public interface UserService {
 
     ResponseDTO getCountOfUser();
 
-    List<UserAdminResponseDTO> getAll();
+    ResponseDTO deleteUser(String username);
+
+    Page<UserAdminResponseDTO> getUserListByPage(Pageable pageable, String username);
 }

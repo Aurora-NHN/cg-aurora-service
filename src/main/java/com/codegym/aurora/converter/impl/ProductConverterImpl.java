@@ -71,6 +71,8 @@ public class ProductConverterImpl implements ProductConverter {
             if (mainProductImageName != null){
                 mainProductImageUrl = imageService.getImageUrl(mainProductImageName);
                 productResponseDTO.setImageUrl(mainProductImageUrl);
+            }else {
+                productResponseDTO.setImageUrl(product.getImageUrl());
             }
             SubCategoryResponseDTO subCategoryResponseDTO = subCategoryConverter
                     .convertEntityToSubCategoryResponeDto(product.getSubCategory());
