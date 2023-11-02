@@ -109,8 +109,6 @@ public class SecurityConfiguration  {
 
         httpSecurity.authorizeHttpRequests()
                 .antMatchers("/api/admin/login")
-                .permitAll()
-                .antMatchers("/api/**")
                 .hasRole("ADMIN");
 
         // Configure remember me (save token in database)

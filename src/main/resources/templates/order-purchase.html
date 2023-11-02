@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+<div class="body py-5">
+    <div class="container">
+        <div class="w-50 m-auto">
+            <h1 class="my-3 text-danger text-center">Thanh toán thành công</h1>
+            <h2 class="my-2">Thông tin đơn hàng</h2>
+            <table>
+                <tbody>
+                <tr>
+                    <td>Tên khách hàng:</td>
+                    <td><span th:text="${fullName}"></span></td>
+                </tr>
+                <tr>
+                    <td>Địa chỉ nhận hàng:</td>
+                    <td><span th:text="${address}"></span></td>
+                </tr>
+                <tr>
+                    <td>Tổng tiền:</td>
+                    <td><span th:text="${totalPrice}"></span></td>
+                </tr>
+                <tr>
+                    <td>Thời gian thanh toán:</td>
+                    <td><span th:text="${paymentTime}"></span></td>
+                </tr>
+                <tr>
+                    <td>Mã giao dịch:</td>
+                    <td><span th:text="${paymentId}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="w-50 m-auto">
+            <h2 class="my-2">Chi tiết sản phẩm</h2>
+            <table>
+                <tbody>
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                </tr>
+                <tr>
+                    <td><span th:text="${name}"></span></td>
+                    <td><span th:text="${quantity}"></span></td>
+                    <td><span th:text="${totalPrice}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

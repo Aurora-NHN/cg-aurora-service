@@ -9,7 +9,6 @@ import com.codegym.aurora.entity.Order;
 import com.codegym.aurora.entity.User;
 import com.codegym.aurora.entity.UserDetail;
 import com.codegym.aurora.payload.request.PaymentRequestDTO;
-import com.codegym.aurora.payload.response.VNPayResponseDTO;
 import com.codegym.aurora.repository.HistoryPaymentRepository;
 import com.codegym.aurora.repository.UserRepository;
 import com.codegym.aurora.service.ClientService;

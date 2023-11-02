@@ -197,7 +197,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDTO setRoleAdmin(String username) {
+    public ResponseDTO changeRole(String username) {
         ResponseDTO responseDTO = new ResponseDTO();
         User user = userRepository.findByUsername(username);
         if(user == null){
@@ -205,23 +205,11 @@ public class UserServiceImpl implements UserService {
             responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
             return responseDTO;
         }
-        user.setRole("ROLE_".concat(ERole.ADMIN.toString()));
-        userRepository.save(user);
-        responseDTO.setMessage(Constant.UPDATE_ROLE_SUCCESS);
-        responseDTO.setStatus(HttpStatus.OK);
-        return responseDTO;
-    }
-
-    @Override
-    public ResponseDTO setRoleUser(String username) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        User user = userRepository.findByUsername(username);
-        if(user == null){
-            responseDTO.setMessage(Constant.UPDATE_ROLE_FAIL);
-            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
-            return responseDTO;
+        if(user.getRole().equals("ROLE_USER")){
+            user.setRole("ROLE_".concat(ERole.ADMIN.toString()));
+        } else {
+            user.setRole("ROLE_".concat(ERole.USER.toString()));
         }
-        user.setRole("ROLE_".concat(ERole.USER.toString()));
         userRepository.save(user);
         responseDTO.setMessage(Constant.UPDATE_ROLE_SUCCESS);
         responseDTO.setStatus(HttpStatus.OK);
@@ -387,6 +375,8 @@ public class UserServiceImpl implements UserService {
             return responseDTO;
         }
         user.setActivated(false);
+        user.setDelete(true);
+        userRepository.save(user);
         responseDTO.setMessage(Constant.DELETE_SUCCESS);
         responseDTO.setStatus(HttpStatus.OK);
         return responseDTO;
