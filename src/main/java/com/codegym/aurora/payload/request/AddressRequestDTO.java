@@ -14,6 +14,10 @@ public class AddressRequestDTO {
 
     private String city;
 
+    private String district;
+
+    private String ward;
+
     private String deliveryAddress;
 
     private String additionalInformation;

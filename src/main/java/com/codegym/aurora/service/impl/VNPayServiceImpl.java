@@ -1,17 +1,22 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.cache.CartCache;
 import com.codegym.aurora.cache.OrderCache;
 import com.codegym.aurora.cache.PaymentCache;
 import com.codegym.aurora.configuration.EnvVariable;
 import com.codegym.aurora.configuration.VNPayConfiguration;
+import com.codegym.aurora.entity.Cart;
 import com.codegym.aurora.entity.HistoryPayment;
 import com.codegym.aurora.entity.Order;
 import com.codegym.aurora.entity.User;
 import com.codegym.aurora.entity.UserDetail;
 import com.codegym.aurora.payload.request.PaymentRequestDTO;
 import com.codegym.aurora.payload.response.VNPayResponseDTO;
+import com.codegym.aurora.repository.CartLineRepository;
+import com.codegym.aurora.repository.CartRepository;
 import com.codegym.aurora.repository.HistoryPaymentRepository;
 import com.codegym.aurora.repository.UserRepository;
+import com.codegym.aurora.service.CartService;
 import com.codegym.aurora.service.ClientService;
 import com.codegym.aurora.service.UserService;
 import com.codegym.aurora.service.VNPayService;
@@ -52,6 +57,12 @@ public class VNPayServiceImpl implements VNPayService {
     private final ClientService clientService;
 
     private final OrderCache orderCache;
+
+    private final CartRepository cartRepository;
+
+    private final CartLineRepository cartLineRepository;
+
+    private final CartCache cartCache;
 
     public static final String VIP = "25000000";
 
@@ -234,9 +245,15 @@ public class VNPayServiceImpl implements VNPayService {
         String orderInfo = historyPayment.getOderInfo();
 
         if (paymentId.equals(historyPayment.getPaymentId()) && amount.equals(totalPrice) && status.equals("00")) {
-            if (!orderInfo.equals(Constant.PAY_PURCHASE_INVOICE)){
-                setVip(amount, user);
+            if (orderInfo.equals(Constant.PAY_PURCHASE_INVOICE)){
+                Cart cart = cartRepository.findCartByUser(user);
+                cart.setTotalAmount(0);
+                cartLineRepository.deleteCartLineByCart_Id(cart.getId());
+                cartRepository.save(cart);
+                cart.setCartLineList(new ArrayList<>());
+                cartCache.addToCart(user.getId(), cart);
             }
+            setVip(amount, user);
             historyPayment.setStatus(true);
             clientService.sendOrderReturn(userDetail.getEmail(), paymentId);
         }
@@ -246,6 +263,4 @@ public class VNPayServiceImpl implements VNPayService {
         historyPaymentRepository.save(historyPayment);
         return historyPayment;
     }
-
-
 }

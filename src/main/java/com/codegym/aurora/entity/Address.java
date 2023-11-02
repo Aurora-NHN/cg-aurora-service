@@ -38,6 +38,12 @@ public class Address {
     @Column(name = "CITY", nullable = false)
     private String city;
 
+    @Column(name = "district", nullable = false)
+    private String district;
+
+    @Column(name = "ward", nullable = false)
+    private String ward;
+
     @Column(name = "PHONE_NUMBER", nullable = false)
     private String phoneNumber;
 
