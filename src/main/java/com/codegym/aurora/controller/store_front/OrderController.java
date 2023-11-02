@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class OrderController {
         ResponseDTO responseDTO = orderService.createOrderDetail(addressRequestDTO);
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
-    @PostMapping("/save")
+    @GetMapping("/save")
     public ResponseEntity<ResponseDTO> saveOrder(){
         ResponseDTO responseDTO = orderService.createOrder();
         return new ResponseEntity<>(responseDTO, responseDTO.getStatus());

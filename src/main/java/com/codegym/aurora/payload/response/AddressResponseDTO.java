@@ -1,4 +1,4 @@
-package com.codegym.aurora.payload.request;
+package com.codegym.aurora.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddressRequestDTO {
+public class AddressResponseDTO {
     private String consigneeName;
 
     private String phoneNumber;
@@ -23,5 +23,4 @@ public class AddressRequestDTO {
     private String additionalInformation;
 
     private long deliveryCharges;
-
 }

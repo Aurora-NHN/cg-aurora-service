@@ -81,10 +81,10 @@ public class UserServiceImpl implements UserService {
         loginResponseDTO.setUserResponseDTO(userResponseDTO);
         tokenCache.addToken(loginRequestDTO.getUsername(), token);
         Cart cart = cartRepository.findCartByUser(userCheck);
-        cartCache.addToCart(userCheck.getId(), cart);
+        cartCache.addToCart(userCheck.getId(),cart);
         responseDTO.setMessage(Constant.LOGIN_SUCCESS);
         responseDTO.setStatus(HttpStatus.OK);
-        responseDTO.setData(loginResponseDTO);
+        responseDTO.setData(token);
         return responseDTO;
     }
 
@@ -140,11 +140,11 @@ public class UserServiceImpl implements UserService {
         try {
             String username = getCurrentUsername();
             User user = userRepository.findByUsername(username);
-            UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user, user.getUserDetail());
+            UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user,user.getUserDetail());
             responseDTO.setMessage(Constant.GET_USER_INFO_SUCCESS);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setData(userResponseDTO);
-        } catch (Exception e) {
+        } catch (Exception e){
             responseDTO.setMessage(Constant.GET_USER_INFO_FAIL);
             responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
         }

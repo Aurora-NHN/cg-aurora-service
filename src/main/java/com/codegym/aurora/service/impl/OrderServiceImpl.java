@@ -3,7 +3,7 @@ package com.codegym.aurora.service.impl;
 import com.codegym.aurora.cache.CartCache;
 import com.codegym.aurora.cache.OrderCache;
 import com.codegym.aurora.converter.AddressConvert;
-import com.codegym.aurora.converter.CartConverter;
+import com.codegym.aurora.converter.OrderConverter;
 import com.codegym.aurora.entity.Address;
 import com.codegym.aurora.entity.Cart;
 import com.codegym.aurora.entity.CartLine;
@@ -12,8 +12,8 @@ import com.codegym.aurora.entity.OrderDetail;
 import com.codegym.aurora.entity.Product;
 import com.codegym.aurora.entity.User;
 import com.codegym.aurora.payload.request.AddressRequestDTO;
+import com.codegym.aurora.payload.response.OrderResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
-import com.codegym.aurora.repository.CartLineRepository;
 import com.codegym.aurora.repository.CartRepository;
 import com.codegym.aurora.repository.OrderRepository;
 import com.codegym.aurora.repository.ProductRepository;
@@ -24,14 +24,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
-
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
@@ -42,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderCache orderCache;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final OrderConverter orderConverter;
 
     @Override
     public ResponseDTO createOrderDetail(AddressRequestDTO addressRequestDTO) {
@@ -76,19 +76,25 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         List<CartLine> cartLineList = currentCart.getCartLineList();
         List<OrderDetail> orderDetailList = new ArrayList<>();
-        for (CartLine cartLine : cartLineList) {
+        for (int id = 0; id < cartLineList.size(); id++) {
+            CartLine cartLine = cartLineList.get(id);
             OrderDetail orderDetail = new OrderDetail();
             BeanUtils.copyProperties(cartLine, orderDetail);
             orderDetailList.add(orderDetail);
             Product cartLineProduct = cartLine.getProduct();
             Product product = productRepository.findProductById(cartLineProduct.getId());
-            int newQuantity = product.getQuantity() - cartLineProduct.getQuantity();
+            int quantity = product.getQuantity();
+            int cartLineQuantity = cartLine.getQuantity();
+            int newQuantity = quantity - cartLineQuantity;
             product.setQuantity(newQuantity);
             productRepository.save(product);
         }
+        order.setStatus("Đang chờ vận chuyển");
         order.setOrderDetailList(orderDetailList);
         orderRepository.save(order);
+        OrderResponseDTO orderResponseDTO = orderConverter.convertOrderEntityToDTO(order);
         return ResponseDTO.builder()
+                .data(orderResponseDTO)
                 .status(HttpStatus.OK)
                 .message("create order successfully")
                 .build();
