@@ -36,9 +36,9 @@ public class ProductInAdminResponseDTO {
 
     private Integer height;
 
-    private boolean isDelete;
+    private Boolean isDelete;
 
-    private boolean isActivated;
+    private Boolean isActivated;
 
     private List<String> productImageUrlList;
 

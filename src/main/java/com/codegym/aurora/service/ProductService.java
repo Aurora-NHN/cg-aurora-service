@@ -28,7 +28,6 @@ public interface ProductService {
 
     Page<ProductInAdminResponseDTO> getProductsPageInAdmin(Pageable pageable);
 
-    ResponseEntity<Object> deleteByProductId(Long id);
 
     ResponseEntity<Object> createProduct(ProductCreateRequestDto productRequestDTO);
 

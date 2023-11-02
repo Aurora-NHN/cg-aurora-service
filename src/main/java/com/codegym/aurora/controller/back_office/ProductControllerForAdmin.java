@@ -29,7 +29,7 @@ public class ProductControllerForAdmin {
 
     @GetMapping
     public ResponseEntity<Page<ProductInAdminResponseDTO>> getProductsPage(
-            @PageableDefault(size = 5) Pageable pageable){
+            @PageableDefault(size = 10) Pageable pageable){
 
         Page<ProductInAdminResponseDTO> productsPage= productService.getProductsPageInAdmin(pageable);
         return new ResponseEntity<>(productsPage, HttpStatus.OK);
@@ -56,9 +56,4 @@ public class ProductControllerForAdmin {
 
     }
 
-//    @DeleteMapping("/{productId}")
-//    public ResponseEntity<ResponseDTO> deleteProduct(@PathVariable Long id){
-//        ResponseDTO responseDTO = productService.deleteByProductId(id);
-//        return new ResponseEntity<>(responseDTO,responseDTO.getStatus());
-//    }
 }
