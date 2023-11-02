@@ -24,9 +24,7 @@ public interface UserService {
 
     ResponseDTO register(RegisterRequestDTO registerRequest);
 
-    ResponseDTO setRoleAdmin(String username);
-
-    ResponseDTO setRoleUser(String username);
+    ResponseDTO changeRole(String username);
 
     void updateUserPassword(String email, String tempPassword);
 
