@@ -6,7 +6,6 @@ import com.codegym.aurora.entity.UserDetail;
 import com.codegym.aurora.payload.response.UserResponseDTO;
 import com.codegym.aurora.payload.response.UserResponseDtoForNumerologyReport;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,17 +15,20 @@ public class UserConverterImpl implements UserConverter {
     @Override
     public UserResponseDTO converterEntityUserToUserInfoResponseDTO(User user, UserDetail userDetail) {
         return UserResponseDTO.builder()
+                .id(user.getId())
                 .fullName(userDetail.getFullName())
                 .email(userDetail.getEmail())
                 .gender(userDetail.getGender())
-                .isVip(user.isVip())
+                .count(user.getCount())
+                .totalCount(user.getTotalCount())
                 .phoneNumber(userDetail.getPhoneNumber())
                 .username(user.getUsername())
+                .role(user.getRole())
                 .build();
     }
 
     @Override
     public UserResponseDtoForNumerologyReport convertEntityToUserForNumerologyReportResponseDTO(User user) {
-        return new UserResponseDtoForNumerologyReport(user.getId(), user.getCount(), user.isVip());
+        return new UserResponseDtoForNumerologyReport(user.getId(), user.getCount());
     }
 }

@@ -63,16 +63,4 @@ public class CategoryControllerForAdmin {
         return new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/enable-category")
-    public ResponseEntity<?> enableCategory(@PathVariable Long id) {
-        ResponseDTO responseDTO = categoryService.activeById(id);
-        return new ResponseEntity<>(responseDTO,HttpStatus.OK);
-    }
-    @PostMapping("/{id}/disable-category")
-    public ResponseEntity<ResponseDTO> disableCategory(@PathVariable Long id) {
-        ResponseDTO responseDTO = categoryService.unactiveById(id);
-        return new ResponseEntity<>(responseDTO,HttpStatus.OK);
-    }
-
-
 }

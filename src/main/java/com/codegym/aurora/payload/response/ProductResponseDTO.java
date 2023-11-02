@@ -9,7 +9,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductResponseDTO {
 
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -17,24 +17,25 @@ public class ProductResponseDTO {
 
     private int weight;
 
+    private int quantity;
+
+    private String description;
+
+    private int quantitySold;
+
+    private String imageUrl;
+
     private String author;
 
     private String include;
 
     private String producer;
 
-    private int quantitySold;
-
-    private String imageUrl;
-
     private boolean isDelete;
-
-    private int quantity;
 
     private boolean isActivated;
 
-    private String description;
-
     private List<ProductImageResponseDTO> productImageUrlList;
+
 
 }

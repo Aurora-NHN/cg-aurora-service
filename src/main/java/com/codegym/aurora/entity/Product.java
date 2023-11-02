@@ -3,6 +3,8 @@ package com.codegym.aurora.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "PRODUCT_NAME", nullable = false)
     private String name;
@@ -40,14 +42,23 @@ public class Product {
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
 
-    @Column(name = "AUTHOR", nullable = false)
+    @Column(name = "AUTHOR")
     private String author;
 
-    @Column(name = "INCLUDE", nullable = false)
+    @Column(name = "INCLUDE")
     private String include;
 
     @Column(name = "PRODUCER", nullable = false)
     private String producer;
+
+    @Column(name = "create_day")
+    private LocalDate createDay;
+
+    @Column(name = "height")
+    private Integer height;
+
+    @Column(name = "image_name")
+    private String imageName;
 
     @Column(name = "IS_DELETE", columnDefinition = "boolean default false")
     private boolean isDelete;

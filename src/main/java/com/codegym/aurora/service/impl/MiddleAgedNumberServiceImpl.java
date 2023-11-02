@@ -3,6 +3,7 @@ package com.codegym.aurora.service.impl;
 import com.codegym.aurora.payload.from_file.MiddleAgedNumberList;
 import com.codegym.aurora.payload.response.MiddleAgedNumberResponseDto;
 import com.codegym.aurora.service.MiddleAgedNumberService;
+import com.codegym.aurora.util.NumeroloryConstants;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class MiddleAgedNumberServiceImpl implements MiddleAgedNumberService {
         }
     }
     @Override
-    public MiddleAgedNumberResponseDto getMiddleAgedNumberResponseDto(int middleAgedNumber) {
+    public MiddleAgedNumberResponseDto getMiddleAgedNumberResponseDto(Integer middleAgedNumber) {
         MiddleAgedNumberResponseDto result = staticMiddleAgedNumberList.stream()
                 .filter(dto -> dto.getNumber() == middleAgedNumber)
                 .findFirst()
@@ -45,11 +46,22 @@ public class MiddleAgedNumberServiceImpl implements MiddleAgedNumberService {
     }
 
     @Override
-    public int calculateMiddleAgedNumber(int missionNumber, int lifePathNumber) {
-        int sum = missionNumber + lifePathNumber;
-        if (sum == 11 || sum == 22 || sum == 33){
+    public Integer calculateMiddleAgedNumber(Integer missionNumber, Integer lifePathNumber) {
+        Integer sum = missionNumber + lifePathNumber;
+
+        if (sum == NumeroloryConstants.MASTER_NUMBER_11 ||
+                sum == NumeroloryConstants.MASTER_NUMBER_22 ||
+                sum == NumeroloryConstants.MASTER_NUMBER_33){
             return sum;
         }
         return NumeroloryUtils.reduceNumber(sum);
+    }
+
+
+
+    @Override
+    public MiddleAgedNumberResponseDto findMiddleAgeNumber(Integer missionNumber, Integer lifePathNumber) {
+        Integer  middleAge = calculateMiddleAgedNumber(missionNumber, lifePathNumber);
+        return getMiddleAgedNumberResponseDto(middleAge);
     }
 }

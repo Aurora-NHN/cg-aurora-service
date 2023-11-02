@@ -25,7 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/vnpay")
 public class VNPayController {
 
     private final VNPayService vnPayService;
@@ -34,7 +34,7 @@ public class VNPayController {
     private final PaymentCache paymentCache;
     private final HistoryPaymentRepository historyPaymentRepository;
 
-    @PostMapping("/vnpay-order")
+    @PostMapping("/order")
     public ResponseEntity<String> submitOder(@Valid @RequestBody PaymentRequestDTO paymentRequestDTO,
                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -44,7 +44,7 @@ public class VNPayController {
         return new ResponseEntity<>(vnPayUrl, HttpStatus.OK);
     }
 
-    @GetMapping("/vnpay/payment-success")
+    @GetMapping("/payment-success")
     public void paymentSuccess() throws IOException {
         try {
             Map<String, String[]> params = request.getParameterMap();

@@ -10,6 +10,7 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,43 +31,40 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private long id;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "USERNAME")
+    @Column(name = "username")
     private String username;
 
-    @Column(name = "PASSWORD")
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "ROLES")
+    @Column(name = "roles")
     private String role;
 
-    @Column(name = "COUNT")
+    @Column(name = "count")
     private int count;
 
-    @Column(name = "IS_VIP")
-    private boolean isVip;
+    @Column(name = "total_count")
+    private int totalCount;
 
-    @Column(name = "IS_DELETE")
+    @Column(name = "is_delete")
     private boolean isDelete;
 
-    @Column(name = "IS_ACTIVATED")
+    @Column(name = "is_activated")
     private boolean isActivated;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private UserDetail userDetail;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private List<NumerologyReport> numeroloryReportList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<HistoryPayment> historyPayments = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user")
-    private Cart carts ;
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<DataNumerologyReport> dataNumerologyReportList = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-//    List<Order> orderList = new ArrayList<>();
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Cart carts;
 }

@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class UserResponseDtoForNumerologyReport {
     private long id;
     private int count;
-    private boolean isVip;
 }

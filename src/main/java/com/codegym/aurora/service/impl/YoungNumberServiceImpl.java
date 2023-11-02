@@ -1,6 +1,8 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.YoungStateNumber;
+import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.YoungStateNumberResponseDTO;
 import com.codegym.aurora.service.YoungStateNumberService;
 import com.codegym.aurora.util.NumeroloryUtils;
@@ -38,7 +40,7 @@ public class YoungNumberServiceImpl implements YoungStateNumberService {
 
 
     @Override
-    public YoungStateNumberResponseDTO getYoungStateNumber(int number) {
+    public YoungStateNumberResponseDTO getYoungStateNumber(Integer number) {
         YoungStateNumberResponseDTO result = staticYoungStateNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
@@ -47,8 +49,10 @@ public class YoungNumberServiceImpl implements YoungStateNumberService {
     }
 
     @Override
-    public int calculateYoungStateNumber(int month) {
-        int youngStateNumber = NumeroloryUtils.calculateDigitSum(month);
-        return getYoungStateNumber(youngStateNumber).getNumber();
+    public YoungStateNumberResponseDTO findYoungStateNumber(DataNumerologyReport data) {
+        Integer youngStateNumber = NumeroloryUtils.calculateDigitSum(data.getMonthOfBirth());
+        return  getYoungStateNumber(youngStateNumber);
     }
+
+
 }

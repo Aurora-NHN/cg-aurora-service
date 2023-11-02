@@ -26,4 +26,7 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     Page<Product> findProductsByNameOrProducerContainingIgnoreCase(String keyWord, Pageable pageable);
     @Query(nativeQuery = true, value = "SELECT * FROM product ORDER BY RAND() LIMIT 4")
     List<Product> findRandomProducts(int limit);
+
+    @Query("SELECT p FROM Product p WHERE p.isDelete = false")
+    Page<Product> findAllProduct(Pageable pageable);
 }

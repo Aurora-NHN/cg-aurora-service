@@ -1,5 +1,6 @@
 package com.codegym.aurora.service.impl;
 
+import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.MatureStateNumber;
 import com.codegym.aurora.payload.response.MatureStateNumberResponseDTO;
 import com.codegym.aurora.service.MatureStateNumberService;
@@ -27,7 +28,8 @@ public class MatureStateNumberServiceImpl implements MatureStateNumberService {
         }
     }
     private static List<MatureStateNumberResponseDTO> loadStaticMatureStateNumberResponseDTOList() throws Exception {
-        try (InputStream inputStream = new ClassPathResource("numerology/life-phase-mature-state-number.json").getInputStream()) {
+        try (InputStream inputStream = new ClassPathResource("numerology/life-phase-mature-state-number.json")
+                .getInputStream()) {
             MatureStateNumber matureStateNumber = new ObjectMapper().readValue(inputStream, MatureStateNumber.class);
             return matureStateNumber.getItems();
         } catch (IOException e) {
@@ -37,7 +39,7 @@ public class MatureStateNumberServiceImpl implements MatureStateNumberService {
     }
 
     @Override
-    public MatureStateNumberResponseDTO getMatureStateNumber(int number) {
+    public MatureStateNumberResponseDTO getMatureStateNumber(Integer number) {
         MatureStateNumberResponseDTO result = staticMatureStateNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
@@ -46,8 +48,8 @@ public class MatureStateNumberServiceImpl implements MatureStateNumberService {
     }
 
     @Override
-    public int calculateMatureStateNumber(int day) {
-        int matureStateNumber = NumeroloryUtils.calculateDigitSum(day);
-        return getMatureStateNumber(matureStateNumber).getNumber();
+    public MatureStateNumberResponseDTO findMatureStateNumer(DataNumerologyReport data) {
+        Integer matureStateNumber = NumeroloryUtils.calculateDigitSum(data.getDayOfBirth());
+        return getMatureStateNumber(matureStateNumber);
     }
 }

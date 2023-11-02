@@ -7,6 +7,7 @@ import com.codegym.aurora.service.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -42,6 +43,7 @@ public class BlogController {
 
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> createNewBlog(@ModelAttribute @Validated BlogCreateRequestDto blogCreateRequestDto,
                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -52,6 +54,7 @@ public class BlogController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> updateBlog(@ModelAttribute @Validated BlogUpdateRequestDto blogUpdateRequestDto,
                                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -62,11 +65,13 @@ public class BlogController {
     }
 
     @DeleteMapping("/{blogId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> deleteBlog(@PathVariable Long blogId){
         return blogService.deleteBlog(blogId);
     }
 
     @PostMapping("/content-images")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> uploadBlogImage(@ModelAttribute BlogContentImageDto blogContentImageDto) {
         return blogService.uploadContentImage(blogContentImageDto);
     }

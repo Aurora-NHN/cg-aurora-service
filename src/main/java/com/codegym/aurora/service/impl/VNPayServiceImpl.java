@@ -75,9 +75,7 @@ public class VNPayServiceImpl implements VNPayService {
         String username = userService.getCurrentUsername();
         UUID uuid = UUID.randomUUID();
         paymentCache.addPaymentId(username, uuid);
-        Order order = orderCache.getOrder(username);
-        String totalAmount = String.valueOf(order.getTotalAmount());
-
+        String totalAmount = null;
         String amount = null;
         String totalPrice = null;
         String orderInfo = null;
@@ -98,6 +96,8 @@ public class VNPayServiceImpl implements VNPayService {
                 orderInfo = Constant.BUY_VIP_SUPER;
                 break;
             case 4:
+                Order order = orderCache.getOrder(username);
+                totalAmount = String.valueOf(order.getTotalAmount());
                 amount = totalAmount + "00";
                 orderInfo = Constant.PAY_PURCHASE_INVOICE;
         }
@@ -191,31 +191,19 @@ public class VNPayServiceImpl implements VNPayService {
     }
 
     @Override
-    public VNPayResponseDTO oderReturn(UUID paymentId) {
-        HistoryPayment historyPayment = historyPaymentRepository.findByPaymentId(paymentId);
-        VNPayResponseDTO vnPayResponseDTO = new VNPayResponseDTO();
-        UserDetail userDetail = historyPayment.getUser().getUserDetail();
-        vnPayResponseDTO.setOrderId(paymentId);
-        vnPayResponseDTO.setOderInfo(historyPayment.getOderInfo());
-        vnPayResponseDTO.setStatus(historyPayment.isStatus());
-        vnPayResponseDTO.setPaymentTime(vnPayResponseDTO.getPaymentTime());
-        vnPayResponseDTO.setTotalPrice(vnPayResponseDTO.getTotalPrice());
-        vnPayResponseDTO.setFullName(userDetail.getFullName());
-        return vnPayResponseDTO;
-    }
-
-    @Override
     public void setVip(String price, User user){
-        user.setVip(true);
         switch (price){
             case VIP:
                 user.setCount(user.getCount()+1);
+                user.setTotalCount(user.getTotalCount()+1);
                 break;
             case VIP_PRO:
                 user.setCount(user.getCount()+3);
+                user.setTotalCount(user.getTotalCount()+3);
                 break;
             case VIP_SUPER:
                 user.setCount(user.getCount()+5);
+                user.setTotalCount(user.getTotalCount()+5);
                 break;
             default:
                 user.setCount(0);

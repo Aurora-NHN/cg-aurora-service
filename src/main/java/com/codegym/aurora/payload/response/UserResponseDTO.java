@@ -11,15 +11,22 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserResponseDTO {
 
+    private Long id;
+
     private String username;
 
     private String fullName;
 
-    private boolean isVip;
+    private Integer count;
+
+    private Integer totalCount;
 
     private String gender;
 
     private String phoneNumber;
 
     private String email;
+
+    private String role;
+
 }

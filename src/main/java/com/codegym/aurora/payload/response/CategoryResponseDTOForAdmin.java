@@ -3,6 +3,8 @@ package com.codegym.aurora.payload.response;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Data
 @RequiredArgsConstructor
 public class CategoryResponseDTOForAdmin {
@@ -13,4 +15,5 @@ public class CategoryResponseDTOForAdmin {
     private boolean active;
     private String description;
     private String thumbUrl;
+    private List<String> subCategories;
 }

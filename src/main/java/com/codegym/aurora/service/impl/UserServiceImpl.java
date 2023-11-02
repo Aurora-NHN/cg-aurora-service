@@ -10,7 +10,9 @@ import com.codegym.aurora.payload.request.LoginRequestDTO;
 import com.codegym.aurora.payload.request.PasswordRequestDTO;
 import com.codegym.aurora.payload.request.RegisterRequestDTO;
 import com.codegym.aurora.payload.request.UserInfoRequestDTO;
+import com.codegym.aurora.payload.response.LoginResponseDTO;
 import com.codegym.aurora.payload.response.ResponseDTO;
+import com.codegym.aurora.payload.response.UserAdminResponseDTO;
 import com.codegym.aurora.payload.response.UserResponseDTO;
 import com.codegym.aurora.repository.CartRepository;
 import com.codegym.aurora.repository.UserDetailRepository;
@@ -27,12 +29,13 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.Collections;
 
@@ -57,6 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseDTO login(LoginRequestDTO loginRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
         User userCheck = userRepository.findByUsername(loginRequestDTO.getUsername());
         if (userCheck == null) {
             responseDTO.setMessage(Constant.USER_IS_NOT_EXISTS);
@@ -72,6 +76,9 @@ public class UserServiceImpl implements UserService {
             return responseDTO;
         }
         String token = jwtTokenProvider.generateToken(userCheck.getUsername());
+        UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(userCheck, userCheck.getUserDetail());
+        loginResponseDTO.setJwtToken(token);
+        loginResponseDTO.setUserResponseDTO(userResponseDTO);
         tokenCache.addToken(loginRequestDTO.getUsername(), token);
         Cart cart = cartRepository.findCartByUser(userCheck);
         cartCache.addToCart(userCheck.getId(),cart);
@@ -84,6 +91,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseDTO loginAdmin(LoginRequestDTO loginRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
         User userCheck = userRepository.findByUsername(loginRequestDTO.getUsername());
         if (userCheck == null) {
             responseDTO.setMessage(Constant.USER_IS_NOT_EXISTS);
@@ -91,20 +99,23 @@ public class UserServiceImpl implements UserService {
             return responseDTO;
         }
         String role = userCheck.getRole();
-        if (!role.equals("ROLE_ADMIN")){
+        if (!role.equals("ROLE_ADMIN")) {
             responseDTO.setMessage(Constant.UNAUTHORIZED);
             responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
             return responseDTO;
-        }else if (!passwordEncoder.matches(loginRequestDTO.getPassword(), userCheck.getPassword())) {
+        } else if (!passwordEncoder.matches(loginRequestDTO.getPassword(), userCheck.getPassword())) {
             responseDTO.setMessage(Constant.WRONG_PASSWORD);
             responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
             return responseDTO;
         }
         String token = jwtTokenProvider.generateToken(userCheck.getUsername());
+        UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(userCheck, userCheck.getUserDetail());
+        loginResponseDTO.setJwtToken(token);
+        loginResponseDTO.setUserResponseDTO(userResponseDTO);
         tokenCache.addToken(loginRequestDTO.getUsername(), token);
         responseDTO.setMessage(Constant.LOGIN_SUCCESS);
         responseDTO.setStatus(HttpStatus.OK);
-        responseDTO.setData(token);
+        responseDTO.setData(loginResponseDTO);
         return responseDTO;
     }
 
@@ -141,19 +152,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDTO registerUser(RegisterRequestDTO registerRequest) {
-        String role = "ROLE_".concat(ERole.USER.toString());
-        return register(registerRequest, role);
-    }
-
-    @Override
-    public ResponseDTO registerAdmin(RegisterRequestDTO registerRequest) {
-        String role = "ROLE_".concat(ERole.ADMIN.toString());
-        return register(registerRequest, role);
-    }
-
-    @Override
-    public ResponseDTO register(RegisterRequestDTO registerRequest, String role) {
+    public ResponseDTO register(RegisterRequestDTO registerRequest) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             User userCheck = userRepository.findByUsername(registerRequest.getUsername());
@@ -168,12 +167,14 @@ public class UserServiceImpl implements UserService {
                 responseDTO.setStatus(HttpStatus.BAD_REQUEST);
                 return responseDTO;
             }
+            String role = "ROLE_".concat(ERole.USER.toString());
             String password = registerRequest.getPassword();
             String cypherText = passwordEncoder.encode(password);
             User user = new User();
             user.setUsername(registerRequest.getUsername());
             user.setPassword(cypherText);
             user.setRole(role);
+            user.setActivated(true);
             UserDetail userDetail = new UserDetail();
             userDetail.setUser(user);
             userDetail.setPhoneNumber(registerRequest.getPhoneNumber());
@@ -196,6 +197,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseDTO setRoleAdmin(String username) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        User user = userRepository.findByUsername(username);
+        if(user == null){
+            responseDTO.setMessage(Constant.UPDATE_ROLE_FAIL);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
+            return responseDTO;
+        }
+        user.setRole("ROLE_".concat(ERole.ADMIN.toString()));
+        userRepository.save(user);
+        responseDTO.setMessage(Constant.UPDATE_ROLE_SUCCESS);
+        responseDTO.setStatus(HttpStatus.OK);
+        return responseDTO;
+    }
+
+    @Override
+    public ResponseDTO setRoleUser(String username) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        User user = userRepository.findByUsername(username);
+        if(user == null){
+            responseDTO.setMessage(Constant.UPDATE_ROLE_FAIL);
+            responseDTO.setStatus(HttpStatus.UNAUTHORIZED);
+            return responseDTO;
+        }
+        user.setRole("ROLE_".concat(ERole.USER.toString()));
+        userRepository.save(user);
+        responseDTO.setMessage(Constant.UPDATE_ROLE_SUCCESS);
+        responseDTO.setStatus(HttpStatus.OK);
+        return responseDTO;
+    }
+
+    @Override
     public void updateUserPassword(String email, String tempPassword) {
         UserDetail userDetail = userDetailRepository.findByEmail(email);
         User user = userDetail.getUser();
@@ -214,7 +247,7 @@ public class UserServiceImpl implements UserService {
     public boolean checkOldPassword(String password) {
         String username = getCurrentUsername();
         User user = userRepository.findByUsername(username);
-        if(user == null){
+        if (user == null) {
             return false;
         }
         return passwordEncoder.matches(password, user.getPassword());
@@ -244,7 +277,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(getCurrentUsername());
         UserDetail userDetail = user.getUserDetail();
         String email = userInfoRequestDTO.getEmail();
-        if(!userDetail.getEmail().equals(email) && !checkValidEmail(email)){
+        if (!userDetail.getEmail().equals(email) && !checkValidEmail(email)) {
             userDetail.setEmail(email);
             setUserInfo(userInfoRequestDTO);
             responseDTO.setStatus(HttpStatus.OK);
@@ -284,7 +317,7 @@ public class UserServiceImpl implements UserService {
         GoogleIdToken idToken;
         try {
             idToken = verifier.verify(credential);
-        }catch (Exception exception){
+        } catch (Exception exception) {
             return new ResponseDTO("Authentication error!", HttpStatus.SERVICE_UNAVAILABLE, null);
         }
 
@@ -298,31 +331,39 @@ public class UserServiceImpl implements UserService {
 
         ResponseDTO responseDTO = new ResponseDTO();
         User user = userRepository.findByUserDetailEmail(email);
-        if (user == null){
-            UserDetail userDetail = UserDetail.builder()
-                    .fullName(name)
-                    .email(email)
-                    .build();
-            User newUser = User.builder()
-                    .username("user" + userId)
-                    .role("ROLE_".concat(ERole.USER.toString()))
-                    .userDetail(userDetail)
-                    .build();
-            userDetail.setUser(newUser);
-            userRepository.save(newUser);
-            String token = jwtTokenProvider.generateToken(newUser.getUsername());
+        String token;
+        if (user == null) {
+            User newUser = saveGoogleUser(email, userId, name);
+            token = jwtTokenProvider.generateToken(newUser.getUsername());
             tokenCache.addToken(newUser.getUsername(), token);
-            responseDTO.setMessage(Constant.LOGIN_SUCCESS);
-            responseDTO.setStatus(HttpStatus.OK);
-            responseDTO.setData(token);
-        }else {
-            String token = jwtTokenProvider.generateToken(user.getUsername());
+        } else {
+            token = jwtTokenProvider.generateToken(user.getUsername());
             tokenCache.addToken(user.getUsername(), token);
-            responseDTO.setMessage(Constant.LOGIN_SUCCESS);
-            responseDTO.setStatus(HttpStatus.OK);
-            responseDTO.setData(token);
         }
+        Cart cart = user.getCarts();
+        cartCache.addToCart(user.getId(), cart);
+        responseDTO.setMessage(Constant.LOGIN_SUCCESS);
+        responseDTO.setStatus(HttpStatus.OK);
+        responseDTO.setData(token);
         return responseDTO;
+    }
+
+    private User saveGoogleUser(String email, String userId, String name) {
+        UserDetail userDetail = UserDetail.builder()
+                .fullName(name)
+                .email(email)
+                .build();
+        User newUser = User.builder()
+                .username("user" + userId)
+                .role("ROLE_".concat(ERole.USER.toString()))
+                .userDetail(userDetail)
+                .build();
+        userDetail.setUser(newUser);
+        Cart cart = new Cart();
+        cart.setUser(newUser);
+        newUser.setCarts(cart);
+        userRepository.save(newUser);
+        return newUser;
     }
 
     @Override
@@ -334,5 +375,34 @@ public class UserServiceImpl implements UserService {
         responseDTO.setStatus(HttpStatus.OK);
         responseDTO.setData(count);
         return responseDTO;
+    }
+
+    @Override
+    public ResponseDTO deleteUser(String username) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        User user = userRepository.findByUsername(username);
+        if(user == null){
+            responseDTO.setMessage(Constant.DELETE_FAIL);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            return responseDTO;
+        }
+        user.setActivated(false);
+        responseDTO.setMessage(Constant.DELETE_SUCCESS);
+        responseDTO.setStatus(HttpStatus.OK);
+        return responseDTO;
+    }
+
+    @Override
+    public Page<UserAdminResponseDTO> getUserListByPage(Pageable pageable, String username) {
+        Page<User> userPage = userRepository.findAllUser(pageable, username);
+        Page<UserAdminResponseDTO> page = userPage.map(
+                user -> UserAdminResponseDTO.builder()
+                        .role(user.getRole())
+                        .username(user.getUsername())
+                        .totalCount(user.getTotalCount())
+                        .count(user.getCount())
+                        .isActivated(user.isActivated())
+                        .build());
+        return page;
     }
 }

@@ -7,6 +7,7 @@ import com.codegym.aurora.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,13 +28,7 @@ public class LoginController {
 
     @PostMapping(value = "/register-user")
     public ResponseEntity<ResponseDTO> registerUser(@RequestBody RegisterRequestDTO registerRequestDTO) {
-        ResponseDTO responseDto = userService.registerUser(registerRequestDTO);
-        return new ResponseEntity<>(responseDto, responseDto.getStatus());
-    }
-
-    @PostMapping(value = "/register-admin")
-    public ResponseEntity<ResponseDTO> registerAdmin(@RequestBody RegisterRequestDTO registerRequestDTO) {
-        ResponseDTO responseDto = userService.registerAdmin(registerRequestDTO);
+        ResponseDTO responseDto = userService.register(registerRequestDTO);
         return new ResponseEntity<>(responseDto, responseDto.getStatus());
     }
 
