@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
         cartCache.addToCart(userCheck.getId(),cart);
         responseDTO.setMessage(Constant.LOGIN_SUCCESS);
         responseDTO.setStatus(HttpStatus.OK);
-        responseDTO.setData(token);
+        responseDTO.setData(loginResponseDTO);
         return responseDTO;
     }
 

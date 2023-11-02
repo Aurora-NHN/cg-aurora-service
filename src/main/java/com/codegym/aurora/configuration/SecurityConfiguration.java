@@ -100,15 +100,22 @@ public class SecurityConfiguration  {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         httpSecurity.authorizeHttpRequests()
-                .antMatchers( "/api/login", "/api/logout","api/register-user")
+                .antMatchers( "/api/login", "/api/logout","/api/register-user",
+                        "/api/vnpay/payment-success", "/api/numerology",
+                        "/api/products/**", "/api/categories",
+                        "/api/blogs/**")
                 .permitAll();
 
         httpSecurity.authorizeHttpRequests()
-                .antMatchers("/api/users/**","/api/vnpay/**","/api/order/**", "/api/cart/**" )
+                .antMatchers("/api/users/**","/api/vnpay/**",
+                        "/api/order/**", "/api/cart/**",
+                        "/api/numerology/**")
                 .hasRole("USER");
 
         httpSecurity.authorizeHttpRequests()
                 .antMatchers("/api/admin/login")
+                .permitAll()
+                .antMatchers("/api/**")
                 .hasRole("ADMIN");
 
         // Configure remember me (save token in database)
