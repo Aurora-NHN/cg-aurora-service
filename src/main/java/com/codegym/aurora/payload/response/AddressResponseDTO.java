@@ -12,6 +12,8 @@ public class AddressResponseDTO {
 
     private String phoneNumber;
 
+    private String fullName;
+
     private String city;
 
     private String district;

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
     private final UserServiceImpl userService;
