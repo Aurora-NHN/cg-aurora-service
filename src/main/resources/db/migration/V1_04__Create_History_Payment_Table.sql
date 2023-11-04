@@ -1,15 +1,15 @@
-CREATE TABLE HISTORY_PAYMENT
+create table history_payment
 (
-    ID                  BIGINT PRIMARY KEY AUTO_INCREMENT,
-    PAYMENT_ID          VARCHAR(55) UNIQUE,
-    ORDER_INFO          VARCHAR(255),
-    STATUS              BIT DEFAULT 0,
-    PAYMENT_TIME        VARCHAR(55),
-    TRANSACTION_ID      VARCHAR(255),
-    TOTAL_PRICE         VARCHAR(55),
-    USER_ID             BIGINT,
-    IS_DELETE           BIT DEFAULT 0,
-    IS_ACTIVATED        BIT DEFAULT 1,
-    FOREIGN KEY (USER_ID) REFERENCES USER (ID)
+    id             bigint primary key auto_increment,
+    payment_id     varchar(55) unique,
+    order_info     varchar(255),
+    status         bit default 0,
+    payment_time   varchar(55),
+    transaction_id varchar(255),
+    total_price    varchar(55),
+    user_id        bigint,
+    is_delete      bit default 0,
+    is_activated   bit default 1,
+    foreign key (user_id) references user (id)
 );
 

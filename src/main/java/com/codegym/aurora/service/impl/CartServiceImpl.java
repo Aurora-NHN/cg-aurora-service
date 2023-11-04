@@ -102,6 +102,7 @@ public class CartServiceImpl implements CartService {
         String userName = userService.getCurrentUsername();
         User user = userRepository.findByUsername(userName);
         Cart cart = cartCache.getCart(user.getId());
+//        Cart cart = cartRepository.findCartByUser(user);
         List<CartLine> cartLineList = cart.getCartLineList();
         long totalAmount = 0;
         if (!cartLineList.isEmpty()) {

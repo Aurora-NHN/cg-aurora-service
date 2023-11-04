@@ -1,3 +1,3 @@
-ALTER TABLE `aurora_shop`.`user`
-DROP COLUMN `IS_VIP`,
-ADD COLUMN `TOTAL_COUNT` INT NULL DEFAULT '0' AFTER `COUNT`;
+alter table `aurora_shop`.`user`
+    drop column `is_vip`,
+    add column `total_count` int null default '0' after `count`;

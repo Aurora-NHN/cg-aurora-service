@@ -1,6 +1,6 @@
-INSERT IGNORE INTO `aurora_shop`.`PRODUCT` (`PRODUCT_NAME`, `PRICE`, `QUANTITY_SOLD`, `WEIGHT`, `QUANTITY`, `DESCRIPTION`,
-                                     `PRODUCER`, `AUTHOR`, `INCLUDE`, `IMAGE_URL`, `SUB_CATEGORY_ID`)
-VALUES ('VÒNG TAY MẶT TRĂNG 3A_10_19 HẠT', '1990000', '1', '200', '1',
+insert ignore into `aurora_shop`.`product` (`product_name`, `price`, `quantity_sold`, `weight`, `quantity`, `description`,
+                                     `producer`, `author`, `include`, `image_url`, `sub_category_id`)
+values ('VÒNG TAY MẶT TRĂNG 3A_10_19 HẠT', '1990000', '1', '200', '1',
         'Vòng Tay Mặt Trăng 3A 10 Ly 19 hạt được chế tác từ đá mặt trăng (Moonstone) là một biến thể trong nhóm feldsparorthoclase. Khi ánh sáng xuyên qua viên đá này  sẽ tạo thành sự khuếch tán giống như ánh trăng, đây gọi là hiện tượng quang học \"\"ánh trăng\"\" hay \"\"adularescene\"\". Đây là hiện tượng ánh sáng bao trùm và xuyên suốt một viên đá, ngoài đá mặt trăng thì các biến thể khác khác cùng nhóm feldspar cũng có hiện tượng như trên.',
         'Aurora', 'Aurora', 'Aurora',
         'https://cms.lazishop.com//static/userfiles/images/T%E1%BB%94NG%20H%E1%BB%A2P/vong-tay-da-mat-trang-10ly%20(1).jpg',
@@ -297,8 +297,8 @@ VALUES ('VÒNG TAY MẶT TRĂNG 3A_10_19 HẠT', '1990000', '1', '200', '1',
         'https://mystichouse.vn/wp-content/uploads/2023/10/Unveiling-The-Golden-Age-Tarot-1-600x600.jpg', '15');
 
 
-INSERT IGNORE INTO `aurora_shop`.`PRODUCT_IMAGE` (`IMAGE_URL`, `PRODUCT_ID`)
-VALUES ('https://cms.lazishop.com//static/userfiles/images/T%E1%BB%94NG%20H%E1%BB%A2P/vong-tay-da-mat-trang-10ly%20(2).jpg',
+insert ignore into `aurora_shop`.`product_image` (`image_url`, `product_id`)
+values ('https://cms.lazishop.com//static/userfiles/images/T%E1%BB%94NG%20H%E1%BB%A2P/vong-tay-da-mat-trang-10ly%20(2).jpg',
         '1'),
        ('https://cms.lazishop.com//static/userfiles/images/T%E1%BB%94NG%20H%E1%BB%A2P/vong-tay-da-mat-trang-10ly%20(3).jpg',
         '1'),
@@ -565,8 +565,8 @@ VALUES ('https://cms.lazishop.com//static/userfiles/images/T%E1%BB%94NG%20H%E1%B
         '61');
 
 
-INSERT IGNORE INTO `aurora_shop`.`PRODUCT_IMAGE` (`IMAGE_URL`, `PRODUCT_ID`)
-VALUES ('https://mystichouse.vn/wp-content/uploads/2023/10/Unveiling-The-Golden-Age-Tarot-2-600x600.jpg', '62'),
+insert ignore into `aurora_shop`.`product_image` (`image_url`, `product_id`)
+values ('https://mystichouse.vn/wp-content/uploads/2023/10/Unveiling-The-Golden-Age-Tarot-2-600x600.jpg', '62'),
        ('https://mystichouse.vn/wp-content/uploads/2023/10/Unveiling-The-Golden-Age-Tarot-3-600x600.jpg', '62'),
        ('https://mystichouse.vn/wp-content/uploads/2023/10/Unveiling-The-Golden-Age-Tarot-4-600x600.jpg', '62'),
        ('https://mystichouse.vn/wp-content/uploads/2023/10/Crow-Tarot-Pocket-Edition-2-600x600.jpg', '63'),

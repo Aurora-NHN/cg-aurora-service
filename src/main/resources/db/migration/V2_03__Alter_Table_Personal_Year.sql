@@ -1,2 +1,2 @@
-ALTER TABLE PERSONAL_YEAR
-    ADD PERSONAL_YEAR INT;
+alter table personal_year
+    add personal_year int;

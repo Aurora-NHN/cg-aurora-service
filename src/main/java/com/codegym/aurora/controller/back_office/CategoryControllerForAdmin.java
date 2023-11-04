@@ -28,12 +28,12 @@ public class CategoryControllerForAdmin {
     @GetMapping
     public ResponseEntity<ResponseDTO> getCategories() {
         ResponseDTO responseDTO = categoryService.findAll();
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
     @GetMapping({"{id}/detail"})
     public ResponseEntity<ResponseDTO> getCategoryDetail(@PathVariable Long id) {
         ResponseDTO responseDTO = categoryService.findCategoryByIdAndDeteteFalse(id);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
 
     @PostMapping
@@ -44,7 +44,7 @@ public class CategoryControllerForAdmin {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
         ResponseDTO responseDTO = categoryService.create(categoryRequestDTO);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
 
     @PutMapping
@@ -54,13 +54,13 @@ public class CategoryControllerForAdmin {
             return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
         }
         ResponseDTO responseDTO = categoryService.update(categoryRequestDTO);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
 
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> deleteCategory(@PathVariable Long id) {
         ResponseDTO responseDTO = categoryService.deleteById(id);
-        return new ResponseEntity<>(responseDTO,HttpStatus.OK);
+        return new ResponseEntity<>(responseDTO, responseDTO.getStatus());
     }
 
 }

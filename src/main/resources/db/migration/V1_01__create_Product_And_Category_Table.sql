@@ -1,43 +1,43 @@
-CREATE TABLE CATEGORY
+create table category
 (
-    ID            BIGINT PRIMARY KEY AUTO_INCREMENT,
-    NAME NVARCHAR(255) NOT NULL,
-    IS_DELETE     BIT DEFAULT 0,
-    IS_ACTIVATED  BIT DEFAULT 1
+    id           bigint primary key auto_increment,
+    name         nvarchar(255) not null,
+    is_delete    bit default 0,
+    is_activated bit default 1
 );
-CREATE TABLE SUB_CATEGORY
+create table sub_category
 (
-    ID                  BIGINT PRIMARY KEY AUTO_INCREMENT,
-    NAME NVARCHAR(50) NOT NULL,
-    CATEGORY_ID BIGINT,
-    FOREIGN KEY (CATEGORY_ID) REFERENCES CATEGORY (ID),
-    IS_DELETE           BIT DEFAULT 0,
-    IS_ACTIVATED        BIT DEFAULT 1
+    id           bigint primary key auto_increment,
+    name         nvarchar(50) not null,
+    category_id  bigint,
+    foreign key (category_id) references category (id),
+    is_delete    bit default 0,
+    is_activated bit default 1
 );
-CREATE TABLE PRODUCT
+create table product
 (
-    ID              BIGINT PRIMARY KEY AUTO_INCREMENT,
-    PRODUCT_NAME    NVARCHAR(255) NOT NULL,
-    PRICE           BIGINT NOT NULL,
-    QUANTITY_SOLD   INT DEFAULT 0,
-    WEIGHT          INT,
-    QUANTITY        INT,
-    `DESCRIPTION`   TEXT,
-    PRODUCER        NVARCHAR(50),
-    AUTHOR          NVARCHAR(50),
-    INCLUDE         NVARCHAR(255),
-    IMAGE_URL       TEXT,
-    SUB_CATEGORY_ID BIGINT,
-    FOREIGN KEY (SUB_CATEGORY_ID) REFERENCES SUB_CATEGORY (ID),
-    IS_DELETE       BIT DEFAULT 0,
-    IS_ACTIVATED    BIT DEFAULT 1
+    id              bigint primary key auto_increment,
+    product_name    nvarchar(255) not null,
+    price           bigint        not null,
+    quantity_sold   int default 0,
+    weight          int,
+    quantity        int,
+    `description`   text,
+    producer        nvarchar(50),
+    author          nvarchar(50),
+    include         nvarchar(255),
+    image_url       text,
+    sub_category_id bigint,
+    foreign key (sub_category_id) references sub_category (id),
+    is_delete       bit default 0,
+    is_activated    bit default 1
 );
-CREATE TABLE PRODUCT_IMAGE
+create table product_image
 (
-    ID           BIGINT PRIMARY KEY AUTO_INCREMENT,
-    IMAGE_URL    TEXT NOT NULL,
-    PRODUCT_ID   BIGINT,
-    FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT (ID),
-    IS_DELETE    BIT DEFAULT 0,
-    IS_ACTIVATED BIT DEFAULT 1
+    id           bigint primary key auto_increment,
+    image_url    text not null,
+    product_id   bigint,
+    foreign key (product_id) references product (id),
+    is_delete    bit default 0,
+    is_activated bit default 1
 );

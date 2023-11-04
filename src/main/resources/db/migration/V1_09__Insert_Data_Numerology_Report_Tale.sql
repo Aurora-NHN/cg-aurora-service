@@ -1,15 +1,14 @@
-CREATE TABLE DATA_NUMEROLOGY_REPORT
+create table data_numerology_report
 (
-    ID                          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    FULL_NAME                   NVARCHAR(255) NOT NULL,
-    NICKNAME                    NVARCHAR(255),
-    DAY_OF_BIRTH                INT NOT NULL,
-    MONTH_OF_BIRTH              INT NOT NULL,
-    YEAR_OF_BIRTH               INT NOT NULL,
-    CREATED_TIME                DATETIME,
-    USER_ID                     BIGINT,
-    FOREIGN KEY (USER_ID) REFERENCES USER (ID),
-    IS_DELETED                  BIT DEFAULT 0,
-    IS_ACTIVATED                BIT DEFAULT 1
-
+    id             bigint primary key auto_increment,
+    full_name      nvarchar(255) not null,
+    nickname       nvarchar(255),
+    day_of_birth   int           not null,
+    month_of_birth int           not null,
+    year_of_birth  int           not null,
+    created_time   datetime,
+    user_id        bigint,
+    foreign key (user_id) references user (id),
+    is_deleted     bit default 0,
+    is_activated   bit default 1
 );

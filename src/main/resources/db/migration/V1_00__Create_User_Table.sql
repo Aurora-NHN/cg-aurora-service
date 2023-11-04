@@ -1,22 +1,22 @@
-CREATE TABLE USER
+create table user
 (
-    ID           BIGINT PRIMARY KEY AUTO_INCREMENT,
-    USERNAME     VARCHAR(50) UNIQUE,
-    `PASSWORD`   VARCHAR(1024),
-    ROLES        VARCHAR(50),
-    COUNT        INT DEFAULT 0,
-    IS_VIP       BIT DEFAULT 0,
-    IS_DELETE    BIT DEFAULT 0,
-    IS_ACTIVATED BIT DEFAULT 1
+    id           bigint primary key auto_increment,
+    username     varchar(50) unique,
+    `password`   varchar(1024),
+    roles        varchar(50),
+    count        int default 0,
+    is_vip       bit default 0,
+    is_delete    bit default 0,
+    is_activated bit default 1
 );
 
-CREATE TABLE USER_DETAIL
+create table user_detail
 (
-    ID           BIGINT PRIMARY KEY AUTO_INCREMENT,
-    FULL_NAME    NVARCHAR(255),
-    GENDER       NVARCHAR(10),
-    PHONE_NUMBER VARCHAR(20),
-    EMAIL        VARCHAR(255) UNIQUE,
-    USER_ID      BIGINT,
-    FOREIGN KEY (USER_ID) REFERENCES USER (ID)
+    id           bigint primary key auto_increment,
+    full_name    nvarchar(255),
+    gender       nvarchar(10),
+    phone_number varchar(20),
+    email        varchar(255) unique,
+    user_id      bigint,
+    foreign key (user_id) references user (id)
 );

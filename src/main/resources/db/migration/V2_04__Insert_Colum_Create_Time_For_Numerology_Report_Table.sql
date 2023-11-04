@@ -1,2 +1,2 @@
-ALTER TABLE NUMEROLOGY_REPORT
-ADD COLUMN CREATED_TIME DATETIME;
+alter table numerology_report
+    add column created_time datetime;

@@ -1,10 +1,11 @@
-CREATE  TABLE PINNACLE_OF_LIFE(
-    ID BIGINT PRIMARY KEY AUTO_INCREMENT,
-    PINNACLE_OF_LIFE_NUMBER INT NOT NULL,
-    AGE INT NOT NULL,
-    NUMEROLOGY_REPORT_ID BIGINT,
-    FOREIGN KEY (NUMEROLOGY_REPORT_ID) REFERENCES NUMEROLOGY_REPORT (ID)
+create table pinnacle_of_life
+(
+    id                      bigint primary key auto_increment,
+    pinnacle_of_life_number int not null,
+    age                     int not null,
+    numerology_report_id    bigint,
+    foreign key (numerology_report_id) references numerology_report (id)
 );
 
-ALTER TABLE NUMEROLOGY_REPORT
-    CHANGE BALANCE_CHART BALANCE_NUMBER INT;
+alter table numerology_report
+    change balance_chart balance_number int;

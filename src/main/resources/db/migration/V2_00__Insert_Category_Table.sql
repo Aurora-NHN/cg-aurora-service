@@ -1,4 +1,4 @@
-INSERT INTO `aurora_shop`.`CATEGORY` (`NAME`)
+INSERT INTO `aurora_shop`.`category` (`name`)
 VALUES ('Vòng Tay Phong Thủy'),
        ('Ngọc Bích Nephrite'),
        ('Nhẫn Phong Thủy'),
@@ -7,7 +7,7 @@ VALUES ('Vòng Tay Phong Thủy'),
        ('Hoa Tai Phong Thủy'),
        ('Tarot');
 
-INSERT INTO `aurora_shop`.`SUB_CATEGORY` (`NAME`, `CATEGORY_ID`)
+INSERT INTO `aurora_shop`.`sub_category` (`name`, `category_id`)
 VALUES ('Vòng tay đá Mặt Trăng', '1'),
        ('Vòng Tay Tết Dây Dù', '1'),
        ('Vòng tay đá Thạch Anh', '1'),

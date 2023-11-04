@@ -1,20 +1,20 @@
-ALTER TABLE NUMEROLOGY_REPORT
-DROP COLUMN PINNACLE_OF_LIFE;
+alter table numerology_report
+    drop column pinnacle_of_life;
 
-ALTER TABLE NUMEROLOGY_REPORT
-DROP COLUMN NUMBERS_IN_CHART;
+alter table numerology_report
+    drop column numbers_in_chart;
 
-ALTER TABLE NUMEROLOGY_REPORT
-DROP COLUMN DEFECT_NUMBER_OF_NAME_CHART;
+alter table numerology_report
+    drop column defect_number_of_name_chart;
 
-ALTER TABLE NUMEROLOGY_REPORT
-DROP COLUMN FEELING_INSIDE_NUMBER;
+alter table numerology_report
+    drop column feeling_inside_number;
 
-ALTER TABLE NUMEROLOGY_REPORT
-DROP COLUMN KARMIC_DEBT;
+alter table numerology_report
+    drop column karmic_debt;
 
-ALTER TABLE NUMEROLOGY_REPORT
-DROP COLUMN PERSONALITY_NUMBER;
+alter table numerology_report
+    drop column personality_number;
 
-ALTER TABLE NUMEROLOGY_REPORT
-ADD COLUMN NICKNAME NVARCHAR(100);
+alter table numerology_report
+    add column nickname nvarchar(100);

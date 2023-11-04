@@ -1,3 +1,3 @@
-ALTER TABLE address
-    ADD district VARCHAR(255),
-    ADD ward VARCHAR(255);
+alter table address
+    add district varchar(255),
+    add ward varchar(255);

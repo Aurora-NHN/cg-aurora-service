@@ -1,9 +1,5 @@
 use aurora_shop;
 
-alter table blog rename column lastModify to last_modify;
-alter table blog
-    drop column blogCategoryId;
-
 insert into blog(title, author, publish, content, main_image, created_at, description)
 values ('CPU ARM flagship của Qualcomm ra mắt, hiệu năng đánh bại Apple M2 Max, tiết kiệm năng lượng vượt bậc Intel và AMD',
         '3 psychic lady',

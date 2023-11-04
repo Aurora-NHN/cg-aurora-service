@@ -1,18 +1,15 @@
-ALTER TABLE NUMEROLOGY_REPORT
-DROP FOREIGN KEY numerology_report_ibfk_1;
+alter table numerology_report
+    drop foreign key numerology_report_ibfk_1;
 
-ALTER TABLE NUMEROLOGY_REPORT
-DROP FOREIGN KEY numerology_report_ibfk_2;
+alter table numerology_report
+    drop foreign key numerology_report_ibfk_2;
 
-ALTER TABLE NUMEROLOGY_REPORT
-DROP FOREIGN KEY numerology_report_ibfk_3;
+alter table numerology_report
+    drop foreign key numerology_report_ibfk_3;
 
-DROP TABLE IF EXISTS CHALLENGE_NUMBER;
-DROP TABLE IF EXISTS LIFE_PHASE;
-DROP TABLE IF EXISTS PERSONAL_MONTH;
-DROP TABLE IF EXISTS PERSONAL_YEAR;
-DROP TABLE IF EXISTS PINNACLE_OF_LIFE;
-
-
-
-DROP TABLE IF EXISTS  NUMEROLOGY_REPORT;
+drop table if exists challenge_number;
+drop table if exists life_phase;
+drop table if exists personal_month;
+drop table if exists personal_year;
+drop table if exists pinnacle_of_life;
+drop table if exists numerology_report;

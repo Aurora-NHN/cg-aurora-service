@@ -1,54 +1,54 @@
-CREATE TABLE `ORDERS`
+create table `orders`
 (
-    ID                BIGINT PRIMARY KEY AUTO_INCREMENT,
-    USER_ID           BIGINT,
-    ORDER_DATE        DATE,
-    TOTAL_AMOUNT      BIGINT,
-    EXPECTED_DELIVERY DATE,
-    STATUS            NVARCHAR(255),
-    FOREIGN KEY (USER_ID) REFERENCES USER (ID)
+    id                bigint primary key auto_increment,
+    user_id           bigint,
+    order_date        date,
+    total_amount      bigint,
+    expected_delivery date,
+    status            nvarchar(255),
+    foreign key (user_id) references user (id)
 );
 
-CREATE TABLE `ADDRESS`
+create table `address`
 (
-    ID                     BIGINT PRIMARY KEY AUTO_INCREMENT,
-    CONSIGNEE_NAME         NVARCHAR(50),
-    FULL_NAME              NVARCHAR(255),
-    PHONE_NUMBER           VARCHAR(11),
-    CITY                   NVARCHAR(50),
-    DELIVERY_ADDRESS       NVARCHAR(255),
-    DELIVERY_CHARGES       BIGINT,
-    ADDITIONAL_INFORMATION TEXT,
-    ORDER_ID               BIGINT UNIQUE,
-    FOREIGN KEY (ORDER_ID) REFERENCES `ORDERS` (ID)
+    id                     bigint primary key auto_increment,
+    consignee_name         nvarchar(50),
+    full_name              nvarchar(255),
+    phone_number           varchar(11),
+    city                   nvarchar(50),
+    delivery_address       nvarchar(255),
+    delivery_charges       bigint,
+    additional_information text,
+    order_id               bigint unique,
+    foreign key (order_id) references `orders` (id)
 );
 
-CREATE TABLE ORDER_DETAIL
+create table order_detail
 (
-    ID          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    QUANTITY    INT,
-    TOTAL_PRICE BIGINT,
-    ORDER_ID    BIGINT,
-    PRODUCT_ID  BIGINT,
-    FOREIGN KEY (ORDER_ID) REFERENCES `ORDERS` (ID),
-    FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT (ID)
+    id          bigint primary key auto_increment,
+    quantity    int,
+    total_price bigint,
+    order_id    bigint,
+    product_id  bigint,
+    foreign key (order_id) references `orders` (id),
+    foreign key (product_id) references product (id)
 );
 
-CREATE TABLE CART
+create table cart
 (
-    ID           BIGINT PRIMARY KEY AUTO_INCREMENT,
-    TOTAL_AMOUNT BIGINT,
-    USER_ID      BIGINT,
-    FOREIGN KEY (USER_ID) REFERENCES USER (ID)
+    id           bigint primary key auto_increment,
+    total_amount bigint,
+    user_id      bigint,
+    foreign key (user_id) references user (id)
 );
 
-CREATE TABLE CART_LINE
+create table cart_line
 (
-    ID          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    CART_ID     BIGINT,
-    PRODUCT_ID  BIGINT,
-    QUANTITY    INT,
-    TOTAL_PRICE BIGINT,
-    FOREIGN KEY (CART_ID) REFERENCES `CART` (ID),
-    FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT (ID)
+    id          bigint primary key auto_increment,
+    cart_id     bigint,
+    product_id  bigint,
+    quantity    int,
+    total_price bigint,
+    foreign key (cart_id) references `cart` (id),
+    foreign key (product_id) references product (id)
 );

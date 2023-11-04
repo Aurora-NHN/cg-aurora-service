@@ -1,10 +1,10 @@
 use aurora_shop;
 
 alter table blog
-    add column description    varchar(2000),
-    add column tag            varchar(255),
-    add column blogCategoryId bigint,
-    add column lastModify     datetime;
+    add column description      varchar(2000),
+    add column tag              varchar(255),
+    add column blog_category_id bigint,
+    add column last_modify       datetime;
 
 create table blog_category
 (

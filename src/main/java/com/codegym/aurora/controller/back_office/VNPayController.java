@@ -41,7 +41,7 @@ public class VNPayController {
             return new ResponseEntity<>(Constant.BUY_VIP_FAIL, HttpStatus.BAD_REQUEST);
         }
         String vnPayUrl = vnPayService.createOrder(paymentRequestDTO);
-        return new ResponseEntity<>(vnPayUrl, HttpStatus.OK);
+        return new ResponseEntity<>("Feature currently disabled. Please contact page admin!", HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @GetMapping("/payment-success")
