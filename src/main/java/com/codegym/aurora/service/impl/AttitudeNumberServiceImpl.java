@@ -48,14 +48,14 @@ public class AttitudeNumberServiceImpl implements AttitudeNumberService {
 
     @Override
     public AttitudeNumberResponseDTO findAttitudeNumber(NumerologyReportRequestDTO requestDTO) {
-        Integer attitudeNumber = NumeroloryUtils.reduceNumber(
+        Integer attitudeNumber = NumeroloryUtils.reduceToSingleDigit(
                 requestDTO.getDayOfBirth() + requestDTO.getDayOfBirth());
         return getAttitudeNumber(attitudeNumber);
     }
 
     @Override
     public AttitudeNumberResponseDTO findAttitudeNumber(DataNumerologyReport data) {
-        Integer attitudeNumber = NumeroloryUtils.reduceNumber(
+        Integer attitudeNumber = NumeroloryUtils.reduceToSingleDigit(
                 data.getDayOfBirth() + data.getDayOfBirth());
         return getAttitudeNumber(attitudeNumber);
     }

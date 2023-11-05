@@ -78,7 +78,7 @@ public class LifePathNumberServiceImpl implements LifePathNumberService {
                 calculatorLifePathNumber == NumeroloryConstants.MASTER_NUMBER_33) {
             return getLifePathNumber(calculatorLifePathNumber);
         }
-        int reducedNumber = calculateReducedNumber(calculatorLifePathNumber);
+        Integer reducedNumber = calculateReducedNumber(calculatorLifePathNumber);
         return getLifePathNumber(reducedNumber);
     }
 
