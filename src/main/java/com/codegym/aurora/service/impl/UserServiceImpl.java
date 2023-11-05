@@ -318,21 +318,41 @@ public class UserServiceImpl implements UserService {
         String name = (String) payload.get("name");
 
         ResponseDTO responseDTO = new ResponseDTO();
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
         User user = userRepository.findByUserDetailEmail(email);
         String token;
         if (user == null) {
             User newUser = saveGoogleUser(email, userId, name);
             token = jwtTokenProvider.generateToken(newUser.getUsername());
             tokenCache.addToken(newUser.getUsername(), token);
+            UserResponseDTO userResponseDTO = UserResponseDTO.builder()
+                    .count(0)
+                    .id(newUser.getId())
+                    .username(newUser.getUsername())
+                    .totalCount(0)
+                    .fullName(name)
+                    .role("ROLE_USER")
+                    .email(email)
+                    .phoneNumber("")
+                    .gender("")
+                    .build();
+            loginResponseDTO.setJwtToken(token);
+            loginResponseDTO.setUserResponseDTO(userResponseDTO);
+            Cart cart = new Cart();
+            cart.setUser(newUser);
+            cartCache.addToCart(newUser.getId(), cart);
         } else {
+            Cart cart = user.getCarts();
+            cartCache.addToCart(user.getId(), cart);
             token = jwtTokenProvider.generateToken(user.getUsername());
             tokenCache.addToken(user.getUsername(), token);
+            UserResponseDTO userResponseDTO = userConverter.converterEntityUserToUserInfoResponseDTO(user, user.getUserDetail());
+            loginResponseDTO.setUserResponseDTO(userResponseDTO);
+            loginResponseDTO.setJwtToken(token);
         }
-        Cart cart = user.getCarts();
-        cartCache.addToCart(user.getId(), cart);
         responseDTO.setMessage(Constant.LOGIN_SUCCESS);
         responseDTO.setStatus(HttpStatus.OK);
-        responseDTO.setData(token);
+        responseDTO.setData(loginResponseDTO);
         return responseDTO;
     }
 

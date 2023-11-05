@@ -87,6 +87,7 @@ public class OrderServiceImpl implements OrderService {
             int cartLineQuantity = cartLine.getQuantity();
             int newQuantity = quantity - cartLineQuantity;
             product.setQuantity(newQuantity);
+            product.setQuantitySold(product.getQuantitySold() + cartLine.getQuantity());
             productRepository.save(product);
         }
         order.setStatus("Đang chờ vận chuyển");

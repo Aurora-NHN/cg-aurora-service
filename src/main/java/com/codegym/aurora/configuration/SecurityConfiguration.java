@@ -103,7 +103,8 @@ public class SecurityConfiguration  {
                 .antMatchers( "/api/login", "/api/logout","/api/register-user",
                         "/api/vnpay/payment-success", "/api/numerology",
                         "/api/products/**", "/api/categories",
-                        "/api/blogs/**")
+                        "/api/blogs/**","/api/google-login",
+                        "/api/users/forgot-password")
                 .permitAll();
 
         httpSecurity.authorizeHttpRequests()
