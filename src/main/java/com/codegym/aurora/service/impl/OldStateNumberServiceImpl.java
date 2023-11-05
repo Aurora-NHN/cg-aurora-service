@@ -47,15 +47,8 @@ public class OldStateNumberServiceImpl implements OldStateNumberService {
 
     @Override
     public OldStateNumberResponseDTO findOldStateNumber(DataNumerologyReport data) {
-        Integer sumYear = NumeroloryUtils.calculateDigitSum(data.getYearOfBirth());
-        Integer oldStateNumber = calculateReducedNumber(sumYear);
+        Integer oldStateNumber = NumeroloryUtils.reduceToSingleDigit(data.getYearOfBirth());
         return getOldStateNumber(oldStateNumber);
     }
 
-    private int calculateReducedNumber(Integer number) {
-        while (number > 9) {
-            number = NumeroloryUtils.calculateDigitSum(number);
-        }
-        return number;
-    }
 }

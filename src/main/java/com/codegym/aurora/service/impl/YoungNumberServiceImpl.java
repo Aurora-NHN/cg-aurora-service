@@ -5,6 +5,7 @@ import com.codegym.aurora.payload.from_file.YoungStateNumber;
 import com.codegym.aurora.payload.request.NumerologyReportRequestDTO;
 import com.codegym.aurora.payload.response.YoungStateNumberResponseDTO;
 import com.codegym.aurora.service.YoungStateNumberService;
+import com.codegym.aurora.util.NumeroloryConstants;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,12 @@ public class YoungNumberServiceImpl implements YoungStateNumberService {
     @Override
     public YoungStateNumberResponseDTO findYoungStateNumber(DataNumerologyReport data) {
         Integer youngStateNumber = NumeroloryUtils.calculateDigitSum(data.getMonthOfBirth());
-        return  getYoungStateNumber(youngStateNumber);
+        if (youngStateNumber == NumeroloryConstants.MASTER_NUMBER_11 ||
+            youngStateNumber == NumeroloryConstants.MASTER_NUMBER_22){
+            return  getYoungStateNumber(youngStateNumber);
+        }
+        return getYoungStateNumber(NumeroloryUtils.reduceNumber(youngStateNumber));
+
     }
 
 

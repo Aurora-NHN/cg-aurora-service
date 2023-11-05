@@ -12,6 +12,4 @@ public interface PersonalYearService {
     Integer calculatePersonalYear(Integer attitudeNumber,Integer year);
     List<PersonalYearResponseDtoForReport> createPersonalYearList(Integer attitudeNumber);
 
-
-
 }

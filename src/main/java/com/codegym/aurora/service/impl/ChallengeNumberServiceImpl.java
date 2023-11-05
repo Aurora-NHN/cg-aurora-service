@@ -47,19 +47,18 @@ public class ChallengeNumberServiceImpl implements ChallengeNumberService {
         return result;
     }
 
-    // các hàm viết mới
     @Override
     public Integer calculateChallengeFirst(DataNumerologyReport data) {
-        Integer dayReduce = NumeroloryUtils.calculateDigitSum(data.getDayOfBirth());
-        Integer monthSum = NumeroloryUtils.calculateDigitSum(data.getMonthOfBirth());
+        Integer dayReduce = NumeroloryUtils.reduceToSingleDigit(data.getDayOfBirth());
+        Integer monthSum = NumeroloryUtils.reduceToSingleDigit(data.getMonthOfBirth());
         return calculateResult(dayReduce, monthSum);
 
     }
 
     @Override
     public Integer calculateChallengeSecond(DataNumerologyReport data) {
-        Integer dayReduce = NumeroloryUtils.calculateDigitSum(data.getDayOfBirth());
-        Integer yearReduce = NumeroloryUtils.reduceNumber(data.getYearOfBirth());
+        Integer dayReduce = NumeroloryUtils.reduceToSingleDigit(data.getDayOfBirth());
+        Integer yearReduce = NumeroloryUtils.reduceToSingleDigit(data.getYearOfBirth());
         return calculateResult(dayReduce, yearReduce);
     }
 
@@ -70,8 +69,8 @@ public class ChallengeNumberServiceImpl implements ChallengeNumberService {
 
     @Override
     public Integer calculateChallengeFour(DataNumerologyReport data) {
-        Integer monthReduce = NumeroloryUtils.calculateDigitSum(data.getMonthOfBirth());
-        Integer yearReduce = NumeroloryUtils.reduceNumber(data.getYearOfBirth());
+        Integer monthReduce = NumeroloryUtils.reduceToSingleDigit(data.getMonthOfBirth());
+        Integer yearReduce = NumeroloryUtils.reduceToSingleDigit(data.getYearOfBirth());
         return calculateResult(monthReduce, yearReduce);
     }
 

@@ -54,7 +54,6 @@ public class PersonalMonthServiceImpl implements PersonalMonthService {
         return NumeroloryUtils.reduceNumber(personalYear + NumeroloryUtils.reduceNumber(month));
     }
 
-
     @Override
     public List<PersonalMonthResponseDTO> createPersonalMonth(Integer personalYear) {
         List<PersonalMonthResponseDTO> personalMonths = new ArrayList<>();
