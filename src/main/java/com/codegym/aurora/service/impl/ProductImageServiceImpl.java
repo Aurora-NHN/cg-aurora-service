@@ -21,7 +21,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         for (String url:stringList){
             ProductImage productImage = new ProductImage();
             productImage.setProduct(product);
-            productImage.setImageUrl(url);
+            productImage.setImageUrl(imageService.getImageUrl(url));
             productImage.setImageName(url);
             productImageList.add(productImage);
             productImageRepository.save(productImage);

@@ -74,13 +74,13 @@ public class VNPayController {
             cookie.setPath("/");
             cookie.setMaxAge(15);
             response.addCookie(cookie);
-            response.sendRedirect("http://localhost:3000");
+            response.sendRedirect("https://cg-aurora-app.vercel.app/");
         } catch (Exception e) {
             Cookie cookie = new Cookie("paymentStatus", Constant.PAYMENT_FAIL);
             cookie.setPath("/");
             cookie.setMaxAge(15);
             response.addCookie(cookie);
-            response.sendRedirect("http://localhost:3000");
+            response.sendRedirect("https://cg-aurora-app.vercel.app/");
         }
     }
 
