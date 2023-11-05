@@ -107,6 +107,10 @@ public class SecurityConfiguration  {
                 .permitAll();
 
         httpSecurity.authorizeHttpRequests()
+                .antMatchers("/api/vnpay/set-active-status")
+                .hasRole("ADMIN");
+
+        httpSecurity.authorizeHttpRequests()
                 .antMatchers("/api/users/**","/api/vnpay/**",
                         "/api/order/**", "/api/cart/**",
                         "/api/numerology/**")

@@ -9,11 +9,13 @@ import com.codegym.aurora.util.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
@@ -41,7 +43,19 @@ public class VNPayController {
             return new ResponseEntity<>(Constant.BUY_VIP_FAIL, HttpStatus.BAD_REQUEST);
         }
         String vnPayUrl = vnPayService.createOrder(paymentRequestDTO);
-        return new ResponseEntity<>("Feature currently disabled. Please contact page admin!", HttpStatus.SERVICE_UNAVAILABLE);
+        if (paymentCache.getActiveVnPayService()) {
+            return new ResponseEntity<>(vnPayUrl, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Feature currently disabled. Please contact page admin!"
+                    , HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/set-active-status")
+    public ResponseEntity<?> setServiceStatus(@RequestParam Boolean value) {
+        paymentCache.setActiveVnPayService(value);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/payment-success")
@@ -51,7 +65,7 @@ public class VNPayController {
             HistoryPayment historyPayment = vnPayService.checkBill(params);
             boolean status = historyPayment.isStatus();
             String statusPayment;
-            if (status){
+            if (status) {
                 statusPayment = Constant.PAYMENT_SUCCESS;
             } else {
                 statusPayment = Constant.PAYMENT_FAIL;
@@ -61,7 +75,7 @@ public class VNPayController {
             cookie.setMaxAge(15);
             response.addCookie(cookie);
             response.sendRedirect("http://localhost:3000");
-        } catch (Exception e){
+        } catch (Exception e) {
             Cookie cookie = new Cookie("paymentStatus", Constant.PAYMENT_FAIL);
             cookie.setPath("/");
             cookie.setMaxAge(15);

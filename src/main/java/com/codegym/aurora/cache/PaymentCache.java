@@ -8,10 +8,20 @@ import java.util.UUID;
 @Component
 public final class PaymentCache {
 
+    private Boolean activeVnPayService;
     private final HashMap<String,UUID> paymentMap;
 
     private PaymentCache(){
         paymentMap = new HashMap<>();
+        activeVnPayService = true;
+    }
+
+    public Boolean getActiveVnPayService() {
+        return activeVnPayService;
+    }
+
+    public void setActiveVnPayService(Boolean activeVnPayService) {
+        this.activeVnPayService = activeVnPayService;
     }
 
     public void addPaymentId(String username, UUID uuid) {
