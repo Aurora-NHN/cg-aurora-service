@@ -41,11 +41,6 @@ dependencies {
 	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
 	implementation group: 'com.google.cloud', name: 'google-cloud-storage', version: '2.22.2'
 
-	//OAuth2
-//	implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
-//	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-//	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-
 	//sending email
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
@@ -56,17 +51,9 @@ dependencies {
 	//jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
-	//swagger: Swagger tools starts with the OpenAPI Specification — the industry standard for RESTful API design
-//	implementation 'io.springfox:springfox-swagger-ui'
-//	implementation 'io.springfox:springfox-swagger2'
-
 	//flyway
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.flywaydb:flyway-mysql'
-
-	//rabbitMQ
-	implementation 'org.springframework.boot:spring-boot-starter-amqp'
-	implementation 'com.rabbitmq:amqp-client'
 
 	//gson
 	implementation 'com.google.code.gson:gson'

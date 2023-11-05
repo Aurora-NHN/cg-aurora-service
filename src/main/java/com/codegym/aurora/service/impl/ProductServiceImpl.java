@@ -152,6 +152,7 @@ public class ProductServiceImpl implements ProductService {
             }
             Product product = new Product();
             List<String> productUrlList = imageService.save(productRequestDTO.getProductImageList());
+
             String productImageUlr = imageService.save(productImageFileList.get(0));
             List<ProductImage> productImageList = productImageService.saveListImage(productUrlList,product);
 
@@ -160,7 +161,7 @@ public class ProductServiceImpl implements ProductService {
             product.setWeight(productRequestDTO.getWeight());
             product.setQuantity(productRequestDTO.getQuantity());
             product.setDescription(productRequestDTO.getDescription());
-            product.setImageUrl(productImageUlr);
+            product.setImageUrl(imageService.getImageUrl(productImageUlr));
             product.setAuthor(productRequestDTO.getAuthor());
             product.setInclude(productRequestDTO.getInclude());
             product.setProducer(productRequestDTO.getProducer());
@@ -176,7 +177,7 @@ public class ProductServiceImpl implements ProductService {
             ProductCreateResponseDTO productResponseDTO = productConverter
                     .convertEntityToCreateResponse(product);
             productResponseDTO.setProductImageUrlList(imageService.getImageUrls(productUrlList));
-            productResponseDTO.setMainImageUrl(imageService.getImageUrl(productImageUlr));
+            productResponseDTO.setMainImageUrl(productResponseDTO.getImageUrl());
             return new ResponseEntity<>(productResponseDTO, HttpStatus.OK);
         }catch (Exception e){
 
