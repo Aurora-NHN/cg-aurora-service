@@ -147,7 +147,7 @@ public class ProductServiceImpl implements ProductService {
             SubCategory subCategory = subCategoryRepository
                     .findById(productRequestDTO.getSubCategoryId()).orElse(null);
             if (subCategory == null){
-                return new ResponseEntity<>("Add product failed, beacause subCategory is null!", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Add product failed, because subCategory is null!", HttpStatus.BAD_REQUEST);
 
             }
             Product product = new Product();

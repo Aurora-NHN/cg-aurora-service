@@ -154,7 +154,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     private boolean isCategoryNameAlreadyExists(String name) {
-        Category existingCategory = categoryRepository.findCategoryByName(name);
+        Category existingCategory = categoryRepository.findCategoryByName(name.trim());
         return existingCategory != null;
     }
 }
