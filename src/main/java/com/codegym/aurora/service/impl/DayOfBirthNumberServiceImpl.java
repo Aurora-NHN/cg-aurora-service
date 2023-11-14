@@ -49,10 +49,9 @@ public class DayOfBirthNumberServiceImpl implements DayOfBirthNumberService {
     public Integer calculateDayOfBirthNumber(Integer day) {
         if (day == NumeroloryConstants.MASTER_NUMBER_11 ||
                 day == NumeroloryConstants.MASTER_NUMBER_22) {
-            return getDayOfBirthNumber(day).getNumber();
+            return day;
         }
-        int reduceNumber = calculateReducedNumber(day);
-        return getDayOfBirthNumber(reduceNumber).getNumber();
+        return calculateReducedNumber(day);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class MissionNumberServiceimpl implements MissionNumberService {
     }
 
     @Override
-    public MissionNumberResponseDTO getMissionNumberResponseDTO(int missionNumber) {
+    public MissionNumberResponseDTO getMissionNumberResponseDTO(Integer missionNumber) {
 
         MissionNumberResponseDTO result = staticMissionNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == missionNumber)
@@ -55,7 +55,7 @@ public class MissionNumberServiceimpl implements MissionNumberService {
     @Override
     public MissionNumberResponseDTO findMissionNumber(NumerologyReportRequestDTO requestDTO) {
         String fullName = NumeroloryUtils.removeAccent(requestDTO.getFullName());
-        int missionNumber  = 0;
+        Integer missionNumber  = 0;
         String upperCaseName = fullName.toUpperCase();
         for (char letter : upperCaseName.toCharArray()) {
             if (alphabetMap.containsKey(letter)) {
@@ -76,7 +76,7 @@ public class MissionNumberServiceimpl implements MissionNumberService {
     @Override
     public MissionNumberResponseDTO findMissionNumber(DataNumerologyReport data) {
         String fullName = NumeroloryUtils.removeAccent(data.getFullName());
-        int missionNumber  = 0;
+        Integer missionNumber  = 0;
         String upperCaseName = fullName.toUpperCase();
         for (char letter : upperCaseName.toCharArray()) {
             if (alphabetMap.containsKey(letter)) {
@@ -94,12 +94,12 @@ public class MissionNumberServiceimpl implements MissionNumberService {
         return getMissionNumberResponseDTO(missionNumber);
     }
 
-    private int reduceToSingleDigit(int number) {
+    private int reduceToSingleDigit(Integer number) {
         if (number <= 9) {
             return number;
         }
 
-        int sum = 0;
+        Integer sum = 0;
         while (number > 0) {
             sum += number % 10;
             number /= 10;

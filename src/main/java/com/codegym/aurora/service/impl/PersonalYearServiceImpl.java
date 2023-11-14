@@ -6,6 +6,7 @@ import com.codegym.aurora.payload.response.PersonalYearResponseDTO;
 import com.codegym.aurora.payload.response.PersonalYearResponseDtoForReport;
 import com.codegym.aurora.service.PersonalMonthService;
 import com.codegym.aurora.service.PersonalYearService;
+import com.codegym.aurora.util.NumeroloryConstants;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +55,11 @@ public class PersonalYearServiceImpl implements PersonalYearService {
 
     @Override
     public Integer calculatePersonalYear(Integer attitudeNumber, Integer year) {
-        Integer personalYear = year + attitudeNumber;
+        Integer personalYear = NumeroloryUtils.calculateDigitSum(year + attitudeNumber);
+        if (personalYear == NumeroloryConstants.MASTER_NUMBER_11 ||
+            personalYear == NumeroloryConstants.MASTER_NUMBER_22){
+            return personalYear;
+        }
         return NumeroloryUtils.reduceNumber(personalYear);
     }
     @Override

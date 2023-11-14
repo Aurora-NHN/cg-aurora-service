@@ -1,0 +1,12 @@
+2023-11-12 22:42:13,534 +0700 [http-nio-8080-exec-2] INFO  (UserLogs.java:24) - ```bash
+!##New user registered!... ! username: tengimabat8kytuvayha, email: chungdeser@gmail.com```
+2023-11-12 22:44:53,453 +0700 [http-nio-8080-exec-2] INFO  (UserLogs.java:24) - ```diff
+!##New user registered!... ! username: ghilogdcroine, email: baodoibaodom@gmail.com```
+2023-11-12 22:48:01,004 +0700 [http-nio-8080-exec-1] INFO  (UserLogs.java:24) - ```diff
+!##New user registered!... ! username: metquadi, email: me.di.ngu.day.mai.deploy@gmail.com```
+2023-11-13 21:56:56,081 +0700 [http-nio-8080-exec-2] INFO  (UserLogs.java:24) - ```diff
+!##New user registered!... ! username: chungdeser@gmail.com, email: hongocha88```
+2023-11-13 22:11:22,335 +0700 [http-nio-8080-exec-4] INFO  (UserLogs.java:29) - ```diff
+!##New user registered!... ! username: hongochaf88, email: chungnguyen@gmail.com```
+2023-11-13 22:11:55,223 +0700 [http-nio-8080-exec-10] INFO  (NumerologyLog.java:30) - ```diff
+!##User hongochaf88 created a free numerology report!```

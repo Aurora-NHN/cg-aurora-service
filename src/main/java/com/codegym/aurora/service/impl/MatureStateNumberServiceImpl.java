@@ -4,6 +4,7 @@ import com.codegym.aurora.entity.DataNumerologyReport;
 import com.codegym.aurora.payload.from_file.MatureStateNumber;
 import com.codegym.aurora.payload.response.MatureStateNumberResponseDTO;
 import com.codegym.aurora.service.MatureStateNumberService;
+import com.codegym.aurora.util.NumeroloryConstants;
 import com.codegym.aurora.util.NumeroloryUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,10 @@ public class MatureStateNumberServiceImpl implements MatureStateNumberService {
     @Override
     public MatureStateNumberResponseDTO findMatureStateNumer(DataNumerologyReport data) {
         Integer matureStateNumber = NumeroloryUtils.calculateDigitSum(data.getDayOfBirth());
-        return getMatureStateNumber(matureStateNumber);
+        if (matureStateNumber == NumeroloryConstants.MASTER_NUMBER_11 ||
+            matureStateNumber == NumeroloryConstants.MASTER_NUMBER_22){
+            return getMatureStateNumber(matureStateNumber);
+        }
+        return getMatureStateNumber(NumeroloryUtils.reduceNumber(matureStateNumber));
     }
 }
