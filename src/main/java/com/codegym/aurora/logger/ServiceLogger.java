@@ -21,7 +21,7 @@ public class ServiceLogger {
 
     @AfterThrowing(value = "serviceMethods()", throwing = "e")
     public void serviceLogging(JoinPoint joinPoint, Exception e) {
-        LOGGER.warn(String.format("```yaml%n!##EXCEPTION: %s.%s() !ARGS: %s!```",
+        LOGGER.warn(String.format("EXCEPTION: %s.%s() - ARGS: %s",
                 joinPoint.getTarget().getClass().getName(),
                 joinPoint.getSignature().getName(),
                 Arrays.toString(joinPoint.getArgs())));

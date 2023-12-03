@@ -38,11 +38,10 @@ public class MiddleAgedNumberServiceImpl implements MiddleAgedNumberService {
     }
     @Override
     public MiddleAgedNumberResponseDto getMiddleAgedNumberResponseDto(Integer middleAgedNumber) {
-        MiddleAgedNumberResponseDto result = staticMiddleAgedNumberList.stream()
+        return staticMiddleAgedNumberList.stream()
                 .filter(dto -> dto.getNumber() == middleAgedNumber)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy số trung niên phù hợp"));
-        return result;
     }
 
     @Override

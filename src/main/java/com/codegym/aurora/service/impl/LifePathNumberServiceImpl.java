@@ -44,11 +44,10 @@ public class LifePathNumberServiceImpl implements LifePathNumberService {
 
     @Override
     public LifePathResponseDTO getLifePathNumber(Integer number) {
-        LifePathResponseDTO result = staticLifePathNumberList.stream()
+        return staticLifePathNumberList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy số Chủ đạo phù hợp"));
-        return result;
     }
 
     @Override

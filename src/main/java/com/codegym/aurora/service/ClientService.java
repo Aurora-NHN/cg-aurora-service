@@ -8,5 +8,5 @@ public interface ClientService {
 
     Boolean create(ClientSdi sdi);
 
-    Boolean sendOrderReturn(String email, UUID paymentId);
+    Boolean sendOrderReturn(String email, String paymentId);
 }

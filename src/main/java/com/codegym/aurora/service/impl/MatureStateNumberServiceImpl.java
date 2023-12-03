@@ -41,11 +41,10 @@ public class MatureStateNumberServiceImpl implements MatureStateNumberService {
 
     @Override
     public MatureStateNumberResponseDTO getMatureStateNumber(Integer number) {
-        MatureStateNumberResponseDTO result = staticMatureStateNumberResponseDTOList.stream()
+        return staticMatureStateNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy chỉ số trưởng thành phù hợp"));
-        return result;
     }
 
     @Override

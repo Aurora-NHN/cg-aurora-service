@@ -7,7 +7,8 @@ public class EnvVariable {
 
     public static final String VN_PAY_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 
-    public static final String VN_PAY_RETURN_URL = "http://localhost:8080/api/vnpay/payment-success";
+    public static final String VN_PAY_RETURN_URL = "https://aurora-service-3ndqmbuk6q-et.a.run.app/api/vnpay/payment-success";
+//    public static final String VN_PAY_RETURN_URL = "http://localhost:8080/api/vnpay/payment-success";
 
     public  static final String VN_PAY_TERMINAL_CODE = "TBVUJ18L";
 

@@ -27,6 +27,6 @@ public class NumerologyLog {
         NumerologyReportRequestDTO arg = (NumerologyReportRequestDTO) joinPoint.getArgs()[0];
         String user = userService.getCurrentUsername();
         String reportType = Boolean.TRUE.equals(arg.getVip()) ? "VIP" : "free";
-        LOGGER.info(String.format("```diff%n!##User [%s] created a **%s** numerology report!```", user, reportType));
+        LOGGER.info(String.format("User [%s] created a **%s** numerology report!", user, reportType));
     }
 }

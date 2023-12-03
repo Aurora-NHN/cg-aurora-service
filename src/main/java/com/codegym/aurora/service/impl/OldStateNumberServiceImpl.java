@@ -38,11 +38,10 @@ public class OldStateNumberServiceImpl implements OldStateNumberService {
 
     @Override
     public OldStateNumberResponseDTO getOldStateNumber(Integer number) {
-        OldStateNumberResponseDTO result = staticOldStateNumberResponseDTOList.stream()
+        return staticOldStateNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy chỉ số hậu vận phù hợp"));
-        return result;
     }
 
     @Override

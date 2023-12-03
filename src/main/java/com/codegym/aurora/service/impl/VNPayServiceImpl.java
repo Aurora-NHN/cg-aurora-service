@@ -22,6 +22,7 @@ import com.codegym.aurora.util.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -42,42 +43,31 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VNPayServiceImpl implements VNPayService {
 
+    public static final String VIP = "25000000";
+    public static final String VIP_PRO = "65000000";
+    public static final String VIP_SUPER = "90000000";
     private final VNPayConfiguration vnPayConfiguration;
-
     private final UserRepository userRepository;
-
     private final HistoryPaymentRepository historyPaymentRepository;
-
     private final PaymentCache paymentCache;
-
     private final UserService userService;
-
     private final ClientService clientService;
-
     private final OrderCache orderCache;
-
     private final CartRepository cartRepository;
-
     private final CartLineRepository cartLineRepository;
-
     private final CartCache cartCache;
 
-    public static final String VIP = "25000000";
-
-    public static final String VIP_PRO = "65000000";
-
-    public static final String VIP_SUPER = "90000000";
-
     @Override
-    public String createOrder(PaymentRequestDTO paymentRequestDTO) {
+    public String createOrder(PaymentRequestDTO paymentRequestDTO, HttpServletRequest request) {
         String username = userService.getCurrentUsername();
-        UUID uuid = UUID.randomUUID();
-        paymentCache.addPaymentId(username, uuid);
+        String paymentId = UUID.randomUUID().toString();
+        paymentCache.addPaymentId(username, paymentId);
         String totalAmount = null;
         String amount = null;
         String totalPrice = null;
         String orderInfo = null;
-        switch (paymentRequestDTO.getVipPack()){
+
+        switch (paymentRequestDTO.getVipPack()) {
             case 1:
                 amount = VIP;
                 totalPrice = "250000";
@@ -100,47 +90,133 @@ public class VNPayServiceImpl implements VNPayService {
                 orderInfo = Constant.PAY_PURCHASE_INVOICE;
         }
 
-        String vnp_Version = "2.1.0";
-        String vnp_Command = "pay";
-        String vnp_TxnRef = vnPayConfiguration.getRandomNumber(8);
-        String vnp_IpAddr = "127.0.0.1";
-        String vnp_TmnCode = EnvVariable.VN_PAY_TERMINAL_CODE;
-        String orderType = "order-type";
-
-        Map<String, String> vnp_Params = new HashMap<>();
-        vnp_Params.put("vnp_Version", vnp_Version);
-        vnp_Params.put("vnp_Command", vnp_Command);
-        vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", amount);
-        vnp_Params.put("vnp_CurrCode", "VND");
-
-        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-        vnp_Params.put("vnp_OrderInfo", uuid.toString());
-        vnp_Params.put("vnp_OrderType", orderType);
-
+        String vnpVersion = "2.1.0";
+        String vnpCommand = "pay";
+        String vnpIpAddr = vnPayConfiguration.getIpAddress(request);
+//        String vnpIpAddr = getClientIP(request);
+        String vnpTmnCode = EnvVariable.VN_PAY_TERMINAL_CODE;
+        String orderType = "190003";
         String locate = "vn";
-        vnp_Params.put("vnp_Locale", locate);
-
-        vnp_Params.put("vnp_ReturnUrl", EnvVariable.VN_PAY_RETURN_URL);
-        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
-
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        cld.add(Calendar.HOUR, 7);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        String vnp_CreateDate = formatter.format(cld.getTime());
-        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
-
+        String vnpCreateDate = formatter.format(cld.getTime());
         cld.add(Calendar.MINUTE, 15);
-        String vnp_ExpireDate = formatter.format(cld.getTime());
-        vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
+        String vnpExpireDate = formatter.format(cld.getTime());
 
-        List fieldNames = new ArrayList(vnp_Params.keySet());
+        Map<String, String> vnpParams = new HashMap<>();
+        vnpParams.put("vnp_Version", vnpVersion);
+        vnpParams.put("vnp_Command", vnpCommand);
+        vnpParams.put("vnp_TmnCode", vnpTmnCode);
+        vnpParams.put("vnp_Amount", amount);
+        vnpParams.put("vnp_CurrCode", "VND");
+        vnpParams.put("vnp_TxnRef", paymentId);
+        vnpParams.put("vnp_OrderInfo", orderInfo);
+        vnpParams.put("vnp_OrderType", orderType);
+        vnpParams.put("vnp_Locale", locate);
+        vnpParams.put("vnp_ReturnUrl", EnvVariable.VN_PAY_RETURN_URL);
+        vnpParams.put("vnp_IpAddr", vnpIpAddr);
+        vnpParams.put("vnp_CreateDate", vnpCreateDate);
+        vnpParams.put("vnp_ExpireDate", vnpExpireDate);
+
+        String urlParams = getUrlParams(vnpParams);
+        String paymentUrl = EnvVariable.VN_PAY_URL + "?" + urlParams;
+
+        // Save payment history
+        if (paymentRequestDTO.getVipPack() != 4) {
+            saveHistoryPayment(paymentId, orderInfo, totalPrice);
+        } else {
+            saveHistoryPayment(paymentId, orderInfo, totalAmount);
+        }
+
+        return paymentUrl;
+    }
+
+    @Override
+    public void setVip(String price, User user) {
+        switch (price) {
+            case VIP:
+                user.setCount(user.getCount() + 1);
+                user.setTotalCount(user.getTotalCount() + 1);
+                break;
+            case VIP_PRO:
+                user.setCount(user.getCount() + 3);
+                user.setTotalCount(user.getTotalCount() + 3);
+                break;
+            case VIP_SUPER:
+                user.setCount(user.getCount() + 5);
+                user.setTotalCount(user.getTotalCount() + 5);
+                break;
+            default:
+                user.setCount(0);
+        }
+        userRepository.save(user);
+    }
+
+    @Override
+    public HistoryPayment checkBill(Map<String, String[]> params) {
+        String paymentId = params.get("vnp_TxnRef")[0];
+        String amount = params.get("vnp_Amount")[0];
+        String status = params.get("vnp_TransactionStatus")[0];
+        String transactionId = params.get("vnp_TransactionNo")[0];
+
+//        UUID paymentId;
+//        try {
+//            paymentId = UUID.fromString(paymentInfo);
+//        } catch (IllegalArgumentException e) {
+//            return null;
+//        }
+
+        String username = paymentCache.getUsername(paymentId);
+        User user = userRepository.findByUsername(username);
+        UserDetail userDetail = user.getUserDetail();
+        HistoryPayment historyPayment = historyPaymentRepository.findByPaymentId(paymentId);
+        String totalPrice = historyPayment.getTotalPrice() + "00";
+        String orderInfo = historyPayment.getOderInfo();
+
+        if (paymentId.equals(historyPayment.getPaymentId()) && amount.equals(totalPrice) && status.equals("00")) {
+            if (orderInfo.equals(Constant.PAY_PURCHASE_INVOICE)) {
+                Cart cart = cartRepository.findCartByUser(user);
+                cart.setTotalAmount(0);
+                cartLineRepository.deleteCartLineByCart_Id(cart.getId());
+                cartRepository.save(cart);
+                cart.setCartLineList(new ArrayList<>());
+                cartCache.addToCart(user.getId(), cart);
+            }
+            setVip(amount, user);
+            historyPayment.setStatus(true);
+            clientService.sendOrderReturn(userDetail.getEmail(), paymentId);
+        }
+
+        paymentCache.removePaymentId(username);
+        historyPayment.setTransactionId(transactionId);
+        historyPaymentRepository.save(historyPayment);
+        return historyPayment;
+    }
+
+    private void saveHistoryPayment(String uuid, String orderInfo, String totalPrice) {
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String time = format.format(cld.getTime());
+        HistoryPayment historyPayment = new HistoryPayment();
+        historyPayment.setPaymentId(uuid);
+        historyPayment.setUser(userRepository.findByUsername(userService.getCurrentUsername()));
+        historyPayment.setStatus(false);
+        historyPayment.setOderInfo(orderInfo);
+        historyPayment.setTotalPrice(totalPrice);
+        historyPayment.setPaymentTime(time);
+        historyPaymentRepository.save(historyPayment);
+    }
+
+    private String getUrlParams(Map<String, String> vnpParams) {
+        StringBuilder query = new StringBuilder();
+        List fieldNames = new ArrayList(vnpParams.keySet());
         Collections.sort(fieldNames);
         StringBuilder hashData = new StringBuilder();
-        StringBuilder query = new StringBuilder();
         Iterator itr = fieldNames.iterator();
         while (itr.hasNext()) {
             String fieldName = (String) itr.next();
-            String fieldValue = vnp_Params.get(fieldName);
+            String fieldValue = vnpParams.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 //Build hash data
                 hashData.append(fieldName);
@@ -163,90 +239,23 @@ public class VNPayServiceImpl implements VNPayService {
         String queryUrl = query.toString();
         String vnp_SecureHash = vnPayConfiguration.hmacSHA512(EnvVariable.VN_PAY_HASH_SECRET, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-        String paymentUrl = EnvVariable.VN_PAY_URL + "?" + queryUrl;
-
-        // Save history payment
-        if(paymentRequestDTO.getVipPack() != 4){
-            saveHistoryPayment(uuid,orderInfo,totalPrice);
-        } else {
-            saveHistoryPayment(uuid,orderInfo,totalAmount);
-        }
-        return paymentUrl;
+        return queryUrl;
     }
 
-    private void saveHistoryPayment(UUID uuid, String orderInfo, String totalPrice) {
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        String time = format.format(cld.getTime());
-        HistoryPayment historyPayment = new HistoryPayment();
-        historyPayment.setPaymentId(uuid);
-        historyPayment.setUser(userRepository.findByUsername(userService.getCurrentUsername()));
-        historyPayment.setStatus(false);
-        historyPayment.setOderInfo(orderInfo);
-        historyPayment.setTotalPrice(totalPrice);
-        historyPayment.setPaymentTime(time);
-        historyPaymentRepository.save(historyPayment);
-    }
+    private String getClientIP(HttpServletRequest request) {
+        String clientIP = request.getHeader("X-Forwarded-For");
+        String unknownIP = "unknown";
 
-    @Override
-    public void setVip(String price, User user){
-        switch (price){
-            case VIP:
-                user.setCount(user.getCount()+1);
-                user.setTotalCount(user.getTotalCount()+1);
-                break;
-            case VIP_PRO:
-                user.setCount(user.getCount()+3);
-                user.setTotalCount(user.getTotalCount()+3);
-                break;
-            case VIP_SUPER:
-                user.setCount(user.getCount()+5);
-                user.setTotalCount(user.getTotalCount()+5);
-                break;
-            default:
-                user.setCount(0);
+        if (clientIP == null || clientIP.isEmpty() || unknownIP.equalsIgnoreCase(clientIP)) {
+            clientIP = request.getHeader("Proxy-Client-IP");
         }
-        userRepository.save(user);
-    }
-
-    @Override
-    public HistoryPayment checkBill(Map<String, String[]> params) {
-        String paymentInfo = params.get("vnp_OrderInfo")[0];
-        String amount = params.get("vnp_Amount")[0];
-        String status = params.get("vnp_TransactionStatus")[0];
-        String transactionId = params.get("vnp_TransactionNo")[0];
-
-        UUID paymentId;
-        try {
-            paymentId = UUID.fromString(paymentInfo);
-        } catch (IllegalArgumentException e) {
-            return null;
+        if (clientIP == null || clientIP.isEmpty() || unknownIP.equalsIgnoreCase(clientIP)) {
+            clientIP = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (clientIP == null || clientIP.isEmpty() || unknownIP.equalsIgnoreCase(clientIP)) {
+            clientIP = request.getRemoteAddr();
         }
 
-        String username = paymentCache.getUsername(paymentId);
-        User user = userRepository.findByUsername(username);
-        UserDetail userDetail = user.getUserDetail();
-        HistoryPayment historyPayment = historyPaymentRepository.findByPaymentId(paymentId);
-        String totalPrice = historyPayment.getTotalPrice() + "00";
-        String orderInfo = historyPayment.getOderInfo();
-
-        if (paymentId.equals(historyPayment.getPaymentId()) && amount.equals(totalPrice) && status.equals("00")) {
-            if (orderInfo.equals(Constant.PAY_PURCHASE_INVOICE)){
-                Cart cart = cartRepository.findCartByUser(user);
-                cart.setTotalAmount(0);
-                cartLineRepository.deleteCartLineByCart_Id(cart.getId());
-                cartRepository.save(cart);
-                cart.setCartLineList(new ArrayList<>());
-                cartCache.addToCart(user.getId(), cart);
-            }
-            setVip(amount, user);
-            historyPayment.setStatus(true);
-            clientService.sendOrderReturn(userDetail.getEmail(), paymentId);
-        }
-
-        paymentCache.removePaymentId(username);
-        historyPayment.setTransactionId(transactionId);
-        historyPaymentRepository.save(historyPayment);
-        return historyPayment;
+        return clientIP;
     }
 }

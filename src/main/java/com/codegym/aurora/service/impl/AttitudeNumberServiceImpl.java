@@ -39,11 +39,10 @@ public class AttitudeNumberServiceImpl implements AttitudeNumberService {
     }
     @Override
     public AttitudeNumberResponseDTO getAttitudeNumber(Integer number) {
-       AttitudeNumberResponseDTO result = staticAttitudeNumberResponseDTOList.stream()
+        return staticAttitudeNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == number)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy chỉ số thái độ phù hợp"));
-        return result;
     }
 
     @Override

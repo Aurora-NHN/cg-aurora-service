@@ -37,11 +37,10 @@ public class MeanOfNumberServiceImpl implements MeanOfNumberService {
 
     @Override
     public MeanOfNumberResponseDTO getMeanOfNumberResponseDto(String name) {
-        MeanOfNumberResponseDTO result = staticMeanAllNumberResponseDto.stream()
+        return staticMeanAllNumberResponseDto.stream()
                 .filter(dto -> dto.getNameOfNumber().equalsIgnoreCase(name))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy tên của chỉ số"));
-        return result;
     }
 
     @Override

@@ -20,12 +20,12 @@ public class HistoryPaymentServiceImpl implements HistoryPaymentService {
     private final HistoryPaymentRepository historyPaymentRepository;
 
     @Override
-    public BillResponseDTO getBill(UUID paymentId) {
+    public BillResponseDTO getBill(String paymentId) {
         BillResponseDTO bill = new BillResponseDTO();
         HistoryPayment historyPayment = historyPaymentRepository.findByPaymentId(paymentId);
         User user = historyPayment.getUser();
         UserDetail userDetail = user.getUserDetail();
-        bill.setPaymentId(String.valueOf(paymentId));
+        bill.setPaymentId(paymentId);
         bill.setPaymentTime(historyPayment.getPaymentTime());
         bill.setOrderInfo(historyPayment.getOderInfo());
         bill.setTotalPrice(historyPayment.getTotalPrice());

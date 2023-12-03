@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface HistoryPaymentRepository extends JpaRepository<HistoryPayment, Long> {
 
-    HistoryPayment findByPaymentId(UUID paymentId);
+    HistoryPayment findByPaymentId(String paymentId);
 }

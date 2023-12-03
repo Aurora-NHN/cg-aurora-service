@@ -35,10 +35,10 @@ public class HistoryPayment {
     private long id;
 
     @Column(name = "PAYMENT_ID")
-    @Type(type = "uuid-char")
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID paymentId;
+//    @Type(type = "uuid-char")
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private String paymentId;
 
     @Column(name = "ORDER_INFO")
     private String oderInfo;

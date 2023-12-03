@@ -44,12 +44,10 @@ public class MissionNumberServiceimpl implements MissionNumberService {
 
     @Override
     public MissionNumberResponseDTO getMissionNumberResponseDTO(Integer missionNumber) {
-
-        MissionNumberResponseDTO result = staticMissionNumberResponseDTOList.stream()
+        return staticMissionNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == missionNumber)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy số sứ mệnh phù hợp"));
-        return result;
     }
 
     @Override

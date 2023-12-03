@@ -26,7 +26,7 @@ public class UserLogs {
         ResponseDTO result = (ResponseDTO) joinPoint.proceed();
 
         if (result.getStatus().equals(HttpStatus.CREATED)) {
-            LOGGER.info(String.format("```diff%n!##New user registered!... ! username: %s, email: %s```",
+            LOGGER.info(String.format("##New user registered!... - username: %s, email: %s",
                     arg.getUsername(),
                     arg.getEmail()));
         }

@@ -9,7 +9,7 @@ import java.util.UUID;
 public final class PaymentCache {
 
     private Boolean activeVnPayService;
-    private final HashMap<String,UUID> paymentMap;
+    private final HashMap<String,String> paymentMap;
 
     private PaymentCache(){
         paymentMap = new HashMap<>();
@@ -24,17 +24,17 @@ public final class PaymentCache {
         this.activeVnPayService = activeVnPayService;
     }
 
-    public void addPaymentId(String username, UUID uuid) {
-        paymentMap.put(username, uuid);
+    public void addPaymentId(String username, String paymentId) {
+        paymentMap.put(username, paymentId);
     }
 
-    public UUID getPaymentId(String username){
+    public String getPaymentId(String username){
         return paymentMap.get(username);
     }
 
-    public String getUsername(UUID uuid) {
-        for (HashMap.Entry<String, UUID> entry : paymentMap.entrySet()) {
-            if (entry.getValue().equals(uuid)) {
+    public String getUsername(String paymentId) {
+        for (HashMap.Entry<String, String> entry : paymentMap.entrySet()) {
+            if (entry.getValue().equals(paymentId)) {
                 return entry.getKey();
             }
         }

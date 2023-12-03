@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface HistoryPaymentService {
 
-    BillResponseDTO getBill(UUID paymentId);
+    BillResponseDTO getBill(String paymentId);
 }

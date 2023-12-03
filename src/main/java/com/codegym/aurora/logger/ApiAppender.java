@@ -1,7 +1,7 @@
 package com.codegym.aurora.logger;
 
-import com.codegym.aurora.payload.log.LogData;
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 public class ApiAppender extends AppenderSkeleton {
     private final RestTemplate restTemplate;
@@ -17,19 +20,27 @@ public class ApiAppender extends AppenderSkeleton {
 
     public ApiAppender() {
         this.restTemplate = new RestTemplate();
+        initAppender();
+    }
+
+    private void initAppender() {
+        PatternLayout layout = new PatternLayout();
+        String conversionPattern = "```[%-5p] [%d{MM-dd HH:mm:ss zZ}] - [%m]```";
+        layout.setConversionPattern(conversionPattern);
+        this.setLayout(layout);
+        this.activateOptions();
     }
 
     @Override
     protected void append(LoggingEvent event) {
-        String message = event.getMessage().toString();
-        String level = event.getLevel().toString();
-        long timestamp = event.getTimeStamp();
+        String message = layout.format(event);
         try {
-            LogData logData = new LogData(message, level, timestamp);
+            Map<String,String> data = new HashMap<>();
+            data.put("content", message);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            HttpEntity<LogData> content = new HttpEntity<>(logData, headers);
+            HttpEntity<Object> content = new HttpEntity<>(data, headers);
 
             ResponseEntity<Object> responseEntity = restTemplate.postForEntity(LOG_API, content, Object.class);
             // Handle API response
@@ -46,6 +57,6 @@ public class ApiAppender extends AppenderSkeleton {
 
     @Override
     public boolean requiresLayout() {
-        return false;
+        return true;
     }
 }

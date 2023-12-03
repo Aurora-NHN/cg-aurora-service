@@ -47,11 +47,10 @@ public class BalanceNumberServiceImpl implements BalanceNumberService {
 
     @Override
     public BalanceNumberResponseDTO getBalanceNumberResponseDtoInStatic(Integer balanceNumber) {
-       BalanceNumberResponseDTO result = staticBalanceNumberResponseDTOList.stream()
+        return staticBalanceNumberResponseDTOList.stream()
                 .filter(dto -> dto.getNumber() == balanceNumber)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy số cân bằng phù hợp"));
-        return result;
     }
 
     @Override

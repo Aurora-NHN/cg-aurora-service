@@ -50,7 +50,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Boolean sendOrderReturn(String email, UUID paymentId) {
+    public Boolean sendOrderReturn(String email, String paymentId) {
         try {
             DataMailDTO dataMail = new DataMailDTO();
             dataMail.setTo(email);
